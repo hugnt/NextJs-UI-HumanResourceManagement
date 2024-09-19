@@ -2,8 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AppLayout from "@/app/system/ui/app-layout";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster"
+import AppContext from "@/app/system/ui/app-context";
 
 export const metadata: Metadata = {
   title: "myHRM",
@@ -16,12 +15,11 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   return (
     <html lang="en" suppressHydrationWarning={true} >
       <body className={``}>
-        <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-          <AppLayout> 
-              {children}
+        <AppContext>
+          <AppLayout>
+            {children}
           </AppLayout>
-        </ThemeProvider>
-        <Toaster />
+        </AppContext>
       </body>
     </html>
   );

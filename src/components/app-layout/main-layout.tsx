@@ -15,20 +15,21 @@ export default function MainLayout({ children, }: Readonly<{ children: React.Rea
   }, [])
   return (
     <div className='relative h-full overflow-hidden bg-background'>
+    
       {isClient && (
         <>
           <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
           <div id='content' className={`overflow-x-hidden pt-16 transition-[margin] md:overflow-y-hidden md:pt-0 ${isCollapsed ? 'md:ml-14' : 'md:ml-64'} h-full`}>
             <Layout className='overflow-auto h-screen'>
               {/* ===== Top Heading ===== */}
-              <Layout.Header sticky className='p-2'>
+              <Layout.Header sticky className='px-6 py-2'>
                 <Search />
                 <div className='ml-auto flex items-center space-x-4'>
                   <ThemeSwitch />
                   <UserNav />
                 </div>
               </Layout.Header>
-              <Layout.Body className='py-0'>
+              <Layout.Body className='px-6 py-0'>
                 {children}
               </Layout.Body>
             </Layout>

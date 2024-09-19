@@ -3,12 +3,13 @@
 import positionApiRequest from "@/apis/position.api";
 import FormCRUD from "@/app/position/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
+import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
 import { Position, positionDefault } from "@/data/schema/position.schema";
-import { handleSuccessApi } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { IconPlus } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { useState } from "react";
 
@@ -51,84 +52,12 @@ export default function SampleList() {
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
-  // #region +TANSTACK QUERY
-  const queryClient = useQueryClient();
-
-  const dataList = useQuery({
+  const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
     queryFn: () => positionApiRequest.getList(),
   });
 
-  const addDataMutation = useMutation({
-    mutationFn: (body: Position) => {
-      return positionApiRequest.create(body);
-    },
-    onSuccess: (_, variables) => {
-      const newData = variables;
-      queryClient.setQueryData([QUERY_KEY.keyList], (oldData: any) => {
-        if (!oldData) return { metadata: [newData] }; // Initialize if no old data
-        // Lấy id lớn nhất từ metadata
-        const maxId = Math.max(...oldData.metadata.map((item: { id: any; }) => item.id), 0);
-        newData.id = maxId + 1; // Gán id mới cho newData
-        return {
-          ...oldData,
-          metadata: [...oldData.metadata, newData], // Correctly spread old metadata
-        };
-      });
-      setDetail(newData);
-      setMode(CRUD_MODE.VIEW);
-      handleSuccessApi({ message: "Inserted Successfully!" });
-    }
-  });
-
-  const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Position }) => {
-      return positionApiRequest.update(id, body)
-    },
-    onSuccess: (_, variables) => {
-      const { id, body } = variables;
-      queryClient.setQueryData([QUERY_KEY.keyList], (oldData: any) => {
-        if (!oldData) return { metadata: [] }; // Handle case where old data doesn't exist
-        return {
-          ...oldData,
-          metadata: oldData.metadata.map((item: { id: number; }) =>
-            item.id === id ? { ...item, ...body } : item // Update the specific item
-          ),
-        };
-      });
-      setDetail(body);
-      setMode(CRUD_MODE.VIEW);
-      handleSuccessApi({ message: "Updated Successfully!" });
-    }
-  });
-
-  const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => positionApiRequest.delete(id),
-    onSuccess: (_, id) => {
-      queryClient.setQueryData([QUERY_KEY.keyList], (oldData: any) => {
-        if (!oldData) return { metadata: [] };
-        return {
-          ...oldData,
-          metadata: oldData.metadata.filter((item: { id: number; }) => item.id !== id),
-        };
-      });
-      setMode(CRUD_MODE.NO_ACTION);
-      handleSuccessApi({ message: "Deleted Successfully!" });
-      setOpenCRUD(false);
-    }
-  });
-  // #endregion
-
   const columnsDef: ColumnDef<Position>[] = [
-    {
-      accessorKey: 'id',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='ID' />
-      ),
-      cell: ({ row }) => <div className='w-[3px] text-center'>{row.getValue('id')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: 'name',
       header: ({ column }) => (
@@ -160,7 +89,7 @@ export default function SampleList() {
   const handleView = async (row: Row<Position>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
-    const selectedData = dataList.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
     setDetail(selectedData);
     setOpenCRUD(true);
   };
@@ -168,7 +97,7 @@ export default function SampleList() {
   const handleEdit = (row: Row<Position>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
-    const selectedData = dataList.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
     setDetail(selectedData);
     setOpenCRUD(true);
   };
@@ -176,17 +105,11 @@ export default function SampleList() {
   const handleDelete = (row: Row<Position>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
-    const selectedData = dataList.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
     setDetail(selectedData);
     setOpenCRUD(true);
   };
 
-  //Save
-  const handleSave = (data: Position) => {
-    if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
-    else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: data.id ?? 0, body: data });
-    else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
-  }
 
   return (
     <>
@@ -196,11 +119,16 @@ export default function SampleList() {
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
-      <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <DataTable data={dataList.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name" handleAddNew={handleAddNew} />
-      </div>
 
-      <FormCRUD open={openCRUD} setOpen={setOpenCRUD} mode={mode} detail={detail} handleSave={handleSave} />
+      <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
+          <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
+            <IconPlus className='mr-2 h-4 w-4' />Add new
+          </Button>
+          
+        </DataTable>
+      </div>
+      <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />
     </>
   )
 };

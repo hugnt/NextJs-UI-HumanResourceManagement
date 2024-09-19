@@ -31,10 +31,10 @@ interface DataTableProps<TData, TValue> {
   data?: TData[],
   filters: Array<DataFilter>,
   searchField?: string,
-  handleAddNew?: () => void
+  children?: React.ReactNode
 }
 
-export default function DataTable<TData, TValue>({ columns, data = [], filters, searchField, handleAddNew }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({ columns, data = [], filters, searchField, children }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>({})
@@ -67,7 +67,9 @@ export default function DataTable<TData, TValue>({ columns, data = [], filters, 
 
   return (
     <div className='space-y-4'>
-      <DataTableToolbar table={table} filters={filters} searchField={searchField} handleAddNew={handleAddNew} />
+      <DataTableToolbar table={table} filters={filters} searchField={searchField}>
+        {children}
+      </DataTableToolbar>
       <div className='rounded-md border'>
         <Table>
           <TableHeader className='bg-secondary/80'>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { toast } from "@/hooks/use-toast"
+
+import { toaster } from "@/components/custom/_toast"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -13,37 +14,41 @@ export const handleErrorApi = ({error, duration}:{
 }) => {
     if(Array.isArray(error)){
       for (let i = 0; i < error.length; i++) {
-        toast({
+        toaster.error({
           title:'System Error',
-          description: error[i]??"Undefined Error",
-          variant:'destructive',
-          duration: duration ?? 5000
+          message: error[i]??"Undefined Error",
+        },{
+          position:"bottom-right",
+          autoClose: duration ?? 2000
         })
       }
     }
     else{
-      toast({
+      toaster.error({
         title:'Uncontroled Error',
-        description: error??"Undefined Error",
-        variant:'destructive',
-        duration: duration ?? 5000
+        message: error??"Undefined Error",
+      },{
+        position:"bottom-right",
+        autoClose: duration ?? 2000
       })
     }
     throw new Error('API fetching error', error);
 }
-export const handleSuccessApi = ({message, duration}:{
-  message: any,
+export const handleSuccessApi = ({title,message,duration}:{
+  title?: string,
+  message?: string,
   duration?:number
 }) => {
-    toast({
-      title:'Successfully!',
-      description: message??"Completed",
-      variant:'success',
-      duration: duration ?? 5000
+    toaster.success({
+      title: title??"Process Completed",
+      message: message??"Process Completed"
+    },{
+      position:"bottom-right",
+      autoClose: duration ?? 2000
     })
 }
 export function assertApiResponse<T>(data: any): T {
-  console.log("http data:", data)
+  //console.log("http data:", data)
   if (typeof data.isSuccess !== 'boolean' || 
       (Array.isArray(data.message) === false && data.message !== null)) {
         throw new Error('Invalid API response structure');

@@ -1,10 +1,10 @@
 "use client";
-
 import { AuthLayout, MainLayout } from "@/components/app-layout";
 import { usePathname } from 'next/navigation'
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
+
+
 // Create a client
-const queryClient = new QueryClient()
 const authPaths =  ['/login','/register'];
 export default function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const pathname= usePathname()
@@ -13,9 +13,10 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
     else layout = 1;
 
     return (
-        <QueryClientProvider client={queryClient}>
+        <>
             {layout == 0 ?<AuthLayout>{children}</AuthLayout>
             :<MainLayout>{children}</MainLayout>}
-        </QueryClientProvider>
+            <ToastContainer autoClose={2000}/>
+        </>
     );
 }

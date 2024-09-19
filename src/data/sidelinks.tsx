@@ -10,8 +10,7 @@ import {
   IconUserSquare,
   IconContract,
   IconBusinessplan,
-  IconBuilding,
-  IconInfoHexagon
+  IconBuilding
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -31,21 +30,6 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '/',
     icon: <IconLayoutDashboard size={18} />
-  },
-  {
-    title: 'Sample',
-    label: '',
-    href: '',
-    icon: <IconInfoHexagon size={18} />,
-    sub: [
-      {
-        title: 'Sample List',
-        label: '',
-        href: '/sample-list',
-        icon: <IconFileText size={18} />,
-      },
-
-    ],
   },
   {
     title: 'Employee',
@@ -243,7 +227,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Position List',
         label: '',
-        href: '/position-list',
+        href: '/positions',
         icon: <IconFileText size={18} />,
       },
     ],

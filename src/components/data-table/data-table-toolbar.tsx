@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 
 import DataTableFacetedFilter from '@/components/data-table/data-table-faceted-filter'
 import DataTableViewOptions from '@/components/data-table/data-table-view-options'
-import { IconPlus } from '@tabler/icons-react'
 
 export interface DataFilter {
   columnName: string,
@@ -23,10 +22,10 @@ export interface DataTableToolbarProps<TData> {
   table: Table<TData>,
   filters: Array<DataFilter>,
   searchField?: string,
-  handleAddNew?: () => void
+  children?: React.ReactNode;
 }
 
-export default function DataTableToolbar<TData>({ table, filters, searchField, handleAddNew}: DataTableToolbarProps<TData>) {
+export default function DataTableToolbar<TData>({ table, filters, searchField, children}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   return (
     <div className='flex items-center justify-between'>
@@ -65,11 +64,7 @@ export default function DataTableToolbar<TData>({ table, filters, searchField, h
         )}
       </div>
       <div className='flex justify-end align-middle'>
-        <Button onClick={handleAddNew} variant='outline' size='sm' 
-            className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-          <IconPlus className='mr-2 h-4 w-4' />
-          Add new
-        </Button>
+        {children}
         <DataTableViewOptions table={table} />
       </div>
     </div>
