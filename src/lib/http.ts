@@ -1,29 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import envConfig from "@/config";
-import { assertApiResponse, handleErrorApi } from "@/lib/utils";
+import { assertApiResponse } from "@/lib/utils";
 
 type CustomOptions = RequestInit & {
   baseUrl?: string | undefined;
 };
 
-class SessionToken {
-  private token = "";
-  get value() {
-    return this.token;
-  }
-  set value(token: string) {
-    //Gọi method này ở server thì bị lỗi -> chỉ dùng cho client
-    if (typeof window === "undefined") {
-      throw new Error("Cannot set token on server side");
-    }
-    this.token = this.token;
-  }
-}
-
-export const sessionToken = new SessionToken();
-
-export const isClient = () => typeof window !== "undefined";
 const request = async <T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
@@ -37,12 +20,7 @@ const request = async <T>(
   }
   const baseHeaders: { [key: string]: string } =
     body instanceof FormData ? {} : { "Content-Type": "application/json" };
-  if (isClient()) {
-    const sessionToken = localStorage.getItem("sessionToken");
-    if (sessionToken) {
-      baseHeaders.Authorization = `Bearer ${sessionToken}`;
-    }
-  }
+
   // Nếu không truyền baseUrl (hoặc baseUrl = undefined) thì lấy từ envConfig.NEXT_PUBLIC_API_ENDPOINT
   // Nếu truyền baseUrl thì lấy giá trị truyền vào, truyền vào '' thì đồng nghĩa với việc chúng ta gọi API đến Next.js Server
   const baseUrl =
@@ -65,10 +43,7 @@ const request = async <T>(
   });
 
   const payload: Response = await res.json();
-  const data = {
-    status: res.status,
-    payload,
-  };
+
   try {
     const resData = assertApiResponse<T>(payload);
     // console.log("resData",resData)
