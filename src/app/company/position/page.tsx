@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import positionApiRequest from "@/apis/position.api";
-import FormCRUD from "@/app/position/form-crud";
+import FormCRUD from "@/app/company/position/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
@@ -15,12 +15,12 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Employee",
-    url: "/Employee"
+    name: "Company",
+    url: "/Company"
   },
   {
     name: "Position",
-    url: "/Employee/Position"
+    url: "/Company/Position"
   },
 ];
 
@@ -61,9 +61,27 @@ export default function SampleList() {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full name' />
+        <DataTableColumnHeader column={column} title='Tên vị trí' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'totalPositionsNeeded',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Số người cần có' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('totalPositionsNeeded')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'departmentName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Phòng ban' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('departmentName')}</div>,
       enableSorting: false,
       enableHiding: false,
     },

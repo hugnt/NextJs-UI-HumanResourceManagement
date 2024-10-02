@@ -17,10 +17,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import positionApiRequest from "@/apis/position.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
+import departmentApiRequest from "@/apis/department.api";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -32,6 +34,7 @@ type FormProps = {
 //react query key
 const QUERY_KEY = {
   keyList: "positions",
+  keySub: "departments"
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -66,6 +69,11 @@ export default function FormCRUD(props: FormProps) {
       setOpenCRUD(false);
     }
   });
+
+  const listDataDepartment = useQuery({
+    queryKey: [QUERY_KEY.keySub],
+    queryFn: () => departmentApiRequest.getList()
+  });
   // #endregion
 
   // #region + FORM SETTINGS
@@ -79,7 +87,7 @@ export default function FormCRUD(props: FormProps) {
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
 
-    
+
   }
 
   const handleCloseForm = (e: any) => {
@@ -94,8 +102,9 @@ export default function FormCRUD(props: FormProps) {
     }
     if (mode == CRUD_MODE.VIEW) setIsDisabled(true);
     else setIsDisabled(false);
-  }, [detail, mode])
+  }, [detail, mode, openCRUD])
 
+  
   return (
     <div>
       <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD} >
@@ -111,10 +120,47 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full name</FormLabel>
+                      <FormLabel>Nhập tên vị trí</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Nhập tên vị trí" {...field} disabled={isDisabled} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="totalPositionsNeeded"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Số người cần có</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Số người cần có" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="departmentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chọn phòng ban</FormLabel>
+                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                        <FormControl >
+                          <SelectTrigger >
+                            <SelectValue  placeholder="Chọn phòng ban cho vị trí này" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            listDataDepartment.data?.metadata?.map((item, index) => {
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                            })
+                          }
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -135,7 +181,7 @@ export default function FormCRUD(props: FormProps) {
               <AlertDialogTitle></AlertDialogTitle>
             </AlertDialogHeader>
             <div className="text-center pt-8 pb-4 flex justify-center">
-              <PiTrashLight  size={100} color="rgb(248 113 113)"/>
+              <PiTrashLight size={100} color="rgb(248 113 113)" />
             </div>
             <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
               Are you absolutely sure to delete?

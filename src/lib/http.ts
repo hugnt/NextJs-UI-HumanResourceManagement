@@ -40,6 +40,7 @@ const request = async <T>(
     } as any,
     body,
     method,
+    credentials: "include"
   });
 
   const payload: Response = await res.json();
