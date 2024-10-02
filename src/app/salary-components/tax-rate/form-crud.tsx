@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Position, positionDefault, positionSchema } from "@/data/schema/position.schema";
+import { TaxRate, taxRateDefault, taxRateSchema } from "@/data/schema/taxRate.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import positionApiRequest from "@/apis/position.api";
+import taxRateApiRequest from "@/apis/taxRate.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 type FormProps = {
@@ -26,12 +26,12 @@ type FormProps = {
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Position
+  detail: TaxRate
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "positions",
+  keyList: "taxRates",
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -41,7 +41,7 @@ export default function FormCRUD(props: FormProps) {
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Position) => positionApiRequest.create(body),
+    mutationFn: (body: TaxRate) => taxRateApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -50,7 +50,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Position }) => positionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: TaxRate }) => taxRateApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -59,7 +59,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => positionApiRequest.delete(id),
+    mutationFn: (id: number) => taxRateApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
@@ -69,12 +69,12 @@ export default function FormCRUD(props: FormProps) {
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Position>({
-    resolver: zodResolver(positionSchema),
-    defaultValues: positionDefault,
+  const form = useForm<TaxRate>({
+    resolver: zodResolver(taxRateSchema),
+    defaultValues: taxRateDefault,
   });
 
-  const onSubmit = (data: Position) => {
+  const onSubmit = (data: TaxRate) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -100,7 +100,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Sample Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -109,9 +109,42 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full name</FormLabel>
+                      <FormLabel>Tax rate name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter tax rate name" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="parameterName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Paremeter name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Format PARAM_TAXRATE_<...>" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField control={form.control} name="percent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Percent</FormLabel>
+                      <FormControl>
+                        <Input placeholder="(%) enter 0 -> 1" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="condition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Terms</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Descriptions about Tax Rate" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
