@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Position, positionDefault, positionSchema } from "@/data/schema/position.schema";
+import { Deduction, deductionDefault, deductionSchema } from "@/data/schema/deduction.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import positionApiRequest from "@/apis/position.api";
+import deductionApiRequest from "@/apis/deduction.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 type FormProps = {
@@ -26,22 +26,23 @@ type FormProps = {
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Position
+  detail: Deduction
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "positions",
+  keyList: "deductions",
 }
 
 export default function FormCRUD(props: FormProps) {
-  const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
+    const { openCRUD, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = deductionDefault } = props;
+  //const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Position) => positionApiRequest.create(body),
+    mutationFn: (body: Deduction) => deductionApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -50,7 +51,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Position }) => positionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: Deduction }) => deductionApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -59,7 +60,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => positionApiRequest.delete(id),
+    mutationFn: (id: number) => deductionApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
@@ -69,12 +70,12 @@ export default function FormCRUD(props: FormProps) {
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Position>({
-    resolver: zodResolver(positionSchema),
-    defaultValues: positionDefault,
+  const form = useForm<Deduction>({
+    resolver: zodResolver(deductionSchema),
+    defaultValues: deductionDefault,
   });
 
-  const onSubmit = (data: Position) => {
+  const onSubmit = (data: Deduction) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -111,13 +112,41 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full name</FormLabel>
+                      <FormLabel>Deduction name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter deduction name" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
+                />
+                <FormField control={form.control} name="parameterName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parameter name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter parameter Name" {...field} value={field.value ?? ''} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="amount" // Sửa từ "Amount" thành "amount"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Deduction Amount</FormLabel> 
+                    <FormControl>
+                        <Input 
+                        placeholder="Enter deduction amount" 
+                        type="number"
+                        {...field} 
+                        value={field.value ?? ''}
+                        disabled={isDisabled} 
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
                 />
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
