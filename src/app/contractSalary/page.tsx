@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import positionApiRequest from "@/apis/position.api";
-import FormCRUD from "@/app/position/form-crud";
+import contractSalaryApiRequest from "@/apis/contractSalary.api";
+import FormCRUD from "@/app/contractSalary/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Position, positionDefault } from "@/data/schema/position.schema";
+import { ContractSalary, contractSalaryDefault } from "@/data/schema/contractSalary.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -19,8 +19,8 @@ const pathList: Array<PathItem> = [
     url: "/Employee"
   },
   {
-    name: "Position",
-    url: "/Employee/Position"
+    name: "ContractSalary",
+    url: "/Employee/ContractSalary"
   },
 ];
 
@@ -44,28 +44,82 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "positions",
+  keyList: "contractSalarys",
 }
 
 export default function SampleList() {
-  const [detail, setDetail] = useState<Position>({});
+  const [detail, setDetail] = useState<ContractSalary>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => positionApiRequest.getList(),
+    queryFn: () => contractSalaryApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Position>[] = [
+  const columnsDef: ColumnDef<ContractSalary>[] = [
     {
-      accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full name' />
-      ),
-      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
-      enableSorting: false,
-      enableHiding: false,
+        accessorKey: 'baseSalary',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Base Salary' />
+        ),
+        cell: ({ row }) => <div className='w-[150px]'>{row.getValue('baseSalary')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'baseInsurance',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Base Insurance' />
+        ),
+        cell: ({ row }) => <div className='w-[150px]'>{row.getValue('baseInsurance')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'requiredDays',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Required Days' />
+        ),
+        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('requiredDays')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'requiredHours',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Required Hours' />
+        ),
+        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('requiredHours')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'wageDaily',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Wage Daily' />
+        ),
+        cell: ({ row }) => <div className='w-[150px]'>{row.getValue('wageDaily')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'wageHourly',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Wage Hourly' />
+        ),
+        cell: ({ row }) => <div className='w-[150px]'>{row.getValue('wageHourly')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'factor',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Factor' />
+        ),
+        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('factor')}</div>,
+        enableSorting: true,
+        enableHiding: false,
     },
     {
       id: 'actions',
@@ -81,12 +135,12 @@ export default function SampleList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(positionDefault);
+    setDetail(contractSalaryDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Position>) => {
+  const handleView = async (row: Row<ContractSalary>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -94,7 +148,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Position>) => {
+  const handleEdit = (row: Row<ContractSalary>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -102,7 +156,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Position>) => {
+  const handleDelete = (row: Row<ContractSalary>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -115,7 +169,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Position List</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Contract Salary List</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

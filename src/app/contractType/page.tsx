@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import positionApiRequest from "@/apis/position.api";
-import FormCRUD from "@/app/position/form-crud";
+import contractTypeApiRequest from "@/apis/contractType.api";
+import FormCRUD from "@/app/contractType/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Position, positionDefault } from "@/data/schema/position.schema";
+import { ContractType, contractTypeDefault } from "@/data/schema/contractType.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -19,8 +19,8 @@ const pathList: Array<PathItem> = [
     url: "/Employee"
   },
   {
-    name: "Position",
-    url: "/Employee/Position"
+    name: "ContractType",
+    url: "/Employee/ContractType"
   },
 ];
 
@@ -44,24 +44,24 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "positions",
+  keyList: "contractTypes",
 }
 
 export default function SampleList() {
-  const [detail, setDetail] = useState<Position>({});
+  const [detail, setDetail] = useState<ContractType>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => positionApiRequest.getList(),
+    queryFn: () => contractTypeApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Position>[] = [
+  const columnsDef: ColumnDef<ContractType>[] = [
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full name' />
+        <DataTableColumnHeader column={column} title='Type name' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
       enableSorting: false,
@@ -81,12 +81,12 @@ export default function SampleList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(positionDefault);
+    setDetail(contractTypeDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Position>) => {
+  const handleView = async (row: Row<ContractType>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -94,7 +94,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Position>) => {
+  const handleEdit = (row: Row<ContractType>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -102,7 +102,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Position>) => {
+  const handleDelete = (row: Row<ContractType>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -115,7 +115,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Position List</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Contract Type List</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

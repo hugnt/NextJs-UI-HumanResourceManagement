@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Position, positionDefault, positionSchema } from "@/data/schema/position.schema";
+import { Allowance, allowanceDefault, allowanceSchema } from "@/data/schema/allowance.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import positionApiRequest from "@/apis/position.api";
+import allowanceApiRequest from "@/apis/allowance.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 type FormProps = {
@@ -26,12 +26,12 @@ type FormProps = {
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Position
+  detail: Allowance
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "positions",
+  keyList: "allowances",
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -41,7 +41,7 @@ export default function FormCRUD(props: FormProps) {
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Position) => positionApiRequest.create(body),
+    mutationFn: (body: Allowance) => allowanceApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -50,7 +50,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Position }) => positionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: Allowance }) => allowanceApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -59,7 +59,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => positionApiRequest.delete(id),
+    mutationFn: (id: number) => allowanceApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
@@ -69,12 +69,12 @@ export default function FormCRUD(props: FormProps) {
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Position>({
-    resolver: zodResolver(positionSchema),
-    defaultValues: positionDefault,
+  const form = useForm<Allowance>({
+    resolver: zodResolver(allowanceSchema),
+    defaultValues: allowanceDefault,
   });
 
-  const onSubmit = (data: Position) => {
+  const onSubmit = (data: Allowance) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -111,9 +111,45 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full name</FormLabel>
+                      <FormLabel>Allowance name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter allowance name" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField control={form.control} name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Allowance Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter allowance amount" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField control={form.control} name="terms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Terms</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter terms" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField control={form.control} name="parameterName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parameter Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter parameter name" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
