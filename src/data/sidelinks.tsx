@@ -151,13 +151,13 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Deduction',
         label: '',
-        href: '/deduction',
+        href: '/salary-components/deduction',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Bonus',
         label: '',
-        href: '/bonus',
+        href: '/salary-components/bonus',
         icon: <IconFileText size={18} />,
       },
       {

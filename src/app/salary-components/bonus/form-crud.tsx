@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Deduction, deductionDefault, deductionSchema } from "@/data/schema/deduction.schema";
+import { Bonus, bonusDefault, bonusSchema } from "@/data/schema/bonus.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import deductionApiRequest from "@/apis/deduction.api";
+import bonusApiRequest from "@/apis/bonus.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 type FormProps = {
@@ -26,23 +26,23 @@ type FormProps = {
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Deduction
+  detail: Bonus
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "deductions",
+  keyList: "bonuses",
 }
 
 export default function FormCRUD(props: FormProps) {
-    const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
+    const { openCRUD, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
   //const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Deduction) => deductionApiRequest.create(body),
+    mutationFn: (body: Bonus) => bonusApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -51,7 +51,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Deduction }) => deductionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: Bonus }) => bonusApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -60,7 +60,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => deductionApiRequest.delete(id),
+    mutationFn: (id: number) => bonusApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
@@ -70,12 +70,12 @@ export default function FormCRUD(props: FormProps) {
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Deduction>({
-    resolver: zodResolver(deductionSchema),
-    defaultValues: deductionDefault,
+  const form = useForm<Bonus>({
+    resolver: zodResolver(bonusSchema),
+    defaultValues: bonusDefault,
   });
 
-  const onSubmit = (data: Deduction) => {
+  const onSubmit = (data: Bonus) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -103,7 +103,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Sample Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -112,9 +112,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Deduction name</FormLabel>
+                      <FormLabel>Bonus name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter deduction name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter bonus name" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -125,19 +125,19 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Parameter name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter parameter Name" {...field} value={field.value ?? ''} disabled={isDisabled} />
+                        <Input placeholder="Enter parameter name" {...field} value={field.value ?? ''} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="amount" // Sửa từ "Amount" thành "amount"
+                <FormField control={form.control} name="amount"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Deduction Amount</FormLabel> 
+                    <FormLabel>Bonus Amount</FormLabel>
                     <FormControl>
                         <Input 
-                        placeholder="Enter deduction amount" 
+                        placeholder="Enter bonus amount" 
                         type="number"
                         {...field} 
                         value={field.value ?? ''}

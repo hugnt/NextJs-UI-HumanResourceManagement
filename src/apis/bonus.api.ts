@@ -3,11 +3,11 @@ import { ApiResponse } from "@/data/type/response.type";
 import http from "@/lib/http";
 
 const bonusApiRequest = {
-    getList: () => http.get<ApiResponse<Bonus[]>>('/bonuses'),
-    getDetail: (id: number) => http.get<ApiResponse<Bonus>>(`/bonuses/${id}`),
-    create: (body: Bonus) => http.post<ApiResponse<boolean>>('/bonuses', body),
-    update: (id: number, body: Bonus) => http.put<ApiResponse<boolean>>(`/bonuses/${id}`, body),
-    delete: (id: number) => http.delete<ApiResponse<Bonus>>(`/bonuses/${id}`)
+    getList: () => http.get<ApiResponse<Bonus[]>>('/bonus'),
+    getDetail: (id: number) => http.get<ApiResponse<Bonus>>(`/bonus/${id}`),
+    create: (body: Bonus) => http.post<ApiResponse<boolean>>('/bonus', body),
+    update: (id: number, body: Bonus) => http.put<ApiResponse<boolean>>(`/bonus/${id}`, body),
+    delete: (id: number) => http.delete<ApiResponse<Bonus>>(`/bonus/${id}`)
 };
 
 export default bonusApiRequest;
