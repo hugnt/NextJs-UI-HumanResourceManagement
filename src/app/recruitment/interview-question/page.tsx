@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import testApiRequest from "@/apis/test.api";
-import FormCRUD from "@/app/test/form-crud";
+import questionApiRequest from "@/apis/question.api";
+import FormCRUD from "@/app/recruitment/interview-question/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Test, testDefault } from "@/data/schema/test.schema";
+import { Question, questionDefault } from "@/data/schema/question.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -15,12 +15,12 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Employee",
-    url: "/Employee"
+    name: "Recruitment",
+    url: ""
   },
   {
-    name: "Test",
-    url: "/Employee/Test"
+    name: "Question",
+    url: "/Recruitment/Question"
   },
 ];
 
@@ -44,38 +44,49 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "tests",
+  keyList: "questions",
 }
 
-export default function SampleList() {
-  const [detail, setDetail] = useState<Test>({});
+export default function QuestionList() {
+  const [detail, setDetail] = useState<Question>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => testApiRequest.getList(),
+    queryFn: () => questionApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Test>[] = [
+  const columnsDef: ColumnDef<Question>[] = [
     {
-      accessorKey: 'name',
+      accessorKey: 'testId',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full name' />
+        <DataTableColumnHeader column={column} title='Full testid' />
       ),
-      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
+      
+      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('testId')}</div>,
+      enableSorting: true,
+      enableHiding: false,
+      
+    },
+    {
+      accessorKey: 'questionText',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Full questiontext' />
+      ),
+      cell: ({ row }) => <div className='w-[400px]'>{row.getValue('questionText')}</div>,
       enableSorting: false,
       enableHiding: false,
     },
     {
-        accessorKey: 'description',
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title='Full description' />
-        ),
-        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('description')}</div>,
-        enableSorting: false,
-        enableHiding: false,
-      },
+      accessorKey: 'point',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Full point' />
+      ),
+      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('point')}</div>,
+      enableSorting: true,
+      enableHiding: false,
+    },
     {
       id: 'actions',
       header: ({ column }) => (
@@ -90,12 +101,12 @@ export default function SampleList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(testDefault);
+    setDetail(questionDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Test>) => {
+  const handleView = async (row: Row<Question>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -103,7 +114,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Test>) => {
+  const handleEdit = (row: Row<Question>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -111,7 +122,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Test>) => {
+  const handleDelete = (row: Row<Question>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -124,7 +135,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Test list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Question list</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

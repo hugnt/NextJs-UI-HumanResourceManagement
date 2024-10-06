@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import webApiRequest from "@/apis/web.api";
-import FormCRUD from "@/app/web/form-crud";
+import testApiRequest from "@/apis/test.api";
+import FormCRUD from "@/app/recruitment/interview-test/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Web, webDefault } from "@/data/schema/web.schema";
+import { Test, testDefault } from "@/data/schema/test.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -15,12 +15,12 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Employee",
-    url: "/Employee"
+    name: "Recruitment",
+    url: ""
   },
   {
-    name: "Web",
-    url: "/Employee/Web"
+    name: "Test",
+    url: "/Recruitment/Test"
   },
 ];
 
@@ -44,35 +44,35 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "webs",
+  keyList: "tests",
 }
 
-export default function SampleList() {
-  const [detail, setDetail] = useState<Web>({});
+export default function TestList() {
+  const [detail, setDetail] = useState<Test>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => webApiRequest.getList(),
+    queryFn: () => testApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Web>[] = [
+  const columnsDef: ColumnDef<Test>[] = [
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Web name' />
+        <DataTableColumnHeader column={column} title='Full name' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
-      enableSorting: false,
+      enableSorting: true,
       enableHiding: false,
     },
     {
-        accessorKey: 'webApi',
+        accessorKey: 'description',
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title='webApi' />
+          <DataTableColumnHeader column={column} title='Full description' />
         ),
-        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('webApi')}</div>,
+        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('description')}</div>,
         enableSorting: false,
         enableHiding: false,
       },
@@ -90,12 +90,12 @@ export default function SampleList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(webDefault);
+    setDetail(testDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Web>) => {
+  const handleView = async (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -103,7 +103,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Web>) => {
+  const handleEdit = (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -111,7 +111,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Web>) => {
+  const handleDelete = (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -124,7 +124,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Web list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Test list</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
