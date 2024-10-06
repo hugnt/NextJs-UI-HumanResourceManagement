@@ -127,13 +127,7 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/salary-advance',
         icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Formula',
-        label: '',
-        href: '/salary-formula',
-        icon: <IconFileText size={18} />,
-      },
+      }
     ],
   },
   {
@@ -145,7 +139,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Formula list',
         label: '',
-        href: '/formula-list',
+        href: '/salary-components/formula',
         icon: <IconFileText size={18} />,
       },
       {
@@ -163,13 +157,13 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Tax Rate',
         label: '',
-        href: '/tax-rate',
+        href: '/salary-components/tax-rate',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Tax Deduction',
         label: '',
-        href: '/tax-deduction',
+        href: '/salary-components/tax-deduction',
         icon: <IconFileText size={18} />,
       }
     ],
@@ -201,7 +195,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Interview questions',
         label: '',
-        href: '/job-list',
+        href: '/recruitment/interview-questions',
         icon: <IconFileText size={18} />,
       },
       {

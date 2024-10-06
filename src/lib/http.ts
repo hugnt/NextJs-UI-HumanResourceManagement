@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import envConfig from "@/config";
-import { assertApiResponse } from "@/lib/utils";
+import { assertApiResponse, handleErrorApi } from "@/lib/utils";
 
 type CustomOptions = RequestInit & {
   baseUrl?: string | undefined;
@@ -32,28 +32,34 @@ const request = async <T>(
     ? `${baseUrl}${url}`
     : `${baseUrl}/${url}`;
 
-  const res = await fetch(fullUrl, {
-    ...options,
-    headers: {
-      ...baseHeaders,
-      ...options?.headers,
-    } as any,
-    body,
-    method,
-  });
 
-  const payload: Response = await res.json();
 
   try {
+    const res = await fetch(fullUrl, {
+      ...options,
+      headers: {
+        ...baseHeaders,
+        ...options?.headers,
+      } as any,
+      body,
+      method,
+      credentials: 'include'
+    });
+  
+    const payload: Response = await res.json();
+    
     const resData = assertApiResponse<T>(payload);
     // console.log("resData",resData)
     return resData;
   } catch (error) {
+    console.log(error)
+    if(error instanceof Array) handleErrorApi({error:error});
+    else if(error instanceof Error) handleErrorApi({error:error.message});
+    else handleErrorApi({error:"Lỗi không xác định"});
     console.error(error)
     throw error;
   }
-  
-  
+
 };
 
 const http = {
