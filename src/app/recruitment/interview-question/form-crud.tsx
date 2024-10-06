@@ -111,9 +111,9 @@ export default function FormCRUD(props: FormProps) {
               <FormField control={form.control} name="testId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>testId</FormLabel>
+                      <FormLabel>Test</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter testid (name)" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter testid" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,9 +122,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="questionText"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>questiontext</FormLabel>
+                      <FormLabel>Question</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter questiontext" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter question" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
