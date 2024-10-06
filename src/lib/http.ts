@@ -31,7 +31,7 @@ const request = async <T>(
   const fullUrl = url.startsWith("/")
     ? `${baseUrl}${url}`
     : `${baseUrl}/${url}`;
-  
+
   try {
     const res = await fetch(fullUrl, {
       ...options,
