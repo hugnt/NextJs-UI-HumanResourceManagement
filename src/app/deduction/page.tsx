@@ -48,7 +48,7 @@ const QUERY_KEY = {
 }
 
 export default function SampleList() {
-  const [detail, setDetail] = useState<Deduction>({} as Deduction);
+  const [detail, setDetail] = useState<Deduction>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 

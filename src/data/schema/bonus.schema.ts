@@ -4,7 +4,7 @@ export const bonusSchema = z.object({
   id: z.coerce.number().optional(),
   parameterName: z.string().optional(),
   amount: z.coerce.number().optional(),
-  name: z.string().min(0).max(255),
+  name: z.string().min(0).max(255).optional(),
 });
 
 export type Bonus = z.infer<typeof bonusSchema>;
