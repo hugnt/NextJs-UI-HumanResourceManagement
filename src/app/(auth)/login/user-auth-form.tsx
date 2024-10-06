@@ -1,8 +1,6 @@
 "use client";
-import { HTMLAttributes, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { HTMLAttributes } from 'react'
+
 import {
   Form,
   FormControl,
@@ -14,44 +12,44 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/custom/button'
 import { PasswordInput } from '@/components/custom/password-input'
-import { cn } from '@/lib/utils'
+import { cn, handleErrorApi } from '@/lib/utils'
 import Link from 'next/link'
+import { useForm } from "react-hook-form";
+import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import authApiRequest from '@/apis/auth.api';
+import { useRouter } from 'next/navigation'
+import Loader from '@/components/loader';
+interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
-interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 
-const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .min(1, {
-      message: 'Please enter your password',
-    })
-    .min(7, {
-      message: 'Password must be at least 7 characters long',
-    }),
-})
-
+const KEY = {
+  KEY_LOGIN: "login"
+}
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const form = useForm<Auth>({
+    resolver: zodResolver(authSchema),
+    defaultValues: authDefault,
+  });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
+  const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
+    mutationKey : [KEY.KEY_LOGIN],
+    mutationFn: (body: Auth) => {
+      return authApiRequest.login(body)
     },
+    onSuccess: (data) => {
+      if (data.isSuccess) {
+        router.push('/');
+      }
+      handleErrorApi({ error: data.message })
+    }
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+  function onSubmit(data: Auth) {
     console.log(data)
-
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    mutateLogin(data)
   }
 
   return (
@@ -91,7 +89,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' loading={isLoading}>
+            <Button className='mt-2' loading={isPendingLogin}>
               Login
             </Button>
           </div>

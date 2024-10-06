@@ -4,6 +4,10 @@ import { z } from "zod";
 export const positionSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(0).max(255).optional(),
+  totalPositionsNeeded: z.coerce.number().optional(),
+  currentPositionsFilled: z.coerce.number().optional(),
+  departmentName: z.string().min(0).max(255).optional(),
+  departmentId: z.coerce.number().optional(),
 });
 
 export type Position = z.infer<typeof positionSchema>;

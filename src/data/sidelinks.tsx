@@ -12,12 +12,13 @@ import {
   IconBusinessplan,
   IconBuilding
 } from '@tabler/icons-react'
+import { title } from 'process'
 
 export interface NavLink {
   title: string
   label?: string
   href: string
-  icon: JSX.Element
+  icon: JSX.Element,
 }
 
 export interface SideLink extends NavLink {
@@ -93,7 +94,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Work shift',
         label: '',
-        href: '/work-shift',
+        href: '/time-keeping/work-shift',
         icon: <IconFileText size={18} />,
       },
       {
@@ -215,13 +216,13 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Department List',
         label: '',
-        href: '/department-list',
+        href: '/company/department',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Position List',
         label: '',
-        href: '/positions',
+        href: '/company/position',
         icon: <IconFileText size={18} />,
       },
     ],
