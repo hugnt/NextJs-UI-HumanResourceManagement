@@ -16,7 +16,7 @@ import { useState } from "react";
 const pathList: Array<PathItem> = [
   {
     name: "Salary components",
-    url: "/salary-components"
+    url: ""
   },
   {
     name: "Bonus",
