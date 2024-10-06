@@ -23,18 +23,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { useState } from 'react';
+import {useState } from 'react';
 import DataTableToolbar, { DataFilter } from '@/components/data-table/data-table-toolbar';
 import DataTablePagination from '@/components/data-table/data-table-pagination';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data?: TData[],
+  data?: TData[] | null,
   filters: Array<DataFilter>,
   searchField?: string,
   children?: React.ReactNode
 }
 
-export default function DataTable<TData, TValue>({ columns, data = [], filters, searchField, children }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({ columns, data = null, filters, searchField, children }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>({})
@@ -43,8 +43,9 @@ export default function DataTable<TData, TValue>({ columns, data = [], filters, 
   )
   const [sorting, setSorting] = useState<SortingState>([])
 
+
   const table = useReactTable({
-    data,
+    data:data??[],
     columns,
     state: {
       sorting,
@@ -110,6 +111,7 @@ export default function DataTable<TData, TValue>({ columns, data = [], filters, 
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className='h-24 text-center'>
+                {!data?
                   <div className='flex items-center justify-center'>
                     <div className="lds-ring w-[25px] h-[25px] me-2">
                       <div className="w-[25px] h-[25px] border-[4px]"></div>
@@ -118,7 +120,9 @@ export default function DataTable<TData, TValue>({ columns, data = [], filters, 
                       <div className="w-[25px] h-[25px] border-[4px]"></div>
                     </div>
                     <div>Loading data...</div>
-                  </div>
+                  </div>:
+                  "No results"
+                }
                 </TableCell>
               </TableRow>
             )}

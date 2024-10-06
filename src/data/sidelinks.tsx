@@ -12,12 +12,13 @@ import {
   IconBusinessplan,
   IconBuilding
 } from '@tabler/icons-react'
+import { title } from 'process'
 
 export interface NavLink {
   title: string
   label?: string
   href: string
-  icon: JSX.Element
+  icon: JSX.Element,
 }
 
 export interface SideLink extends NavLink {
@@ -61,19 +62,25 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Contract salary',
         label: '',
-        href: '/contract-salary',
+        href: '/contract/contract-salary',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Allowance',
         label: '',
-        href: '/contract-allowance',
+        href: '/contract/allowance',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Insurance',
         label: '',
-        href: '/contract-insurance',
+        href: '/contract/insurance',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Contract Type',
+        label: '',
+        href: '/contract/contract-type',
         icon: <IconFileText size={18} />,
       },
     ],
@@ -93,7 +100,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Work shift',
         label: '',
-        href: '/work-shift',
+        href: '/time-keeping/work-shift',
         icon: <IconFileText size={18} />,
       },
       {
@@ -127,13 +134,7 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/salary-advance',
         icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Formula',
-        label: '',
-        href: '/salary-formula',
-        icon: <IconFileText size={18} />,
-      },
+      }
     ],
   },
   {
@@ -145,31 +146,31 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Formula list',
         label: '',
-        href: '/formula-list',
+        href: '/salary-components/formula',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Deduction',
         label: '',
-        href: '/deduction',
+        href: '/salary-components/deduction',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Bonus',
         label: '',
-        href: '/bonus',
+        href: '/salary-components/bonus',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Tax Rate',
         label: '',
-        href: '/tax-rate',
+        href: '/salary-components/tax-rate',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Tax Deduction',
         label: '',
-        href: '/tax-deduction',
+        href: '/salary-components/tax-deduction',
         icon: <IconFileText size={18} />,
       }
     ],
@@ -221,13 +222,13 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Department List',
         label: '',
-        href: '/department-list',
+        href: '/company/department',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Position List',
         label: '',
-        href: '/positions',
+        href: '/company/position',
         icon: <IconFileText size={18} />,
       },
     ],
