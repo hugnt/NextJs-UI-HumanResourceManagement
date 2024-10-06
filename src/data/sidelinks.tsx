@@ -195,7 +195,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Interview questions',
         label: '',
-        href: '/job-list',
+        href: '/recruitment/interview-questions',
         icon: <IconFileText size={18} />,
       },
       {
