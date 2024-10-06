@@ -61,19 +61,25 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Contract salary',
         label: '',
-        href: '/contract-salary',
+        href: '/contract/contract-salary',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Allowance',
         label: '',
-        href: '/contract-allowance',
+        href: '/contract/allowance',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Insurance',
         label: '',
-        href: '/contract-insurance',
+        href: '/contract/insurance',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Contract Type',
+        label: '',
+        href: '/contract/contract-type',
         icon: <IconFileText size={18} />,
       },
     ],

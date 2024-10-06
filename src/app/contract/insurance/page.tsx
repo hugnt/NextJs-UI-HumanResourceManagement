@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import contractTypeApiRequest from "@/apis/contractType.api";
-import FormCRUD from "@/app/contractType/form-crud";
+import insuranceApiRequest from "@/apis/insurance.api";
+import FormCRUD from "@/app/contract/insurance/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { ContractType, contractTypeDefault } from "@/data/schema/contractType.schema";
+import { Insurance, insuranceDefault } from "@/data/schema/insurance.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -15,12 +15,12 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Employee",
-    url: "/Employee"
+    name: "Contract",
+    url: ""
   },
   {
-    name: "ContractType",
-    url: "/Employee/ContractType"
+    name: "Insurance",
+    url: "/Contract/Insurance"
   },
 ];
 
@@ -44,28 +44,55 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "contractTypes",
+  keyList: "insurances",
 }
 
-export default function SampleList() {
-  const [detail, setDetail] = useState<ContractType>({});
+export default function InsuranceList() {
+  const [detail, setDetail] = useState<Insurance>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => contractTypeApiRequest.getList(),
+    queryFn: () => insuranceApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<ContractType>[] = [
+  const columnsDef: ColumnDef<Insurance>[] = [
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Type name' />
+        <DataTableColumnHeader column={column} title='Insurance name' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
       enableSorting: false,
       enableHiding: false,
+    },
+    {
+        accessorKey: 'percentEmployee',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Percent of Employee' />
+        ),
+        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('percentEmployee')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'percentCompany',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Percent of Company' />
+        ),
+        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('percentCompany')}</div>,
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        accessorKey: 'parameterName',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Parameter Name' />
+        ),
+        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('parameterName')}</div>,
+        enableSorting: false,
+        enableHiding: false,
     },
     {
       id: 'actions',
@@ -81,12 +108,12 @@ export default function SampleList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(contractTypeDefault);
+    setDetail(insuranceDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<ContractType>) => {
+  const handleView = async (row: Row<Insurance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -94,7 +121,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<ContractType>) => {
+  const handleEdit = (row: Row<Insurance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -102,7 +129,7 @@ export default function SampleList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<ContractType>) => {
+  const handleDelete = (row: Row<Insurance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -115,7 +142,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Contract Type List</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Insurance List</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

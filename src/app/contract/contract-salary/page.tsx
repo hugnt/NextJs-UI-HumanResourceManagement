@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import contractSalaryApiRequest from "@/apis/contractSalary.api";
-import FormCRUD from "@/app/contractSalary/form-crud";
+import FormCRUD from "@/app/contract/contract-salary/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
@@ -15,12 +15,12 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Employee",
-    url: "/Employee"
+    name: "Contract",
+    url: ""
   },
   {
-    name: "ContractSalary",
-    url: "/Employee/ContractSalary"
+    name: "Contract Salary",
+    url: "/Contract/ContractSalary"
   },
 ];
 
@@ -47,7 +47,7 @@ const QUERY_KEY = {
   keyList: "contractSalarys",
 }
 
-export default function SampleList() {
+export default function ContractSalaryList() {
   const [detail, setDetail] = useState<ContractSalary>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
