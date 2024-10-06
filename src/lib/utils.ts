@@ -48,15 +48,16 @@ export const handleSuccessApi = ({title,message,duration}:{
     })
 }
 export function assertApiResponse<T>(data: any): T {
-  //console.log("http data:", data)
+  console.log("http data:", data)
   if (typeof data.isSuccess !== 'boolean' || 
       (Array.isArray(data.message) === false && data.message !== null)) {
         throw new Error('Invalid API response structure');
   }
   else if(data.isSuccess == false){
-      handleErrorApi({error:data.message});
-      throw new Error('Some errors appear on server');
-    }
+      //handleErrorApi({error:data.message});
+      //console.log(data.message)
+      throw new Array(data.message);
+  }
   return data as T; 
 }
 

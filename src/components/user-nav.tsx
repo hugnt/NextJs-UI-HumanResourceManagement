@@ -10,8 +10,21 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
+import { useMutation } from '@tanstack/react-query'
+import authApiRequest from '@/apis/auth.api'
+import { useRouter } from 'next/navigation'
+const KEY = {
+  KEY_LOGOUT: "log-out"
+}
 export function UserNav() {
+  const router = useRouter();
+  const logout = useMutation({
+    mutationKey: [KEY.KEY_LOGOUT],
+    mutationFn: () => authApiRequest.logout(),
+    onSuccess: () => {
+      router.push('/login');
+    }
+  })
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -48,7 +61,7 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => logout.mutate()} >
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
