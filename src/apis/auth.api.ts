@@ -4,7 +4,8 @@ import http from "@/lib/http";
 
 const authURL: string = "auth";
 const authApiRequest = {
-    login: (body: Auth) => http.post<ApiResponse<string>>(`/${authURL}/login`, body),
+    adminLogin: (body: Auth) => http.post<ApiResponse<string>>(`/${authURL}/admin-login`, body),
+    employeeLogin: (body: Auth) => http.post<ApiResponse<string>>(`/${authURL}/employee-login`, body),
     logout: () => http.delete<ApiResponse<boolean>>(`/${authURL}/log-out`)
 }
 export default authApiRequest;
