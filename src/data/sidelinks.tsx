@@ -120,19 +120,19 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Salary Summary',
         label: '',
-        href: '/salary-summary',
+        href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary Calculation',
         label: '',
-        href: '/salary-calculation',
+        href: '/payroll/salary-calculation',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary advance',
         label: '',
-        href: '/salary-advance',
+        href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
       }
     ],
