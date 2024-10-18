@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import questionApiRequest from "@/apis/question.api";
-import FormCRUD from "@/app/recruitment/interview-question/form-crud";
+import jobPostingApiRequest from "@/apis/jobPosting.api";
+import FormCRUD from "@/app/recruitment/job-posting/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Question, questionDefault } from "@/data/schema/question.schema";
+import { JobPosting, jobPostingDefault } from "@/data/schema/jobPosting,schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -19,8 +19,8 @@ const pathList: Array<PathItem> = [
     url: ""
   },
   {
-    name: "Question",
-    url: "/Recruitment/Question"
+    name: "Job Posting",
+    url: "/recruitment/job-posting"
   },
 ];
 
@@ -44,47 +44,99 @@ const dataFilter: Array<DataFilter> = [
 
 //react query key
 const QUERY_KEY = {
-  keyList: "questions",
+  keyList: "jobPostings",
 }
 
-export default function QuestionList() {
-  const [detail, setDetail] = useState<Question>({});
+export default function SampleList() {
+  const [detail, setDetail] = useState<JobPosting>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => questionApiRequest.getList(),
+    queryFn: () => jobPostingApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Question>[] = [
+  const columnsDef: ColumnDef<JobPosting>[] = [
     {
-      accessorKey: 'testName',
+      accessorKey: 'positionName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full Name' />
+        <DataTableColumnHeader column={column} title='Tên vị trí' />
       ),
-      
-      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('testName')}</div>,
-      enableSorting: true,
-      enableHiding: false,
-      
-    },
-    {
-      accessorKey: 'questionText',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full questiontext' />
-      ),
-      cell: ({ row }) => <div className='w-[400px]'>{row.getValue('questionText')}</div>,
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('positionName')}</div>,
       enableSorting: false,
       enableHiding: false,
     },
     {
-      accessorKey: 'point',
+      accessorKey: 'description',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full point' />
+        <DataTableColumnHeader column={column} title='Mô tả' />
       ),
-      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('point')}</div>,
-      enableSorting: true,
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('description')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'location',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Địa điểm' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('location')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'salaryRangeMin',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Lương tối thiểu' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('salaryRangeMin')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'salaryRangeMax',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Lương tối đa' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('salaryRangeMax')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'postingDate',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Ngày đăng' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('postingDate')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'expirationDate',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Ngày hết hạn' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('expirationDate')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'experienceRequired',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Kinh nghiệm yêu cầu' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('experienceRequired')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'employeeName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Người đăng' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('employeeName')}</div>,
+      enableSorting: false,
       enableHiding: false,
     },
     {
@@ -101,12 +153,12 @@ export default function QuestionList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(questionDefault);
+    setDetail(jobPostingDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Question>) => {
+  const handleView = async (row: Row<JobPosting>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -114,7 +166,7 @@ export default function QuestionList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Question>) => {
+  const handleEdit = (row: Row<JobPosting>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -122,7 +174,7 @@ export default function QuestionList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Question>) => {
+  const handleDelete = (row: Row<JobPosting>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -135,7 +187,7 @@ export default function QuestionList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Question list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>JobPosting list</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
