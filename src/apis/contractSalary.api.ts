@@ -3,10 +3,10 @@ import { ApiResponse } from "@/data/type/response.type";
 import http from "@/lib/http";
 
 const contractSalaryApiRequest = {
-    getList: () => http.get<ApiResponse<ContractSalary[]>>('/contractSalarys'),
-    getDetail: (id: number) => http.get<ApiResponse<ContractSalary>>(`/contractSalarys/${id}`),
-    create: (body: ContractSalary) => http.post<ApiResponse<boolean>>('/contractSalarys', body),
-    update: (id: number, body: ContractSalary) => http.put<ApiResponse<boolean>>(`/contractSalarys/${id}`, body),
-    delete: (id: number) => http.delete<ApiResponse<ContractSalary>>(`/contractSalarys/${id}`)
+    getList: () => http.get<ApiResponse<ContractSalary[]>>('/contractsalarys'),
+    getDetail: (id: number) => http.get<ApiResponse<ContractSalary>>(`/contractsalarys/${id}`),
+    create: (body: ContractSalary) => http.post<ApiResponse<boolean>>('/contractsalarys', body),
+    update: (id: number, body: ContractSalary) => http.put<ApiResponse<boolean>>(`/contractsalarys/${id}`, body),
+    delete: (id: number) => http.delete<ApiResponse<ContractSalary>>(`/contractsalarys/${id}`)
 }
 export default contractSalaryApiRequest;
