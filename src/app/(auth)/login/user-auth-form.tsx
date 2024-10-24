@@ -20,7 +20,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
 import { useRouter } from 'next/navigation'
-import Loader from '@/components/loader';
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
 
@@ -37,7 +36,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
     mutationKey : [KEY.KEY_LOGIN],
     mutationFn: (body: Auth) => {
-      return authApiRequest.login(body)
+      return authApiRequest.adminLogin(body)
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
