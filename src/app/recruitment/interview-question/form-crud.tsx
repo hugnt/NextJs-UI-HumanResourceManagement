@@ -17,10 +17,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import questionApiRequest from "@/apis/question.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
+import testApiRequest from "@/apis/test.api";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -32,6 +34,7 @@ type FormProps = {
 //react query key
 const QUERY_KEY = {
   keyList: "questions",
+  keysub: "tests"
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -65,6 +68,10 @@ export default function FormCRUD(props: FormProps) {
       handleSuccessApi({ message: "Deleted Successfully!" });
       setOpenCRUD(false);
     }
+  });
+  const listDataTest = useQuery({
+    queryKey: [QUERY_KEY.keysub],
+    queryFn: () => testApiRequest.getList()
   });
   // #endregion
 
@@ -108,13 +115,26 @@ export default function FormCRUD(props: FormProps) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
               <div className="p-2 text-sm space-y-3">
-              <FormField control={form.control} name="testId"
+              <FormField
+                  control={form.control}
+                  name="testId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Test</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter testid" {...field} disabled={isDisabled} />
-                      </FormControl>
+                      <FormLabel>Chọn bộ test</FormLabel>
+                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                        <FormControl >
+                          <SelectTrigger >
+                            <SelectValue  placeholder="Chọn bộ test" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            listDataTest.data?.metadata?.map((item, index) => {
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                            })
+                          }
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

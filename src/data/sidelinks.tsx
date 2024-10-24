@@ -56,7 +56,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Contract List',
         label: '',
-        href: '/contract-list',
+        href: '/contract/contract-list',
         icon: <IconFileText size={18} />,
       },
       {
@@ -92,9 +92,21 @@ export const sidelinks: SideLink[] = [
     icon: <IconCalendarTime size={18} />,
     sub: [
       {
+        title: 'Register Shift',
+        label: '',
+        href: '/time-keeping/register-shift',
+        icon: <IconFileText size={18} />,
+      },
+      {
         title: 'Timekeeping history',
         label: '',
         href: '/contract-list',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Partime Plan',
+        label: '',
+        href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
       },
       {

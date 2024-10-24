@@ -20,7 +20,7 @@ const pathList: Array<PathItem> = [
   },
   {
     name: "Web",
-    url: "/Recruitment/Web"
+    url: "/recruitment/web"
   },
 ];
 
