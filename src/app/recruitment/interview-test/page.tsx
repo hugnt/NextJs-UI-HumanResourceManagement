@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import formulaApiRequest from "@/apis/formula.api";
-import FormCRUD from "@/app/salary-components/formula/form-crud";
+import testApiRequest from "@/apis/test.api";
+import FormCRUD from "@/app/recruitment/interview-test/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Formula, formulaDefault } from "@/data/schema/formula.schema";
+import { Test, testDefault } from "@/data/schema/test.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -15,73 +15,67 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Salary Components",
-    url: "/salary-components"
+    name: "Recruitment",
+    url: ""
   },
   {
-    name: "Formula",
-    url: "/salary-components/formula"
+    name: "Test",
+    url: "/Recruitment/Test"
   },
 ];
-
 
 //Filter by
 const dataFilter: Array<DataFilter> = [
   {
-    columnName: 'parameterName',
-    title: 'Parameter Name',
+    columnName: 'name',
+    title: 'Name',
     options: [
       {
-        label: 'Formula',
-        value: 'FORMULA_'
+        label: 'Start with W',
+        value: 'W'
       },
+      {
+        label: 'Start with H',
+        value: 'H'
+      }
     ],
   },
 ];
 
 //react query key
 const QUERY_KEY = {
-  keyList: "formulas",
+  keyList: "tests",
 }
 
-export default function FormulaList() {
-  const [detail, setDetail] = useState<Formula>({});
+export default function TestList() {
+  const [detail, setDetail] = useState<Test>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => formulaApiRequest.getList(),
+    queryFn: () => testApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Formula>[] = [
+  const columnsDef: ColumnDef<Test>[] = [
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Formula name' />
+        <DataTableColumnHeader column={column} title='Full name' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'fomulaDetail',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Formula Detail' />
-      ),
-      cell: ({ row }) => <div className='font-semibold italic'>{row.getValue('fomulaDetail')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'parameterName',
-      header: ({ column }) => (
-        <DataTableColumnHeader className="ps-5" column={column} title='Parameter Name' />
-      ),
-      cell: ({ row }) => <div className='ps-5'>{row.getValue('parameterName')}</div>,
       enableSorting: true,
-      enableHiding: true,
+      enableHiding: false,
     },
+    {
+        accessorKey: 'description',
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title='Full description' />
+        ),
+        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('description')}</div>,
+        enableSorting: false,
+        enableHiding: false,
+      },
     {
       id: 'actions',
       header: ({ column }) => (
@@ -96,12 +90,12 @@ export default function FormulaList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(formulaDefault);
+    setDetail(testDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Formula>) => {
+  const handleView = async (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -109,7 +103,7 @@ export default function FormulaList() {
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Formula>) => {
+  const handleEdit = (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -117,7 +111,7 @@ export default function FormulaList() {
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Formula>) => {
+  const handleDelete = (row: Row<Test>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
@@ -130,7 +124,7 @@ export default function FormulaList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Formula list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Test list</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

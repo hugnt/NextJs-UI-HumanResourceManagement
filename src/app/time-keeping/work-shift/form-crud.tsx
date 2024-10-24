@@ -96,6 +96,7 @@ export default function FormCRUD(props: Props) {
         //Convert data
         data.timeStart = data.timeStart!.length == 5 ? data.timeStart + ":00" : data.timeStart
         data.timeEnd = data.timeEnd!.length == 5 ? data.timeEnd + ":00" : data.timeEnd
+        console.log(data.timeStart, data.timeEnd)
         if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
         else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
         else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);

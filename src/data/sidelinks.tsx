@@ -92,9 +92,21 @@ export const sidelinks: SideLink[] = [
     icon: <IconCalendarTime size={18} />,
     sub: [
       {
+        title: 'Register Shift',
+        label: '',
+        href: '/time-keeping/register-shift',
+        icon: <IconFileText size={18} />,
+      },
+      {
         title: 'Timekeeping history',
         label: '',
         href: '/contract-list',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Partime Plan',
+        label: '',
+        href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
       },
       {
@@ -120,19 +132,19 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Salary Summary',
         label: '',
-        href: '/salary-summary',
+        href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary Calculation',
         label: '',
-        href: '/salary-calculation',
+        href: '/payroll/salary-calculation',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary advance',
         label: '',
-        href: '/salary-advance',
+        href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
       }
     ],
@@ -152,13 +164,13 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Deduction',
         label: '',
-        href: '/deduction',
+        href: '/salary-components/deduction',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Bonus',
         label: '',
-        href: '/bonus',
+        href: '/salary-components/bonus',
         icon: <IconFileText size={18} />,
       },
       {
@@ -196,19 +208,19 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Online recruiment platform',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/web',
         icon: <IconFileText size={18} />,
       },
       {
-        title: 'Interview questions',
+        title: 'Interview Test',
         label: '',
-        href: '/recruitment/interview-questions',
+        href: '/recruitment/interview-test',
         icon: <IconFileText size={18} />,
       },
       {
-        title: 'Job List',
+        title: 'Interview Question',
         label: '',
-        href: '/job-list',
+        href: '/recruitment/interview-question',
         icon: <IconFileText size={18} />,
       },
     ],
