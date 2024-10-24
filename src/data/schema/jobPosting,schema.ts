@@ -14,8 +14,7 @@ export const jobPostingSchema = z.object({
     experienceRequired: z.string().max(255).optional(),
     employeeName : z.string().max(255).optional(),
     employeeId: z.coerce.number().optional()
-});
-
+});;
 export type JobPosting = z.infer<typeof jobPostingSchema>;
 export const jobPostingDefault: JobPosting = {
     id: 0,
@@ -25,7 +24,7 @@ export const jobPostingDefault: JobPosting = {
     location: "",
     salaryRangeMin: 0,
     salaryRangeMax: 0,
-    postingDate: new Date(),  
+    postingDate: new Date(),
     expirationDate: new Date(),  
     experienceRequired: "",
     employeeName : "",

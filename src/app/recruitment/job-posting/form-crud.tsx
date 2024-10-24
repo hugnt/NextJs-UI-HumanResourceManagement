@@ -23,6 +23,7 @@ import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import positionApiRequest from "@/apis/position.api";
+import employeeApiRequest from "@/apis/employee.api";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -72,8 +73,12 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const listDataPosition = useQuery({
-    queryKey: [QUERY_KEY.keySub],
+    queryKey: [QUERY_KEY.keySub2],
     queryFn: () => positionApiRequest.getList()
+  });
+  const listDataEmployee = useQuery({
+    queryKey: [QUERY_KEY.keySub],
+    queryFn: () => employeeApiRequest.getList()
   });
   // #endregion
 
@@ -87,8 +92,6 @@ export default function FormCRUD(props: FormProps) {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
-
-
   }
 
   const handleCloseForm = (e: any) => {
@@ -237,7 +240,7 @@ export default function FormCRUD(props: FormProps) {
                     </FormItem>
                   )}
                 />
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="employeeId"
                   render={({ field }) => (
@@ -249,8 +252,8 @@ export default function FormCRUD(props: FormProps) {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-                {/* <FormField
+                /> */}
+                <FormField
                   control={form.control}
                   name="employeeId"
                   render={({ field }) => (
@@ -264,7 +267,7 @@ export default function FormCRUD(props: FormProps) {
                         </FormControl>
                         <SelectContent>
                           {
-                            listDataDepartment.data?.metadata?.map((item, index) => {
+                            listDataEmployee.data?.metadata?.map((item, index) => {
                               return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
                             })
                           }
@@ -273,7 +276,7 @@ export default function FormCRUD(props: FormProps) {
                       <FormMessage />
                     </FormItem>
                   )}
-                /> */}
+                />
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                 <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
