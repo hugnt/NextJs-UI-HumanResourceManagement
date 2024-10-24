@@ -59,12 +59,12 @@ export default function QuestionList() {
 
   const columnsDef: ColumnDef<Question>[] = [
     {
-      accessorKey: 'testId',
+      accessorKey: 'testName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full testid' />
+        <DataTableColumnHeader column={column} title='Full Name' />
       ),
       
-      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('testId')}</div>,
+      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('testName')}</div>,
       enableSorting: true,
       enableHiding: false,
       

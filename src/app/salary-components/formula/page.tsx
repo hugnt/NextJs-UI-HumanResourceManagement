@@ -28,9 +28,14 @@ const pathList: Array<PathItem> = [
 //Filter by
 const dataFilter: Array<DataFilter> = [
   {
-    columnName: '',
-    title: '',
-    options: [],
+    columnName: 'parameterName',
+    title: 'Parameter Name',
+    options: [
+      {
+        label: 'Formula',
+        value: 'FORMULA_'
+      },
+    ],
   },
 ];
 
@@ -39,7 +44,7 @@ const QUERY_KEY = {
   keyList: "formulas",
 }
 
-export default function SampleList() {
+export default function FormulaList() {
   const [detail, setDetail] = useState<Formula>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
@@ -69,12 +74,12 @@ export default function SampleList() {
       enableHiding: false,
     },
     {
-      accessorKey: 'note',
+      accessorKey: 'parameterName',
       header: ({ column }) => (
-        <DataTableColumnHeader className="ps-5" column={column} title='Terms' />
+        <DataTableColumnHeader className="ps-5" column={column} title='Parameter Name' />
       ),
-      cell: ({ row }) => <div className='ps-5'>{row.getValue('note')}</div>,
-      enableSorting: false,
+      cell: ({ row }) => <div className='ps-5'>{row.getValue('parameterName')}</div>,
+      enableSorting: true,
       enableHiding: true,
     },
     {

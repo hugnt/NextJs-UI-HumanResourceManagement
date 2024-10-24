@@ -5,5 +5,5 @@ export enum CRUD_MODE {
     ADD = 2,
     EDIT = 3,
     DELETE = 4,
-    
+    POSTING = 5
 }
