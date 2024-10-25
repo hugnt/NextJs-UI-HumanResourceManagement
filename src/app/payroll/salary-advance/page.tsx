@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import webApiRequest from "@/apis/web.api";
-import FormCRUD from "@/app/recruitment/web/form-crud";
+import advanceApiRequest from "@/apis/advance.api";
+import FormCRUD from "@/app/payroll/salary-advance/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Web, webDefault } from "@/data/schema/web.schema";
+import { Advance, advanceDefault } from "@/data/schema/advance.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -15,67 +15,83 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Recruitment",
+    name: "Salary components",
     url: ""
   },
   {
-    name: "Web",
-    url: "/recruitment/web"
+    name: "Advance",
+    url: "/salary-components/advance"
   },
 ];
-
+const currentMonth:number = new Date().getMonth() + 1;
+const currenYear:number = new Date().getFullYear();
 //Filter by
 const dataFilter: Array<DataFilter> = [
   {
-    columnName: 'name',
-    title: 'Name',
-    options: [
-      {
-        label: 'Start with W',
-        value: 'W'
-      },
-      {
-        label: 'Start with H',
-        value: 'H'
-      }
-    ],
+    columnName: 'payPeriod',
+    title: 'Kì Lương',
+    options: Array.from({ length: currentMonth }, (v, i) => {
+      const month = (currentMonth - i).toString().padStart(2, '0');
+      return {
+        label:`Tháng ${month}/${currenYear}`,
+        value:`${month}/${currenYear}`
+      };
+  }),
   },
 ];
 
 //react query key
 const QUERY_KEY = {
-  keyList: "webs",
+  keyList: "advances",
 }
 
-export default function WebList() {
-  const [detail, setDetail] = useState<Web>({});
+export default function AdvanceList() {
+  const [detail, setDetail] = useState<Advance>(advanceDefault);
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
-    queryFn: () => webApiRequest.getList(),
+    queryFn: () => advanceApiRequest.getList(),
   });
 
-  const columnsDef: ColumnDef<Web>[] = [
+  const columnsDef: ColumnDef<Advance>[] = [
     {
-      accessorKey: 'name',
+      accessorKey: 'employeeName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Web name' />
+        <DataTableColumnHeader column={column} title='Employee Name' />
       ),
-      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
-      enableSorting: true,
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('employeeName')}</div>,
+      enableSorting: false,
       enableHiding: false,
     },
     {
-        accessorKey: 'webApi',
+        accessorKey: 'payPeriod',
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title='webApi' />
+            <DataTableColumnHeader column={column} title='Period' />
         ),
-        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('webApi')}</div>,
+        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('payPeriod')}</div>,
         enableSorting: false,
         enableHiding: false,
-      },
+    },
+    {
+        accessorKey: 'amount',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title='Amount' />
+        ),
+        cell: ({ row }) => <div className='w-[200px]'>{row.getValue('amount')}</div>,
+        enableSorting: true,
+        enableHiding: false,
+    },
+    {
+      accessorKey: 'statusName',
+      header: ({ column }) => (
+          <DataTableColumnHeader column={column} title='Status' />
+      ),
+      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('statusName')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+  },
     {
       id: 'actions',
       header: ({ column }) => (
@@ -90,31 +106,31 @@ export default function WebList() {
 
   //ACTION HANDLER
   const handleAddNew = () => {
-    setDetail(webDefault);
+    setDetail(advanceDefault);
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
 
-  const handleView = async (row: Row<Web>) => {
+  const handleView = async (row: Row<Advance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.VIEW);
-    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? advanceDefault;
     setDetail(selectedData);
     setOpenCRUD(true);
   };
 
-  const handleEdit = (row: Row<Web>) => {
+  const handleEdit = (row: Row<Advance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
-    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? advanceDefault;
     setDetail(selectedData);
     setOpenCRUD(true);
   };
 
-  const handleDelete = (row: Row<Web>) => {
+  const handleDelete = (row: Row<Advance>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
-    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? advanceDefault;
     setDetail(selectedData);
     setOpenCRUD(true);
   };
@@ -124,13 +140,13 @@ export default function WebList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Web list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Advance list</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
 
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
+        <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="employeeName">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
             <IconPlus className='mr-2 h-4 w-4' />Add new
           </Button>

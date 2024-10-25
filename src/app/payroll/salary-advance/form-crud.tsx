@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Question, questionDefault, questionSchema } from "@/data/schema/question.schema";
+import { Advance, advanceDefault, advanceSchema } from "@/data/schema/advance.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,33 +18,38 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import questionApiRequest from "@/apis/question.api";
+import advanceApiRequest from "@/apis/advance.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
-import testApiRequest from "@/apis/test.api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import employeeApiRequest from "@/apis/employee.api";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Question
+  detail: Advance
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "questions",
-  keysub: "tests"
+  keyList: "advancees",
+  keySub: "employees"
 }
 
 export default function FormCRUD(props: FormProps) {
-  const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
+  const { openCRUD, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = advanceDefault } = props;
+  //const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  // const [selectedPeriod, setSelectedPeriod] = useState<string>('10/2024');
+  const currentMonth:number = new Date().getMonth() + 1;
+  const currenYear:number = new Date().getFullYear();
 
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Question) => questionApiRequest.create(body),
+    mutationFn: (body: Advance) => advanceApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -53,7 +58,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Question }) => questionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: Advance }) => advanceApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -62,26 +67,27 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => questionApiRequest.delete(id),
+    mutationFn: (id: number) => advanceApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
       setOpenCRUD(false);
     }
   });
-  const listDataTest = useQuery({
-    queryKey: [QUERY_KEY.keysub],
-    queryFn: () => testApiRequest.getList()
+
+  const listDataEmployee = useQuery({
+    queryKey: [QUERY_KEY.keySub],
+    queryFn: () => employeeApiRequest.getList()
   });
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Question>({
-    resolver: zodResolver(questionSchema),
-    defaultValues: questionDefault,
+  const form = useForm<Advance>({
+    resolver: zodResolver(advanceSchema),
+    defaultValues: advanceDefault,
   });
 
-  const onSubmit = (data: Question) => {
+  const onSubmit = (data: Advance) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -101,7 +107,9 @@ export default function FormCRUD(props: FormProps) {
     }
     if (mode == CRUD_MODE.VIEW) setIsDisabled(true);
     else setIsDisabled(false);
-  }, [detail, mode])
+  }, [detail, mode, openCRUD])
+
+  
 
   return (
     <div>
@@ -109,7 +117,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Sample Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -117,20 +125,23 @@ export default function FormCRUD(props: FormProps) {
               <div className="p-2 text-sm space-y-3">
               <FormField
                   control={form.control}
-                  name="testId"
+                  name="employeeId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chọn bộ test</FormLabel>
-                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <FormLabel>Nhân viên</FormLabel>
+                      <Select {...field}
+                              onValueChange={field.onChange} 
+                              value={field.value?.toString()} 
+                              disabled={isDisabled} >
                         <FormControl >
-                          <SelectTrigger >
-                            <SelectValue  placeholder="Chọn bộ test" />
+                          <SelectTrigger>
+                            <SelectValue  placeholder="Nhân viên cần ứng lương" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {
-                            listDataTest.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                            listDataEmployee.data?.metadata?.map((e, i) => {
+                              return <SelectItem key={i} value={e.id?.toString()??"0"}>{e.name}</SelectItem>
                             })
                           }
                         </SelectContent>
@@ -139,23 +150,97 @@ export default function FormCRUD(props: FormProps) {
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="questionText"
+              <FormField control={form.control} name="payPeriod"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Question</FormLabel>
+                      <FormLabel>Kì lương</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter question" {...field} disabled={isDisabled} />
+                        <Select 
+                              {...field}
+                              defaultValue={field.value?.toString()}
+                              onValueChange={field.onChange} 
+                              disabled={isDisabled}
+                              >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn kì lương" />
+                          </SelectTrigger>
+                          <SelectContent>
+                          {
+                              Array.from({ length: currentMonth }, (v, i) => {
+                                  const month = (currentMonth - i).toString().padStart(2, '0');
+                                  return (
+                                      <SelectItem key={i} value={`${month}/${currenYear}`}>
+                                          {`${month}/${currenYear}`}
+                                      </SelectItem>
+                                  );
+                              })
+                          }
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="point"
+              <FormField control={form.control} name="amount"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Advance Amount</FormLabel>
+                    <FormControl>
+                        <Input 
+                        placeholder="Enter advance amount" 
+                        type="number"
+                        {...field} 
+                        value={field.value ?? ''}
+                        disabled={isDisabled} 
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField control={form.control} name="reason"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>point</FormLabel>
+                      <FormLabel>Reason</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter point" {...field} disabled={isDisabled} />
+                        <Textarea placeholder="Enter why you need to advance the salary" {...field} value={field.value ?? ''} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                      <Select 
+                              {...field}
+                              value={field.value?.toString()}
+                              onValueChange={field.onChange} 
+                              disabled={isDisabled}
+                              >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Trạng thái ứng lương" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">Chờ duyệt</SelectItem>
+                            <SelectItem value="1">Đã duyệt</SelectItem>
+                            <SelectItem value="2">Từ chối</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="note"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Note</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter note" {...field} value={field.value ?? ''} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
