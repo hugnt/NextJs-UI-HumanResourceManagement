@@ -81,9 +81,16 @@ export default function FormCRUD(props: FormProps) {
         } : leaveApplicationDefault,
     });
     const onSubmit = (data: leaveApplication) => {
-        if (mode === CRUD_MODE.ADD) addDataMutation.mutate(data);
-        else if (mode === CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
-        else if (mode === CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
+        // Chuyển đổi giá trị statusLeave từ chuỗi thành enum
+        data.statusLeave = StatusLeave[data.statusLeave as keyof typeof StatusLeave];
+    
+        if (mode === CRUD_MODE.ADD) {
+            addDataMutation.mutate(data);
+        } else if (mode === CRUD_MODE.EDIT) {
+            updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+        } else if (mode === CRUD_MODE.DELETE) {
+            deleteDataMutation.mutate(data.id ?? 0);
+        }
     }
 
     const handleCloseForm = (e: any) => {
@@ -183,9 +190,9 @@ export default function FormCRUD(props: FormProps) {
                                                             <SelectValue placeholder="Chọn trạng thái" />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value={StatusLeave.Draft}>Draft</SelectItem>
-                                                            <SelectItem value={StatusLeave.Approved}>Approved</SelectItem>
-                                                            <SelectItem value={StatusLeave.Refuse}>Refuse</SelectItem>
+                                                            <SelectItem value={StatusLeave.Draft.toString()}>Draft</SelectItem>
+                                                            <SelectItem value={StatusLeave.Approved.toString()}>Approved</SelectItem>
+                                                            <SelectItem value={StatusLeave.Refuse.toString()}>Refuse</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>

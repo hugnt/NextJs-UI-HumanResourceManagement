@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export enum StatusLeave {
-    Draft = 1,
-    Approved = 2,
-    Refuse = 3
+    Draft = "Draft",
+    Approved = "Approved",
+    Refuse = "Refuse"
 }
 
 export const leaveApplicationSchema = z.object({
