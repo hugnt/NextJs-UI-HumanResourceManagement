@@ -12,7 +12,6 @@ import {
   IconBusinessplan,
   IconBuilding
 } from '@tabler/icons-react'
-import { title } from 'process'
 
 export interface NavLink {
   title: string
@@ -118,7 +117,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Leave application',
         label: '',
-        href: '/leave-application',
+        href: 'time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
     ]
@@ -196,7 +195,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Job postings list',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
       {

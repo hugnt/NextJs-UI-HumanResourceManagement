@@ -16,7 +16,7 @@ import {
 
 interface DatePickerRangeProps extends React.HTMLAttributes<HTMLDivElement> {
     dateRange?: DateRange;
-    setDateRage?: (dateRange?: DateRange)=>void;
+    setDateRage: (dateRange?: DateRange)=>void;
 }
 
 export function DatePickerRange({className, dateRange = {
@@ -56,10 +56,11 @@ export function DatePickerRange({className, dateRange = {
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={dateRange?.from}
+            month = {dateRange?.from}
+            disableNavigation
             selected={dateRange}
             onSelect={setDateRage}
-            numberOfMonths={2}
+            numberOfMonths={1}
           />
         </PopoverContent>
       </Popover>
