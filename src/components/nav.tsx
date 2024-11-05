@@ -23,13 +23,15 @@ import { cn } from '@/lib/utils'
 import useCheckActiveNav from '@/hooks/use-check-active-nav'
 import { SideLink } from '@/data/sidelinks'
 import Link from 'next/link';
+import { useCurrentUser } from '@/app/system/ui/auth-context'
 
 
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
   links: SideLink[]
-  closeNav: () => void
+  closeNav: () => void,
 }
+
 
 export default function Nav({
   links,
@@ -37,7 +39,9 @@ export default function Nav({
   className,
   closeNav,
 }: NavProps) {
-  const renderLink = ({ sub, ...rest }: SideLink) => {
+
+  const user = useCurrentUser().currentUser;
+  const renderLink = ({ sub, roles, typeContract, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`
     if (isCollapsed && sub)
       return (
@@ -48,6 +52,10 @@ export default function Nav({
           closeNav={closeNav}
         />
       )
+
+
+    if (roles && !roles.includes(user!.role) && typeContract && typeContract.includes(user!.typeContrat))
+      return <></>
 
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />
@@ -117,11 +125,10 @@ function NavLink({
 
 function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
   const { checkActiveNav } = useCheckActiveNav()
-
+  const user = useCurrentUser().currentUser;
   /* Open collapsible by default
    * if one of child element is active */
   const isChildActive = !!sub?.find((s) => checkActiveNav(s.href))
-
   return (
     <Collapsible defaultOpen={isChildActive}>
       <CollapsibleTrigger
@@ -147,11 +154,15 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
       </CollapsibleTrigger>
       <CollapsibleContent className='collapsibleDropdown' asChild>
         <ul>
-          {sub!.map((sublink) => (
-            <li key={sublink.title} className='my-1 ml-8'>
+          {sub!.map((sublink) => {
+            if (sublink.roles && !sublink.roles.includes(user!.role)
+              && sublink.typeContract && sublink.typeContract.includes(user!.typeContrat)) {
+              return <></>
+            }
+            return <li key={sublink.title} className='my-1 ml-8'>
               <NavLink {...sublink} subLink closeNav={closeNav} />
             </li>
-          ))}
+          })}
         </ul>
       </CollapsibleContent>
     </Collapsible>

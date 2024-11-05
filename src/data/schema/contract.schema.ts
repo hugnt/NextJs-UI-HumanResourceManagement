@@ -9,3 +9,8 @@ export const calendarUpsertHRSchema = z.object({
 });
 export type Calendar = z.infer<typeof calendarUpsertHRSchema>;
 
+export enum TypeContract{
+    Partime = 1,
+    FullTime = 2
+}
+
