@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -93,7 +94,7 @@ export default function FormAddFormula(props: FormProps) {
     // #endregion
 
     useEffect(() => {
-        var allFormula = listDataFormulaList.data?.metadata ?? [];
+        const allFormula = listDataFormulaList.data?.metadata ?? [];
         const lstPayrollFormula: PayrollFormula[] = employeeListSc.map(x => {
             return {
                 payrollId: x.id,
@@ -104,7 +105,7 @@ export default function FormAddFormula(props: FormProps) {
         })
         setFormulaList(allFormula)
         setPayrollFormulas(lstPayrollFormula)
-    }, [period, refesh,openForm]);
+    }, [refesh,employeeListSc]);
 
 
     const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
