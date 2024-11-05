@@ -27,6 +27,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { IoCaretDownOutline } from "react-icons/io5";
 import { FaCircleChevronRight } from "react-icons/fa6";
 import { toaster } from "@/components/custom/_toast"
+import { GrCircleQuestion } from "react-icons/gr";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // const salaryComponentCategories: Array<SalaryComponentCategory> = [
 //   {
@@ -95,7 +97,7 @@ type FormProps = {
 //react query key
 const QUERY_KEY = {
   keyList: "formulas",
-  keyListSalaryComponent:"salaryComponents"
+  keyListSalaryComponent: "salaryComponents"
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -109,7 +111,8 @@ export default function FormCRUD(props: FormProps) {
   const addDataMutation = useMutation({
     mutationFn: (body: Formula) => formulaApiRequest.create(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyListSalaryComponent] });
       handleSuccessApi({ message: "Inserted Successfully!" });
       setOpenCRUD(false);
     }
@@ -161,10 +164,10 @@ export default function FormCRUD(props: FormProps) {
   // #region + CUSTOME
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedValue = "FORMULA_" + e.target.value.trim().normalize("NFD")
-                                                          .replace(/[\u0300-\u036f]/g, "")
-                                                          .replace(/đ/g, "d")
-                                                          .toUpperCase().replace(/[^A-Z0-9]/g, '_')
-                                                          .replace(/_{2,}/g, '_');
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .toUpperCase().replace(/[^A-Z0-9]/g, '_')
+      .replace(/_{2,}/g, '_');
     form.setValue('parameterName', updatedValue);
   }
 
@@ -184,29 +187,29 @@ export default function FormCRUD(props: FormProps) {
     setSelectionStart(e.target.selectionStart)
   }
 
-  const handleCheckFormula = () =>{
-    const value = form.getValues('fomulaDetail')??""
+  const handleCheckFormula = () => {
+    const value = form.getValues('fomulaDetail') ?? ""
     const validExpress = isValidExpression(value)
-    if(!validExpress[0]){
+    if (!validExpress[0]) {
       toaster.error({
-        title:'Phép tính sai định dạng',
-        message:validExpress[1]
-      },{
-        position:"bottom-right",
-        autoClose:2000
+        title: 'Phép tính sai định dạng',
+        message: validExpress[1]
+      }, {
+        position: "bottom-right",
+        autoClose: 2000
       })
     }
-    else{
+    else {
       toaster.success({
-        title:'Biểu thức hợp lệ'
-      },{
-        position:"top-right",
-        autoClose:1000
+        title: 'Biểu thức hợp lệ'
+      }, {
+        position: "top-right",
+        autoClose: 1000
       })
     }
   }
 
-  const handleClearFormula = () =>{
+  const handleClearFormula = () => {
     form.setValue('fomulaDetail', '')
     setDescFormula("[số tiền]=")
   }
@@ -226,7 +229,7 @@ export default function FormCRUD(props: FormProps) {
     const matches = formula.match(/\[([^\]]+)\]/g);
     const lstParameterName = matches ? matches.map(match => match.slice(1, -1)) : [];
     let res = formula;
-    if(!salaryComponentCategories.data?.metadata) return "ERROR!";
+    if (!salaryComponentCategories.data?.metadata) return "ERROR!";
     for (const category of salaryComponentCategories.data?.metadata) {
       for (const component of category.listSalaryComponents) {
         if (lstParameterName.includes(component.parameterName)) {
@@ -244,7 +247,7 @@ export default function FormCRUD(props: FormProps) {
     if (!validChars.test(expression)) {
       return [false, "Biểu thức chứa ký tự không hợp lệ."];
     }
-   
+
     // const regex = /^(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+)(?:\s*[-+*/:]\s*(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+))*$/;
     const regex = /^(?:\(\s*(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+)(?:\s*[-+*/:]\s*(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+))*\s*\)|\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+)(?:\s*[-+*/:]\s*(?:\(\s*(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+)(?:\s*[-+*/:]\s*(?:\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+))*\s*\)|\[\s*[a-zA-Z_][a-zA-Z0-9_]*\s*\]|\s*[-+]?\d*\.?\d+))*$/;
     const parenthesesBalance = (str: string): boolean => {
@@ -256,22 +259,25 @@ export default function FormCRUD(props: FormProps) {
       }
       return balance === 0;
     };
-  
+
     if (!regex.test(expression)) {
       return [false, "Biểu thức không đúng cấu trúc."];
     }
-  
+
     if (!parenthesesBalance(expression)) {
       return [false, "Dấu ngoặc đơn không hợp lệ."];
     }
-  
+
     return [true, "Biểu thức hợp lệ."];
   };
   // #endregion
 
   useEffect(() => {
+  
     if (Object.keys(detail).length > 0) {
       form.reset(detail);
+      const desc = generateFormulaDesc(detail?.fomulaDetail??"");
+      setDescFormula(desc);
     }
     if (mode == CRUD_MODE.VIEW) setIsDisabled(true);
     else setIsDisabled(false);
@@ -301,7 +307,7 @@ export default function FormCRUD(props: FormProps) {
                     </TableHeader>
                     <TableBody>
                       {
-                        salaryComponentCategories&&salaryComponentCategories.data?.metadata && salaryComponentCategories.data?.metadata.map((x, i) => (
+                        salaryComponentCategories && salaryComponentCategories.data?.metadata && salaryComponentCategories.data?.metadata.map((x, i) => (
                           <Collapsible key={i} asChild>
                             <>
                               <TableRow className="">
@@ -342,7 +348,41 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Formula name</FormLabel>
+                        <div className="flex justify-between items-center">
+                          <FormLabel>Formula name</FormLabel>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger >
+                              <GrCircleQuestion size={16} className="me-1 hover:text-primary hover:scale-110" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-[500px]">
+                              <DropdownMenuLabel>Quy cách đặt tên</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                  <div className="flex space-x-1">
+                                    <span className="font-medium whitespace-nowrap">Lương thời gian: </span>
+                                    <span className="">trong tên công thức có chứa từ 
+                                      <span className="font-medium"> &quot;lương thời gian&quot;</span> 
+                                    </span>
+                                  </div>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                  <div className="flex space-x-1">
+                                    <span className="font-medium whitespace-nowrap">Tổng thu nhập: </span>
+                                    <span className="">trong tên công thức có chứa từ 
+                                      <span className="font-medium"> &quot;tổng thu nhập&quot;</span> 
+                                    </span>
+                                  </div>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                  <div className="flex space-x-1">
+                                    <span className="font-medium whitespace-nowrap">Thuế TNCN: </span>
+                                    <span className="">sẽ được tự động tính toán dựa theo tổng thu nhập và các khoản giảm trừ (nếu có) </span>
+                                  </div>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+
+                        </div>
                         <FormControl>
                           <Input placeholder="Enter full name" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
                         </FormControl>
@@ -355,7 +395,7 @@ export default function FormCRUD(props: FormProps) {
                       <FormItem>
                         <FormLabel>Parameter Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="FORMULA_<>" {...field}  disabled />
+                          <Input placeholder="FORMULA_<>" {...field} disabled />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
