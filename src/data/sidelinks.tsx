@@ -16,6 +16,7 @@ import { Role } from './schema/auth.schema'
 import { TypeContract } from './schema/contract.schema'
 
 
+
 export interface NavLink {
   title: string
   label?: string
@@ -73,7 +74,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Contract List',
         label: '',
-        href: '/contract-list',
+        href: '/contract/contract-list',
         icon: <IconFileText size={18} />,
       },
       {
@@ -135,7 +136,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Leave application',
         label: '',
-        href: '/leave-application',
+        href: 'time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
     ]
@@ -169,19 +170,19 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Salary Summary',
         label: '',
-        href: '/salary-summary',
+        href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary Calculation',
         label: '',
-        href: '/salary-calculation',
+        href: '/payroll/salary-calculation',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Salary advance',
         label: '',
-        href: '/salary-advance',
+        href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
       }
     ],
@@ -233,7 +234,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Job postings list',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
       {
