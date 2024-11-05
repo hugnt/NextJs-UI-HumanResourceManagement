@@ -13,14 +13,14 @@ import { DatePickerRange } from "@/components/custom/date-picker-range";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ColumnMeta, ColumnTableHeader, PayrollDataTable } from "@/data/schema/payroll.schema";
+import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollResult } from "@/data/schema/payroll.schema";
 import { classFixBorderHeaderCol } from "@/lib/style";
 import { cn, formatCurrency, handleErrorApi } from "@/lib/utils";
 import { IconClearFormatting, IconPlus, IconRefresh, IconSearch } from "@tabler/icons-react";
 import { FilterMatchMode } from "primereact/api";
 import { Column, ColumnBodyOptions } from "primereact/column";
 import { ColumnGroup } from "primereact/columngroup";
-import { DataTable, DataTableFilterMeta } from "primereact/datatable";
+import { DataTable, DataTableFilterMeta, DataTableRowClickEvent, DataTableSelectEvent } from "primereact/datatable";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { Row } from "primereact/row";
 import { classNames } from "primereact/utils";
@@ -69,6 +69,7 @@ export default function SalarySummaryList() {
 
   const [highlightColumns, setHighlightColumns] = useState<ColumnMeta[]>([]);
   const [displayColumns, setDisplayColumns] = useState<ColumnMeta[]>([]);
+  const [employeeListSc, setEmployeeListSc] = useState<PayrollResult[]>([]);
 
   const [selectedEmployee, setSelectedEmployee] = useState<any | null>(null);
   const [listAllEmployeeIds, setListAllEmployeeIds] = useState<number[]>([]);
@@ -113,30 +114,30 @@ export default function SalarySummaryList() {
     setOpenFormFormula(true);
   };
 
-  const listDataEmployeeSC = useQuery({
-      queryKey: [QUERY_KEY.keyEmployeeSalaryList,period],
-      queryFn: () => payrollApiRequest.getEmployeeSalaryList(period)
-  });//Can xu ly lai
-
   useEffect(() => {
     const fetchData = async () => {
 
       try {
         setLoading(true);
-        const [dataList, schemaHeader, schemaColumn] = await Promise.all([
+        const [dataListApi, schemaHeaderApi, schemaColumnApi, employeeListScApi] = await Promise.all([
           payrollApiRequest.getList(period),
           payrollApiRequest.getPayrollTableHeader(period),
           payrollApiRequest.getPayrollTableColumn(period),
+          payrollApiRequest.getEmployeeSalaryList(period),
         ]);
         // console.log(dataList, schemaHeader, schemaColumn);
-        if (dataList.isSuccess == false || schemaHeader.isSuccess == false || schemaColumn.isSuccess == false) {
+        if (dataListApi.isSuccess == false
+          || schemaHeaderApi.isSuccess == false
+          || schemaColumnApi.isSuccess == false
+          || employeeListScApi.isSuccess == false) {
           setLoading(false);
           handleErrorApi({ error: 'Lỗi loading bảng động' });
           return;
         }
-        const payrollDataList = dataList?.metadata ?? [];
-        const payrollTableHeader = schemaHeader?.metadata ?? [];
-        const payrollTableColumn = schemaColumn?.metadata ?? [];
+        const payrollDataList = dataListApi?.metadata ?? [];
+        const payrollTableHeader = schemaHeaderApi?.metadata ?? [];
+        const payrollTableColumn = schemaColumnApi?.metadata ?? [];
+        const employeeListScData = employeeListScApi?.metadata ?? [];
 
         const headerColumn = generateTableHeader(payrollTableHeader);
         const footerColumn = generateTableFooter(payrollDataList, payrollTableColumn);
@@ -146,8 +147,9 @@ export default function SalarySummaryList() {
         setPayrollHeader(payrollTableHeader);
         setPayrollColumn(payrollTableColumn);
         setPayrollData(payrollDataList);
+        setEmployeeListSc(employeeListScData);
 
-        var lstEmployyId = payrollDataList.map(x => x.employeeId);
+        const lstEmployyId = payrollDataList.map(x => x.employeeId);
         setListAllEmployeeIds(lstEmployyId);
 
         setLoading(false);
@@ -270,7 +272,7 @@ export default function SalarySummaryList() {
           }
         }} />
     })
-    var decolSpan = displayColumns.map(z => z.field).filter(x => x == "employeeName" || x == "departmentName").length;
+    const decolSpan = displayColumns.map(z => z.field).filter(x => x == "employeeName" || x == "departmentName").length;
     const footerColumn = (
       <ColumnGroup>
         <Row>
@@ -333,6 +335,9 @@ export default function SalarySummaryList() {
 
   }
 
+  const onRowSelect = (e: DataTableRowClickEvent) => {
+      const selectedData:PayrollDataTable = e.data;
+  };
   return (
     <>
       <div className='mb-2 flex items-center justify-between space-y-2 '>
@@ -524,6 +529,7 @@ export default function SalarySummaryList() {
           scrollHeight="400px"
           selectionMode="single"
           selection={selectedEmployee}
+          onRowDoubleClick={onRowSelect}
           emptyMessage="No employee found."
           className="mt-2" pt={{
             table: {
@@ -568,9 +574,10 @@ export default function SalarySummaryList() {
         </DataTable>
       </div>
       <FormAE openAE={openAE} setOpenAE={setOpenAE} period={period} listAllEmployeeIds={listAllEmployeeIds} toggleRefesh={toggleRefesh} />
-      <FormAddManySC employeeListSc={listDataEmployeeSC.data?.metadata} openForm={openFormManySC} setOpenForm={setOpenFormManySC} period={period}  toggleRefesh={toggleRefesh}/>
-      <FormAddOtherSC employeeListSc={listDataEmployeeSC.data?.metadata} openForm={openFormOtherSC} setOpenForm={setOpenFormOtherSC} period={period} toggleRefesh={toggleRefesh}/>
-      <FormAddFormula employeeListSc={listDataEmployeeSC.data?.metadata} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
+      <FormAddManySC employeeListSc={employeeListSc} openForm={openFormManySC} setOpenForm={setOpenFormManySC} period={period} toggleRefesh={toggleRefesh} />
+      <FormAddOtherSC employeeListSc={employeeListSc} openForm={openFormOtherSC} setOpenForm={setOpenFormOtherSC} period={period} toggleRefesh={toggleRefesh} />
+      <FormAddFormula employeeListSc={employeeListSc} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
+    
     </>
   )
 };

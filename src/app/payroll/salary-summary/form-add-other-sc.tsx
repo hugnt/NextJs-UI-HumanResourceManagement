@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -85,7 +86,7 @@ export default function FormAddOtherSC(props: FormProps) {
    
     useEffect(() => {
         setPayrollOtherSCs(employeeListSc)
-    }, [period, employeeListSc]);
+    }, [employeeListSc]);
 
 
     const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {

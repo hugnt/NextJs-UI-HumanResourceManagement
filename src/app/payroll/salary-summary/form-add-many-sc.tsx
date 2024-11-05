@@ -18,7 +18,7 @@ import { Column, ColumnBodyOptions } from 'primereact/column';
 import { ColumnMeta, DynamicTableObject, PayrollResult, PayrollSC, PayrollUpsert } from "@/data/schema/payroll.schema";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IconRefresh } from "@tabler/icons-react";
-import { handleSuccessApi } from "@/lib/utils";
+import { handleErrorApi, handleSuccessApi } from "@/lib/utils";
 import LoadingSpinIcon from "@/components/loading-spin-icon";
 type FormProps = {
     openForm: boolean,
@@ -113,7 +113,7 @@ const CheckTemplate: React.FC<{
 };
 
 export default function FormAddManySC(props: FormProps) {
-    const { openForm, setOpenForm = () => { }, period = "10/2024", employeeListSc = [],toggleRefesh} = props;
+    const { openForm, setOpenForm = () => { }, period = "10/2024", employeeListSc = [], toggleRefesh } = props;
     const [scType, setSCType] = useState<number>(0);
     const [dynamicColumn, setDynamicColumn] = useState<ColumnMeta[]>([]);
     const [dynamicTableValue, setDynamicTableValue] = useState<DynamicTableObject[]>([]);
@@ -121,16 +121,12 @@ export default function FormAddManySC(props: FormProps) {
     const [refesh, setRefesh] = useState<boolean>(false);
     const [fields, setFields] = useState<string[]>([]);
 
+    const [loading, setLoading] = useState<boolean>(false);
 
     const currentMonth: number = new Date().getMonth() + 1;
     const currenYear: number = new Date().getFullYear();
+
     // #region +TANSTACK QUERY
-
-    const listDataDynamicColumn = useQuery({
-        queryKey: [QUERY_KEY.keyDynamicColumn, scType],
-        queryFn: () => payrollApiRequest.getDynamicColumn(scType)
-    });
-
     const updateDataPayrollBonusSC = useMutation({
         mutationFn: (body: PayrollUpsert[]) => payrollApiRequest.updatePayrollBonusSC(body),
         onSuccess: () => {
@@ -153,16 +149,16 @@ export default function FormAddManySC(props: FormProps) {
     // #region + FORM SETTINGS
     const handleUpdateForm = () => {
         //console.log("RES: ", listPayrollSC);
-        const data: PayrollUpsert[] = listPayrollSC.map(x=>{
-            return{
+        const data: PayrollUpsert[] = listPayrollSC.map(x => {
+            return {
                 id: x.payrollId,
                 listBonusIds: x.listSCIds,
                 listDeductionIds: x.listSCIds
             }
         })
         console.log(data);
-        if(scType==0) updateDataPayrollBonusSC.mutate(data);
-        else if(scType==1) updateDataPayrollDeductionSC.mutate(data);
+        if (scType == 0) updateDataPayrollBonusSC.mutate(data);
+        else if (scType == 1) updateDataPayrollDeductionSC.mutate(data);
     };
     const handleCloseForm = (e: any) => {
         e.preventDefault();
@@ -174,37 +170,53 @@ export default function FormAddManySC(props: FormProps) {
 
 
     useEffect(() => {
-        const lstDataColumnQuery = listDataDynamicColumn.data?.metadata ?? [];
-        const lstFieldNumber = lstDataColumnQuery.filter(x => x.field !== "employeeName").map(x => x.field);
-        const payrollSC: PayrollSC[] = employeeListSc.map(x => {
-            return {
-                payrollId:x.id,
-                employeeId: x.employeeId,
-                employeeName: x.employeeName,
-                departmentName: x.departmentName,
-                listSCIds: scType == 0 ? x.listBonusIds : x.listDeductionIds
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const lstDataColumnQueryApi = await payrollApiRequest.getDynamicColumn(scType);
+                if (!lstDataColumnQueryApi.isSuccess) {
+                    throw Error("failed to fetch");
+                }
+                const lstDataColumnQuery = lstDataColumnQueryApi?.metadata ?? [];
+                const lstFieldNumber = lstDataColumnQuery.filter(x => x.field !== "employeeName").map(x => x.field);
+
+                const payrollSC: PayrollSC[] = employeeListSc.map(x => {
+                    return {
+                        payrollId: x.id,
+                        employeeId: x.employeeId,
+                        employeeName: x.employeeName,
+                        departmentName: x.departmentName,
+                        listSCIds: scType == 0 ? x.listBonusIds : x.listDeductionIds
+                    }
+
+                })
+                //console.log("payrollSC", payrollSC)
+                const dynamicValue: DynamicTableObject[] = payrollSC.map(sc => {
+                    const dynamicObj: DynamicTableObject = {
+                        employeeId: sc.employeeId,
+                        employeeName: sc.employeeName,
+                        departmentName: sc.departmentName
+                    };
+                    lstFieldNumber.forEach(id => {
+                        dynamicObj[id] = sc.listSCIds.includes(Number(id));
+                    });
+                    return dynamicObj;
+                });
+
+                console.log("dynamicValue: ", dynamicValue)
+                setDynamicColumn(lstDataColumnQuery);
+                setDynamicTableValue(dynamicValue);
+                setFields(lstFieldNumber);
+                setListPayrollSC(payrollSC);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                handleErrorApi({ error: error });
             }
+        }
 
-        })
-        //console.log("payrollSC", payrollSC)
-        const dynamicValue: DynamicTableObject[] = payrollSC.map(sc => {
-            const dynamicObj: DynamicTableObject = {
-                employeeId: sc.employeeId,
-                employeeName: sc.employeeName,
-                departmentName: sc.departmentName
-            };
-            lstFieldNumber.forEach(id => {
-                dynamicObj[id] = sc.listSCIds.includes(Number(id));
-            });
-            return dynamicObj;
-        });
-
-        console.log("dynamicValue: ", dynamicValue)
-        setDynamicColumn(lstDataColumnQuery);
-        setDynamicTableValue(dynamicValue);
-        setFields(lstFieldNumber);
-        setListPayrollSC(payrollSC);
-    }, [refesh, scType,employeeListSc,listDataDynamicColumn.isSuccess]);
+        fetchData();
+    }, [refesh, scType, employeeListSc]);
 
     return (
         <div>
@@ -260,7 +272,7 @@ export default function FormAddManySC(props: FormProps) {
                                     <IconRefresh className='h-5 w-5' />
                                 </Button>
                             </div>
-                            <DataTable loading={listDataDynamicColumn.isPending}
+                            <DataTable loading={loading}
                                 value={dynamicTableValue} showGridlines size="small"
                                 scrollable scrollHeight="400px" dataKey="employeeId"
                                 className="mt-2" pt={{
@@ -309,8 +321,8 @@ export default function FormAddManySC(props: FormProps) {
                     </div>
                     <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                         <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-                        <Button type="button" disabled={updateDataPayrollBonusSC.isPending||updateDataPayrollDeductionSC.isPending}  className="flex items-center" onClick={handleUpdateForm} size='sm'>
-                            {(updateDataPayrollBonusSC.isPending||updateDataPayrollDeductionSC.isPending)&&<LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white "/>}
+                        <Button type="button" disabled={updateDataPayrollBonusSC.isPending || updateDataPayrollDeductionSC.isPending} className="flex items-center" onClick={handleUpdateForm} size='sm'>
+                            {(updateDataPayrollBonusSC.isPending || updateDataPayrollDeductionSC.isPending) && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
                             Save
                         </Button>
                     </AlertDialogFooter>
