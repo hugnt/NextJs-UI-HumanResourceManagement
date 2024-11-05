@@ -1,4 +1,5 @@
 import { ShiftTime } from "./calendar.schema"
+import { HistoryResult } from "./history.schema"
 
 export type WorkPlanInsert = {
     timeStart: string,
@@ -24,6 +25,13 @@ export type PartimePlanResult = {
 
 export type UserCalendarResult = UserCalendarInsert & {
     userCalendarStatus: UserCalendarStatus
+}
+
+export type CalendarEntry = {
+    dayOfWeek:string,
+    date: string,
+    userCalendarResult: UserCalendarResult[],
+    historyEntryResults: Record<ShiftTime, HistoryResult[]>
 }
 
 export enum StatusCalendar {
