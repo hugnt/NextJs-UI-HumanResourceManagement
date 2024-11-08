@@ -13,10 +13,11 @@ import {
 import { useMutation } from '@tanstack/react-query'
 import authApiRequest from '@/apis/auth.api'
 import { useRouter } from 'next/navigation'
+import { AccountInfo } from '@/data/schema/auth.schema'
 const KEY = {
   KEY_LOGOUT: "log-out"
 }
-export function UserNav() {
+export function UserNav({user} : {user : AccountInfo}) {
   const router = useRouter();
   const logout = useMutation({
     mutationKey: [KEY.KEY_LOGOUT],
@@ -25,6 +26,7 @@ export function UserNav() {
       router.push('/login');
     }
   })
+  console.log(user)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -38,9 +40,9 @@ export function UserNav() {
       <DropdownMenuContent className='w-56' align='end' forceMount>
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>satnaing</p>
+            <p className='text-sm font-medium leading-none'>{user.name}</p>
             <p className='text-xs leading-none text-muted-foreground'>
-              satnaingdev@gmail.com
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>

@@ -1,4 +1,5 @@
 "use client"
+import { useCurrentUser } from '@/app/system/ui/auth-context';
 import { Layout } from '@/components/custom/_layout';
 import { Search } from '@/components/search';
 import Sidebar from '@/components/sidebar';
@@ -13,11 +14,14 @@ export default function MainLayout({ children, }: Readonly<{ children: React.Rea
   useEffect(() => {
     setIsClient(true)
   }, [])
+  const user = useCurrentUser().currentUser;
+  console.log(user)
   return (
     <div className='relative h-full overflow-hidden bg-background'>
-    
+
       {isClient && (
         <>
+
           <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
           <div id='content' className={`overflow-x-hidden pt-16 transition-[margin] md:overflow-y-hidden md:pt-0 ${isCollapsed ? 'md:ml-14' : 'md:ml-64'} h-full`}>
             <Layout className='overflow-auto h-screen'>
@@ -26,7 +30,7 @@ export default function MainLayout({ children, }: Readonly<{ children: React.Rea
                 <Search />
                 <div className='ml-auto flex items-center space-x-4'>
                   <ThemeSwitch />
-                  <UserNav />
+                  <UserNav user={user!} />
                 </div>
               </Layout.Header>
               <Layout.Body className='px-6 py-0'>

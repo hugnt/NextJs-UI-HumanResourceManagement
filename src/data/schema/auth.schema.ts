@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { TypeContract } from './contract.schema';
 
 
 export const authSchema = z.object({
@@ -10,3 +11,15 @@ export const authDefault: Auth = {
     email: "",
     password: "",
 };
+
+export type AccountInfo = {
+    id: number,
+    email: string,
+    name: string,
+    role: Role,
+    typeContrat: TypeContract
+}
+export enum Role{
+    Admin = 1,
+    User = 2
+}
