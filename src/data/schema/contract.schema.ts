@@ -9,7 +9,6 @@ export const calendarUpsertHRSchema = z.object({
 });
 export type Calendar = z.infer<typeof calendarUpsertHRSchema>;
 
-
 // Enum
 export enum SignStatus {
   Signed = 1,

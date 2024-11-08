@@ -5,13 +5,16 @@ import useIsCollapsed from '@/hooks/use-is-collapsed';
 import { Search } from '@/components/search';
 import ThemeSwitch from '@/components/theme-switch';
 import { UserNav } from '@/components/user-nav';
+import { useCurrentUser } from '@/app/system/ui/auth-context';
+import { Button } from './ui/button';
 // import SkipToMain from '@/components/skip-to-main';
 
 export default function AppShell({children,}: Readonly<{children: React.ReactNode;}>){
   const [isCollapsed, setIsCollapsed] = useIsCollapsed();
-
+  
   return (
     <div className='relative h-full overflow-hidden bg-background'>
+      <Button>Refesh</Button>
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <main id='content' className={`overflow-x-hidden pt-16 transition-[margin] md:overflow-y-hidden md:pt-0 ${isCollapsed ? 'md:ml-14' : 'md:ml-64'} h-full`}>
         <Layout>
@@ -20,7 +23,7 @@ export default function AppShell({children,}: Readonly<{children: React.ReactNod
             <Search />
             <div className='ml-auto flex items-center space-x-4'>
               <ThemeSwitch />
-              <UserNav />
+              {/* <UserNav user={user}/> */}
             </div>
           </Layout.Header>
           <Layout.Body>

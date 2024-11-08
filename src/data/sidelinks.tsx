@@ -12,13 +12,19 @@ import {
   IconBusinessplan,
   IconBuilding
 } from '@tabler/icons-react'
-import { title } from 'process'
+import { Role } from './schema/auth.schema'
+import { TypeContract } from './schema/contract.schema'
+
+
 
 export interface NavLink {
   title: string
   label?: string
   href: string
   icon: JSX.Element,
+  roles?: Role[],
+  typeContract?: TypeContract[]
+  //Những roles trong này thì không được có hiện
 }
 
 export interface SideLink extends NavLink {
@@ -30,13 +36,14 @@ export const sidelinks: SideLink[] = [
     title: 'Dashboard',
     label: '',
     href: '/',
-    icon: <IconLayoutDashboard size={18} />
+    icon: <IconLayoutDashboard size={18} />,
+    roles: [Role.Admin]
   },
   {
-    title: 'Employee',
+    title: 'Company',
     label: '',
     href: '',
-    icon: <IconUserSquare size={18} />,
+    icon: <IconBuilding size={18} />,
     sub: [
       {
         title: 'Employee List',
@@ -44,7 +51,18 @@ export const sidelinks: SideLink[] = [
         href: '/employee-list',
         icon: <IconFileText size={18} />,
       },
-
+      {
+        title: 'Department List',
+        label: '',
+        href: '/company/department',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Position List',
+        label: '',
+        href: '/company/position',
+        icon: <IconFileText size={18} />,
+      }
     ],
   },
   {
@@ -118,9 +136,29 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Leave application',
         label: '',
-        href: '/leave-application',
+        href: 'time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
+    ]
+  },
+  {
+    title: 'History',
+    label: '',
+    href: '/history',
+    icon: <IconCalendarTime size={18} />,
+    sub: [
+      {
+        title: 'History Attendance',
+        label: '',
+        href: '/history/attendance-tracking',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Face Registration',
+        label: '',
+        href: '/history/face-regconition',
+        icon: <IconFileText size={18} />,
+      }
     ]
   },
   {
@@ -232,26 +270,6 @@ export const sidelinks: SideLink[] = [
     ],
   },
   {
-    title: 'Company',
-    label: '',
-    href: '',
-    icon: <IconBuilding size={18} />,
-    sub: [
-      {
-        title: 'Department List',
-        label: '',
-        href: '/company/department',
-        icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Position List',
-        label: '',
-        href: '/company/position',
-        icon: <IconFileText size={18} />,
-      },
-    ],
-  },
-  {
     title: 'Account management',
     label: '',
     href: '',
@@ -267,12 +285,6 @@ export const sidelinks: SideLink[] = [
         title: 'Role list',
         label: '',
         href: '/role-list',
-        icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Salary advance',
-        label: '',
-        href: '/salary-advance',
         icon: <IconFileText size={18} />,
       }
     ],
