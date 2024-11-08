@@ -30,62 +30,6 @@ import { toaster } from "@/components/custom/_toast"
 import { GrCircleQuestion } from "react-icons/gr";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-// const salaryComponentCategories: Array<SalaryComponentCategory> = [
-//   {
-//     name: "Các khoản lương quy định",
-//     salaryComponents: [
-//       {
-//         name: "Lương cơ bản",
-//         parameterName: "PARAM_RULE_BASESALARY"
-//       },
-//       {
-//         name: "Lương đóng bảo hiểm",
-//         parameterName: "PARAM_RULE_BREAK"
-//       },
-//       {
-//         name: "Số giờ quy định",
-//         parameterName: "PARAM_RULE_HOURS"
-//       },
-//     ]
-//   },
-//   {
-//     name: "Các khoản giảm trừ",
-//     salaryComponents: [
-//       {
-//         name: "Đi làm muộn",
-//         parameterName: "PARAM_DEDUCTION_LATE"
-//       },
-//       {
-//         name: "Làm hỏng đồ",
-//         parameterName: "PARAM_DEDUCTION_BREAK"
-//       },
-//       {
-//         name: "Làm mất đồ",
-//         parameterName: "PARAM_DEDUCTION_LOSING"
-//       },
-//     ]
-//   },
-//   {
-//     name: "Các khoản thưởng",
-//     salaryComponents: [
-//       {
-//         name: "Thưởng KPI",
-//         parameterName: "PARAM_BONUS_KPI"
-//       },
-//       {
-//         name: "Thưởng hoàn thành tốt công việc",
-//         parameterName: "PARAM_BONUS_JOB"
-//       },
-//       {
-//         name: "Thưởng tết",
-//         parameterName: "PARAM_BONUS_HOLIDAY"
-//       },
-//     ]
-//   },
-
-// ]
-
-
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
