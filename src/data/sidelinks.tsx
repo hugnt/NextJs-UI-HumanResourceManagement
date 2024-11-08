@@ -194,9 +194,9 @@ export const sidelinks: SideLink[] = [
     icon: <IconAddressBook size={18} />,
     sub: [
       {
-        title: 'Job postings list',
+        title: 'Test Result',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/test-result',
         icon: <IconFileText size={18} />,
       },
       {

@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import applicantApiRequest from "@/apis/candidate.api";
+import FormTest from "@/app/recruitment/applicant/form-test";
 import FormCRUD from "@/app/recruitment/applicant/form-crud";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
+import DataTableCandidateActions from "@/components/custom/data-table-candidate-test";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
 import { Candidate, candidateDefault } from "@/data/schema/candidate.schema";
+import { Question } from "@/data/schema/question.schema";
+import { Test } from "@/data/schema/test.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { useState } from "react";
+import { TestResult } from "@/data/schema/testResult.schema";
 
 const pathList: Array<PathItem> = [
   {
@@ -48,8 +53,10 @@ const QUERY_KEY = {
 }
 
 export default function SampleList() {
+  const [rwdetail, rwsetDetail] = useState<Test>({});
   const [detail, setDetail] = useState<Candidate>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
+  const [openTest, setOpenTest] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
@@ -61,7 +68,7 @@ export default function SampleList() {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Tên vị trí' />
+        <DataTableColumnHeader column={column} title='Tên' />
       ),
       cell: ({ row }) => <div className='w-[100px]'>{row.getValue('name')}</div>,
       enableSorting: false,
@@ -135,9 +142,10 @@ export default function SampleList() {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title='Action' />
         ),
-        cell: ({ row }) => <DataTableRowActions row={row}
+        cell: ({ row }) => <DataTableCandidateActions row={row}
           handleView={() => handleView(row)}
           handleEdit={() => handleEdit(row)}
+          handleTest={() => handleTest(row)}
           handleDelete={() => handleDelete(row)} />,
       },
   ];
@@ -175,6 +183,15 @@ const handleView = async (row: Row<Candidate>) => {
     setOpenCRUD(true);
   };
 
+  const handleTest = (row: Row<Candidate>) => {
+    const id = row.original.id;
+    const testId = row.original.testId;
+    const getTest: TestResult = { applicantId: id, applicantTestId: testId };
+    //console.log(selectedData)
+    rwsetDetail(getTest);
+    setOpenTest(true);
+  };
+
   const handleDelete = (row: Row<Candidate>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.DELETE);
@@ -202,6 +219,7 @@ const handleView = async (row: Row<Candidate>) => {
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />
+      <FormTest openTest={openTest} setOpenTest={setOpenTest} detail={rwdetail}/>
     </>
   )
 };

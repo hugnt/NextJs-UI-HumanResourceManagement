@@ -17,10 +17,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import applicantApiRequest from "@/apis/candidate.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
+import testApiRequest from "@/apis/test.api";
+import positionApiRequest from "@/apis/position.api";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -32,6 +35,8 @@ type FormProps = {
 //react query key
 const QUERY_KEY = {
   keyList: "applicants",
+  keysub: "tests",
+  keysub2: "positions"
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -66,6 +71,17 @@ export default function FormCRUD(props: FormProps) {
       setOpenCRUD(false);
     }
   });
+
+  const listDataTest = useQuery({
+    queryKey: [QUERY_KEY.keysub],
+    queryFn: () => testApiRequest.getList()
+  });
+
+  const listDataPosition = useQuery({
+    queryKey: [QUERY_KEY.keysub2],
+    queryFn: () => positionApiRequest.getList()
+  });
+
   // #endregion
 
   // #region + FORM SETTINGS
@@ -75,11 +91,13 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const onSubmit = (data: Candidate) => {
-    if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
-    else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+    if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data)
+    else if (mode == CRUD_MODE.EDIT) {
+      updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+      console.log(data);
+    }
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
 
-    
   }
 
   const handleCloseForm = (e: any) => {
@@ -108,12 +126,12 @@ export default function FormCRUD(props: FormProps) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
               <div className="p-2 text-sm space-y-3">
-                <FormField control={form.control} name="name"
+              {/* <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Applicant name</FormLabel>
+                      <FormLabel>Tên</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Nhập tên" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,14 +140,117 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>ApplicantApi</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full applicantApi" {...field} disabled={isDisabled} />
+                        <Input placeholder="nhập Email" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField control={form.control} name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Điện thoại</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Số điện thoại" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+                {/* <FormField control={form.control} name="fileDataStore"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Choose upload file:</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="file" 
+                          id="avatar" 
+                          name="avatar" 
+                          accept="image/png, image/jpeg, application/pdf"
+                          onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                field.onChange(e.target.files[0]);
+                              }
+                            }
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+              {/* <FormField
+                  control={form.control}
+                  name="positionId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chọn vị trí</FormLabel>
+                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                        <FormControl >
+                          <SelectTrigger >
+                            <SelectValue  placeholder="Chọn Vị trí" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            listDataPosition.data?.metadata?.map((item, index) => {
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                            })
+                          }
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              <FormField control={form.control} name="rate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Điểm</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Điểm" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+              <FormField
+                  control={form.control}
+                  name="testId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chọn bộ test</FormLabel>
+                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                        <FormControl >
+                          <SelectTrigger >
+                            <SelectValue  placeholder="Chọn bộ test" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            listDataTest.data?.metadata?.map((item, index) => {
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                            })
+                          }
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* <FormField control={form.control} name="interviewerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Điện thoại</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Người phỏng vấn" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                 <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
@@ -162,3 +283,4 @@ export default function FormCRUD(props: FormProps) {
     </div>
   )
 }
+
