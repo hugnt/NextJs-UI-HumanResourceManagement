@@ -42,3 +42,9 @@ export const employeeDefault: Employee = {
   phoneNumber: "",
   email: ""
 };
+
+export type FaceRegisResult = {
+  url: string,
+  statusFaceTurn: number,
+  descriptor: string
+}

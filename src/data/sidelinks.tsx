@@ -13,7 +13,6 @@ import {
   IconBuilding
 } from '@tabler/icons-react'
 import { Role } from './schema/auth.schema'
-import { TypeContract } from './schema/contract.schema'
 
 
 
@@ -23,7 +22,6 @@ export interface NavLink {
   href: string
   icon: JSX.Element,
   roles?: Role[],
-  typeContract?: TypeContract[]
   //Những roles trong này thì không được có hiện
 }
 
@@ -114,18 +112,14 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/time-keeping/register-shift',
         icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Timekeeping history',
-        label: '',
-        href: '/contract-list',
-        icon: <IconFileText size={18} />,
+        roles: [Role.Partime],
       },
       {
         title: 'Partime Plan',
         label: '',
         href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin, Role.Admin],
       },
       {
         title: 'Work shift',
