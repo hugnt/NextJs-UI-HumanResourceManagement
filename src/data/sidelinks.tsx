@@ -202,7 +202,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Candidate Profiles',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/applicant',
         icon: <IconFileText size={18} />,
       },
       {
