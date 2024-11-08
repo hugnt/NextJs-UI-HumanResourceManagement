@@ -46,6 +46,7 @@
     "react-select": "^5.8.1",
     "react-time-picker": "^7.0.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.13.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
