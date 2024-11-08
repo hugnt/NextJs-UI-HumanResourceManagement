@@ -176,16 +176,19 @@ export default function FormCRUD(props: FormProps) {
                                                     <Select
                                                         {...field}
                                                         value={field.value?.toString()}
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={(value) => {
+                                                            const enumValue = parseInt(value);
+                                                            field.onChange(enumValue);
+                                                        }}
                                                         disabled={isDisabled}
                                                     >
                                                         <SelectTrigger className="w-full">
                                                             <SelectValue placeholder="Chọn trạng thái" />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value={StatusLeave.Draft}>Draft</SelectItem>
-                                                            <SelectItem value={StatusLeave.Approved}>Approved</SelectItem>
-                                                            <SelectItem value={StatusLeave.Refuse}>Refuse</SelectItem>
+                                                            <SelectItem value={StatusLeave.Draft.toString()}>Draft</SelectItem>
+                                                            <SelectItem value={StatusLeave.Approved.toString()}>Approved</SelectItem>
+                                                            <SelectItem value={StatusLeave.Refuse.toString()}>Refuse</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>

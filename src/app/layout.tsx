@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AppLayout from "@/app/system/ui/app-layout";
 import AppContext from "@/app/system/ui/app-context";
+import { AuthProvider } from "./system/ui/auth-context";
 
 export const metadata: Metadata = {
   title: "myHRM",
@@ -16,9 +17,11 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     <html lang="en" suppressHydrationWarning={true} >
       <body className={``}>
         <AppContext>
-          <AppLayout>
-            {children}
-          </AppLayout>
+          <AuthProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </AuthProvider>
         </AppContext>
       </body>
     </html>
