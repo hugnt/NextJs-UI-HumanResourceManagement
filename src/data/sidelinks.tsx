@@ -232,15 +232,15 @@ export const sidelinks: SideLink[] = [
     icon: <IconAddressBook size={18} />,
     sub: [
       {
-        title: 'Job postings list',
+        title: 'Test Result',
         label: '',
-        href: '/recruitment/job-posting',
+        href: '/recruitment/test-result',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Candidate Profiles',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/applicant',
         icon: <IconFileText size={18} />,
       },
       {
@@ -259,6 +259,12 @@ export const sidelinks: SideLink[] = [
         title: 'Interview Question',
         label: '',
         href: '/recruitment/interview-question',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Job posting',
+        label: '',
+        href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
     ],
