@@ -82,7 +82,7 @@ export default function FormCRUD(props: FormProps) {
     });
     const onSubmit = (data: leaveApplication) => {
         // Chuyển đổi giá trị statusLeave từ chuỗi thành enum
-        data.statusLeave = StatusLeave[data.statusLeave as keyof typeof StatusLeave];
+        //data.statusLeave = parseInt(data.statusLeave);
     
         if (mode === CRUD_MODE.ADD) {
             addDataMutation.mutate(data);
@@ -132,7 +132,7 @@ export default function FormCRUD(props: FormProps) {
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         {listDataEmployeeQuery.data?.metadata?.map((item) => (
-                                                            <SelectItem key={item.id} value={item.id.toString()} style={{ color: 'black', fontSize: '1rem' }}>
+                                                            <SelectItem key={item.id} value={item.id.toString()}>
                                                                 <div>
                                                                     <p>{item.Name}</p>
                                                                 </div>
@@ -183,7 +183,10 @@ export default function FormCRUD(props: FormProps) {
                                                     <Select
                                                         {...field}
                                                         value={field.value?.toString()}
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={(value) => {
+                                                            const enumValue = parseInt(value);
+                                                            field.onChange(enumValue);
+                                                        }}
                                                         disabled={isDisabled}
                                                     >
                                                         <SelectTrigger className="w-full">
