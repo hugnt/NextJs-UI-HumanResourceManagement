@@ -46,8 +46,6 @@
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
-    "lucide-react": "^0.439.0",
-    "next": "^14.2.15",
     "primereact": "^10.8.4",
     "react": "^18",
     "react-day-picker": "^8.10.1",

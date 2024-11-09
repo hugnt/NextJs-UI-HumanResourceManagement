@@ -608,7 +608,7 @@ export default function SalarySummaryList() {
       <FormAddOtherSC employeeListSc={employeeListSc} openForm={openFormOtherSC} setOpenForm={setOpenFormOtherSC} period={period} toggleRefesh={toggleRefesh} />
       <FormAddFormula employeeListSc={employeeListSc} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
       <FormDetails payroll={selectedPayroll} openForm={openFormDetails} setOpenForm={setOpenFormDetails} period={period} toggleRefesh={toggleRefesh} />
-      <FormPayslip openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} />
+      <FormPayslip employeeListSc={employeeListSc} openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} />
     </>
   )
 };
