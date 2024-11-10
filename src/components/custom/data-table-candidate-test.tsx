@@ -18,10 +18,11 @@ interface DataTableCandidateActionsProps<TData> {
   handleView?: () => void,
   handleEdit?: () => void,
   handleDelete?: () => void,
-  handleTest?: () => void
+  handleTest?: () => void,
+  handleAddContract?: () => void,
 }
 
-export default function DataTableCandidateActions<TData>({ row, handleView, handleEdit, handleTest, handleDelete }: DataTableCandidateActionsProps<TData>) {
+export default function DataTableCandidateActions<TData>({ row, handleView, handleEdit, handleTest, handleAddContract,handleDelete }: DataTableCandidateActionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,6 +38,7 @@ export default function DataTableCandidateActions<TData>({ row, handleView, hand
         <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEdit}>Test</DropdownMenuItem>
         <DropdownMenuItem onClick={handleTest}>Score</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleAddContract}>Tạo hợp đồng</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDelete} className='text-red-500'>
           Delete

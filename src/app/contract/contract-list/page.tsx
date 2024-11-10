@@ -24,19 +24,19 @@ const pathList: Array<PathItem> = [
   },
 ];
 
-//Filter by
+//Filter by "Signed" : "Not Signed";
 const dataFilter: Array<DataFilter> = [
   {
-    columnName: 'name',
-    title: 'Name',
+    columnName: 'companySignStatus',
+    title: 'Trạng thái duyệt',
     options: [
       {
-        label: 'Start with W',
-        value: 'W'
+        label: 'Chờ duyệt',
+        value: 'Not Signed'
       },
       {
-        label: 'Start with H',
-        value: 'H'
+        label: 'Đã duyệt',
+        value: 'Signed'
       }
     ],
   },
@@ -93,7 +93,7 @@ export default function ContractList() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Employee Name' />
       ),
-      cell: ({ row }) => <div>{row.getValue('name')}</div>,
+      cell: ({ row }) => <div>{row.getValue('name')}</div>
     },
     {
       accessorKey: 'contractTypeName', // Use contractTypeId to access the FK
@@ -139,8 +139,9 @@ export default function ContractList() {
       cell: ({ row }) => (
         <div>{getSignStatus(row.getValue('companySignStatus'))}</div>
       ),
-      enableSorting: false,
+      enableSorting: true,
       enableHiding: false,
+      enableColumnFilter: true
     },
     {
       accessorKey: 'contractStatus',
