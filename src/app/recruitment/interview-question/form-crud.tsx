@@ -150,17 +150,6 @@ export default function FormCRUD(props: FormProps) {
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="point"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>point</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter point" {...field} disabled={isDisabled} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                 <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>

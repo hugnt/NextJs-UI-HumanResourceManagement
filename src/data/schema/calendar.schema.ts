@@ -28,3 +28,8 @@ export enum ShiftTime {
     Afternoon = 2,
     Evening = 3
 }
+export enum ShiftTimeString {
+    Morning = "Morning",
+    Afternoon = "Afternoon",
+    Evening = "Evening"
+}
