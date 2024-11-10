@@ -108,15 +108,25 @@ export default function page({ params }: { params: { partimePlanId: number } }) 
             };
 
             // Only process shifts if the index is valid
-            while (index < listData.length && listData[index].presentShift === `${year}-${month}-${day}`) {
-                workShift.isCheckMorning = listData[index].shiftTime === ShiftTime.Morning;
-                workShift.isCheckAfternoon = listData[index].shiftTime === ShiftTime.Afternoon;
-                workShift.isCheckEvening = listData[index].shiftTime === ShiftTime.Evening;
-                index++;
+            if (index < listData.length && listData[index].presentShift === `${year}-${month}-${day}`) {
+                if(listData[index].shiftTime === ShiftTime.Morning){
+                    workShift.isCheckMorning = true;
+                    index ++
+                }
+                if(listData[index].shiftTime === ShiftTime.Afternoon){
+                    workShift.isCheckAfternoon = true;
+                    index ++
+                }
+                if(listData[index].shiftTime === ShiftTime.Evening){
+                    workShift.isCheckEvening = true;
+                    index ++
+                }
             }
 
             workShifts.push(workShift);
+            
         }
+        console.log(workShifts)
 
         // Only update state if workShifts has changed
         setCalendars(workShifts);

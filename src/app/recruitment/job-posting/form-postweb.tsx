@@ -143,7 +143,7 @@ export default function FormPost(props: FormPost) {
                         <SelectContent>
                           {
                             listDataJobPosting.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.description}</SelectItem>
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.experienceRequired}</SelectItem>
                             })
                           }
                         </SelectContent>
