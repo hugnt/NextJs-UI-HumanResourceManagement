@@ -1,13 +1,11 @@
 
 import {
   IconCashRegister,
-  IconUserCog,
   IconLayoutDashboard,
   IconCalendarTime,
   IconSettings,
   IconAddressBook,
   IconFileText,
-  IconUserSquare,
   IconContract,
   IconBusinessplan,
   IconBuilding
@@ -33,7 +31,7 @@ export const sidelinks: SideLink[] = [
   {
     title: 'Dashboard',
     label: '',
-    href: '/',
+    href: '/dashboard',
     icon: <IconLayoutDashboard size={18} />,
     roles: [Role.Admin]
   },
@@ -261,26 +259,6 @@ export const sidelinks: SideLink[] = [
         href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
-    ],
-  },
-  {
-    title: 'Account management',
-    label: '',
-    href: '',
-    icon: <IconUserCog size={18} />,
-    sub: [
-      {
-        title: 'Account list',
-        label: '',
-        href: '/account-list',
-        icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Role list',
-        label: '',
-        href: '/role-list',
-        icon: <IconFileText size={18} />,
-      }
     ],
   },
   {

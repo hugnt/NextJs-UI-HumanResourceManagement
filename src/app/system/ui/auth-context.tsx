@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
 import { AccountInfo } from '@/data/schema/auth.schema';
-import loading from '@/app/loading';
 
 // Define the context type
 interface AuthContextType {
@@ -40,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if(isLoading) return <></>
     return (
         <AuthContext.Provider value={{ currentUser }}>
-            {isLoading ? null : children}
+            {isLoading ? <>Loading ...</> : children}
         </AuthContext.Provider>
     );
 };

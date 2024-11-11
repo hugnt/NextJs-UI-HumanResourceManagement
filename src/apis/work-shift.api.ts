@@ -1,4 +1,4 @@
-import { HistoryUpsert } from "@/data/schema/history.schema";
+import { HistoryCheckResult, HistoryUpsert } from "@/data/schema/history.schema";
 import { CalendarEntry, EmployeeAttendanceRecord, PartimePlanResult, StatusCalendar, UserCalendarResult, WorkPlanInsert } from "@/data/schema/work-shift.schema";
 import { ApiResponse } from "@/data/type/response.type";
 import http from "@/lib/http";
@@ -13,7 +13,7 @@ const workShiftApiRequest = {
     processPartimePlanRequest: (partimePlanId: number, statusCalendar: StatusCalendar) => http.put<ApiResponse<boolean>>(`/${workShift}/process-partimeplan/${partimePlanId}?statusCalendar=${statusCalendar}`, {}),
     printPartimeWorkShiftToExcel: (employeeId: number, startDate: string, endDate: string) => http.post<ApiResponse<boolean>>(`/${workShift}/print-partime-work-shift-to-excel/${employeeId}?startDate=${startDate}&endDate=${endDate}`, {}),
     printFullTimeAttendanceToExcel: (employeeId: number, startDate: string, endDate: string) => http.post<ApiResponse<boolean>>(`/${workShift}/print-fulltime-attendance-to-excel/${employeeId}?startDate=${startDate}&endDate=${endDate}`, {}),
-    checkInOutEmployee:(employeeId: number, historyAdd: HistoryUpsert) => http.post<ApiResponse<boolean>>(`/${workShift}/check-in-out-employee/${employeeId}`, historyAdd),
+    checkInOutEmployee:(employeeId: number, historyAdd: HistoryUpsert) => http.post<ApiResponse<HistoryCheckResult>>(`/${workShift}/check-in-out-employee/${employeeId}`, historyAdd),
     updateHistoryAttendance:(id: number, historyUpdate: HistoryUpsert) => http.put<ApiResponse<boolean>>(`/${workShift}/history/${id}`, historyUpdate),
     getAllWorkShiftByFullTimeEmployee: (employeeId: number, startDate: string, endDate: string)=>http.get<ApiResponse<EmployeeAttendanceRecord[]>>(`/${workShift}/get-all-attendance-by-fulltime-employee/${employeeId}?startDate=${startDate}&endDate=${endDate}`),
 }
