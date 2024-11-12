@@ -57,7 +57,7 @@ export default function FormCRUD(props: FormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyListSalaryComponent] });
-      handleSuccessApi({ message: "Inserted Successfully!" });
+      handleSuccessApi({ message: "Thêm Mới Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -66,7 +66,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: ({ id, body }: { id: number, body: Formula }) => formulaApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Updated Successfully!" });
+      handleSuccessApi({ message: "Cập Nhật Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -75,7 +75,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: (id: number) => formulaApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Deleted Successfully!" });
+      handleSuccessApi({ message: "Xóa Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -233,7 +233,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[1200px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary h-fit'>
-            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Thêm Mới</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form} >
@@ -293,7 +293,7 @@ export default function FormCRUD(props: FormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex justify-between items-center">
-                          <FormLabel>Formula name</FormLabel>
+                          <FormLabel>Tên Công Thức</FormLabel>
                           <DropdownMenu>
                             <DropdownMenuTrigger >
                               <GrCircleQuestion size={16} className="me-1 hover:text-primary hover:scale-110" />
@@ -328,7 +328,7 @@ export default function FormCRUD(props: FormProps) {
 
                         </div>
                         <FormControl>
-                          <Input placeholder="Enter full name" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
+                          <Input placeholder="Nhập tên công thức" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -337,7 +337,7 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="parameterName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Parameter Name</FormLabel>
+                        <FormLabel>Tham Số</FormLabel>
                         <FormControl>
                           <Input placeholder="FORMULA_<>" {...field} disabled />
                         </FormControl>
@@ -348,7 +348,7 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="fomulaDetail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Formula details</FormLabel>
+                        <FormLabel>Chi Tiết Công Thức</FormLabel>
                         <FormControl>
                           <Textarea placeholder="[PARAM_BONUS_KPI10]+[PARAM_BONUS_PROJECTA]-[PARAM_DEDUCTION_LATE]"
                             {...field} disabled={isDisabled} onClick={(e) => handleClickFormula(e)} onChange={(e) => { field.onChange(e); handleChangeFormula(e); }} />
@@ -369,8 +369,8 @@ export default function FormCRUD(props: FormProps) {
                             <Button type="button" size='sm' className="bg-yellow-100 text-black text-lg" onClick={() => addOperator(")")}>)</Button>
                           </div>
                           <div className="space-x-1">
-                            <Button type="button" size='sm' className="bg-red-500" onClick={handleClearFormula}>Clear</Button>
-                            <Button type="button" size='sm' className="bg-green-500" onClick={handleCheckFormula}>Check formula</Button>
+                            <Button type="button" size='sm' className="bg-red-500" onClick={handleClearFormula}>Xóa</Button>
+                            <Button type="button" size='sm' className="bg-green-500" onClick={handleCheckFormula}>Kiểm Tra Công Thức</Button>
                           </div>
                         </div>
                         <FormMessage />
@@ -380,9 +380,9 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="note"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Note</FormLabel>
+                        <FormLabel>Ghi Chú</FormLabel>
                         <FormControl>
-                          <Input placeholder="Description about fomula" {...field} disabled={isDisabled} />
+                          <Input placeholder="Ghi chú cho công thức" {...field} disabled={isDisabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -392,9 +392,9 @@ export default function FormCRUD(props: FormProps) {
               </div>
 
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80 h-fit">
-                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
                 {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                  <Button type="submit" size='sm'>Save</Button>}
+                  <Button type="submit" size='sm'>Lưu</Button>}
               </AlertDialogFooter>
             </form>
           </Form>
@@ -409,11 +409,11 @@ export default function FormCRUD(props: FormProps) {
               <PiTrashLight size={100} color="rgb(248 113 113)" />
             </div>
             <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
-              Are you absolutely sure to delete?
+            Bạn có chắc chắn muốn xóa bản ghi này?
             </AlertDialogDescription>
             <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Confirm</Button>
+              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
+              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Xác nhận</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         }

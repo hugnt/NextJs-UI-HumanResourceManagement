@@ -15,11 +15,11 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Salary components",
+    name: "Thành Phần Lương",
     url: ""
   },
   {
-    name: "Bonus",
+    name: "Thưởng Thêm",
     url: "/salary-components/bonuses"
   },
 ];
@@ -61,7 +61,7 @@ export default function BonusList() {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Bonus name' />
+        <DataTableColumnHeader column={column} title='Tên Thưởng Thêm' />
       ),
       cell: ({ row }) => <div className='w-[200px]'>{row.getValue('name')}</div>,
       enableSorting: false,
@@ -70,7 +70,7 @@ export default function BonusList() {
     {
         accessorKey: 'parameterName',
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title='Parameter Name' />
+            <DataTableColumnHeader column={column} title='Tham Số' />
         ),
         cell: ({ row }) => <div className='w-[200px]'>{row.getValue('parameterName')}</div>,
         enableSorting: false,
@@ -79,7 +79,7 @@ export default function BonusList() {
     {
         accessorKey: 'amount',
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title='Amount' />
+            <DataTableColumnHeader column={column} title='Số Lượng' />
         ),
         cell: ({ row }) => <div className='w-[200px]'>{row.getValue('amount')}</div>,
         enableSorting: true,
@@ -133,7 +133,7 @@ export default function BonusList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Bonus list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh Sách Thưởng Thêm</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -141,7 +141,7 @@ export default function BonusList() {
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4' />Add new
+            <IconPlus className='mr-2 h-4 w-4' />Thêm Mới
           </Button>
           
         </DataTable>
