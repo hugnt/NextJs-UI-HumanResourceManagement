@@ -46,7 +46,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Employee List',
         label: '',
-        href: '/employee-list',
+        href: '/company/employee-list',
         icon: <IconFileText size={18} />,
       },
       {

@@ -71,7 +71,7 @@ export default function DataTable<TData, TValue>({ columns, data = null, filters
       <DataTableToolbar table={table} filters={filters} searchField={searchField}>
         {children}
       </DataTableToolbar>
-      <div className='rounded-md border'>
+      <div className='rounded-md border overflow-x-auto'>
         <Table>
           <TableHeader className='bg-secondary/80'>
             {table.getHeaderGroups().map((headerGroup) => (
