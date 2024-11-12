@@ -80,7 +80,7 @@ export default function page() {
       await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
       await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
       setModelsLoaded(true);
-      console.log('Models Loaded');
+      console.log('Models Loaded', "XIn chào các bạn !!!");
     };
     loadModels();
   }, []);
@@ -105,7 +105,7 @@ export default function page() {
                 handleCameraClick()
                 setHistory(undefined)
                 let id = Number(match.toString().split('_')[0])
-                mutate(id); 
+                mutate(id);
               }
             }
           }
