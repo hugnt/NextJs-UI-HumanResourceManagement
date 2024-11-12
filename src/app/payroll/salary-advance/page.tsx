@@ -61,7 +61,7 @@ export default function AdvanceList() {
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
-  const role = 1;
+  const role = 0;
   const employeeId = 2;
 
   const queryClient = useQueryClient();

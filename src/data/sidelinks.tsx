@@ -76,6 +76,12 @@ export const sidelinks: SideLink[] = [
         icon: <IconFileText size={18} />,
       },
       {
+        title: 'Contract Approval',
+        label: '',
+        href: '/contract/contract-approval',
+        icon: <IconFileText size={18} />,
+      },
+      {
         title: 'Contract salary',
         label: '',
         href: '/contract/contract-salary',

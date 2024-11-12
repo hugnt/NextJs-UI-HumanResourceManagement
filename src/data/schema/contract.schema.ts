@@ -20,6 +20,8 @@ export enum ContractStatus {
   Valid = 2,
   Terminated = 3,
   Pending = 4,
+  Approved = 5,
+  Declined = 6,
 }
 
 export enum TypeContract {
