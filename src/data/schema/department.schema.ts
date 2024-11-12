@@ -5,7 +5,8 @@ export const departmentSchema = z.object({
     id: z.coerce.number().optional(),
     name: z.string().min(0).max(255).optional(),
     managerId: z.coerce.number().optional(),
-    managerName: z.string().min(0).max(255).optional()
+    managerName: z.string().min(0).max(255).optional(),
+    employeeCount: z.coerce.number().optional(),
 });
 
 export type Department = z.infer<typeof departmentSchema>;
@@ -19,4 +20,10 @@ export type DepartmentUser = {
     id: number,
     name: string,
     email: string
+}
+
+export type DepartmentUserCount = {
+    id: number,
+    name: string,
+    employeeCount: number,
 }

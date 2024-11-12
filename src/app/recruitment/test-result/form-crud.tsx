@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Question, questionDefault, questionSchema } from "@/data/schema/question.schema";
+import { TestResult, testResultDefault, testResultSchema } from "@/data/schema/testResult.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,23 +18,21 @@ import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import questionApiRequest from "@/apis/question.api";
+import testResultApiRequest from "@/apis/testResult.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
-import testApiRequest from "@/apis/test.api";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
   setOpenCRUD: (openCRUD: boolean) => void,
   size?: number,
-  detail: Question
+  detail: TestResult
 }
 
 //react query key
 const QUERY_KEY = {
-  keyList: "questions",
-  keysub: "tests"
+  keyList: "testResults",
+  keysub: "questions",
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -44,7 +42,7 @@ export default function FormCRUD(props: FormProps) {
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
-    mutationFn: (body: Question) => questionApiRequest.create(body),
+    mutationFn: (body: TestResult) => testResultApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
@@ -53,7 +51,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Question }) => questionApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: TestResult }) => testResultApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -62,26 +60,27 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => questionApiRequest.delete(id),
+    mutationFn: (id: number) => testResultApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Deleted Successfully!" });
       setOpenCRUD(false);
     }
   });
-  const listDataTest = useQuery({
+
+  const listDataQuestion = useQuery({
     queryKey: [QUERY_KEY.keysub],
-    queryFn: () => testApiRequest.getList()
+    queryFn: () => testResultApiRequest.getList()
   });
   // #endregion
 
   // #region + FORM SETTINGS
-  const form = useForm<Question>({
-    resolver: zodResolver(questionSchema),
-    defaultValues: questionDefault,
+  const form = useForm<TestResult>({
+    resolver: zodResolver(testResultSchema),
+    defaultValues: testResultDefault,
   });
 
-  const onSubmit = (data: Question) => {
+  const onSubmit = (data: TestResult) => {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -115,36 +114,23 @@ export default function FormCRUD(props: FormProps) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
               <div className="p-2 text-sm space-y-3">
-              <FormField
-                  control={form.control}
-                  name="testId"
+                <FormField control={form.control} name="questionId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chọn bộ test</FormLabel>
-                      <Select  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
-                        <FormControl >
-                          <SelectTrigger >
-                            <SelectValue  placeholder="Chọn bộ test" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {
-                            listDataTest.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
-                            })
-                          }
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Câu hỏi</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter full name" {...field} disabled={isDisabled} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="questionText"
+                <FormField control={form.control} name="applicantId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Question</FormLabel>
+                      <FormLabel>Người trả lời</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter question" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter full testResultApi" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
