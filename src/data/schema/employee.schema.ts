@@ -4,6 +4,8 @@ export const employeeSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().optional(),
   dateOfBirth: z.date().optional(),
+  age: z.coerce.number().optional(),
+  tenure: z.coerce.number().optional(),
   gender: z.boolean().optional(),
   address: z.string().optional(),
   countrySide: z.string().optional(),
@@ -26,6 +28,8 @@ export const employeeDefault: Employee = {
   id: 0,
   name: "",
   dateOfBirth: new Date(),
+  age: 0,
+  tenure: 0,
   gender: false,
   address: "",
   countrySide: "",
@@ -42,3 +46,9 @@ export const employeeDefault: Employee = {
   phoneNumber: "",
   email: ""
 };
+
+export type FaceRegisResult = {
+  url: string,
+  statusFaceTurn: number,
+  descriptor: string
+}

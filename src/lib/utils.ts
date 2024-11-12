@@ -62,7 +62,8 @@ export function assertApiResponse<T>(data: any): T {
 }
 
 
-export const formatCurrency = (value: number) => {
+export const formatCurrency = (value?: number) => {
+  if(!value) return 0;
   const formattedValue = new Intl.NumberFormat('it-IT', {
     style: 'decimal',
     minimumFractionDigits: 0,

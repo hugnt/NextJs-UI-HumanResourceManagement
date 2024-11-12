@@ -3,13 +3,14 @@
 import applicantApiRequest from "@/apis/candidate.api";
 import FormTest from "@/app/recruitment/applicant/form-test";
 import FormCRUD from "@/app/recruitment/applicant/form-crud";
+import FormAddTest from "@/app/recruitment/applicant/form-addtest";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import DataTableCandidateActions from "@/components/custom/data-table-candidate-test";
 import { Button } from "@/components/custom/button";
 import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
-import { Candidate, candidateDefault } from "@/data/schema/candidate.schema";
+import { Candidate, candidateDefault, CandidateStatus } from "@/data/schema/candidate.schema";
 import { Question } from "@/data/schema/question.schema";
 import { Test } from "@/data/schema/test.schema";
 import { IconPlus } from "@tabler/icons-react";
@@ -20,15 +21,26 @@ import { TestResult } from "@/data/schema/testResult.schema";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Recruitment",
+    name: "Tuyển dụng",
     url: ""
   },
   {
-    name: "Applicant",
+    name: "Ứng viên",
     url: "/recruitment/Applicant"
   },
 ];
-
+const getStatus = (status: CandidateStatus) => {
+  switch (status) {
+    case CandidateStatus.Wait:
+      return "Đợi phỏng vấn";
+    case CandidateStatus.Decline:
+      return "Từ chối";
+    case CandidateStatus.Pass:
+      return "Đậu";
+    default:
+      return "Chưa xác định";
+  }
+};
 //Filter by
 const dataFilter: Array<DataFilter> = [
   {
@@ -56,6 +68,7 @@ export default function SampleList() {
   const [rwdetail, rwsetDetail] = useState<Test>({});
   const [detail, setDetail] = useState<Candidate>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
+  const [openAddTest, setOpenAddTest] = useState<boolean>(false);
   const [openTest, setOpenTest] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
@@ -97,7 +110,7 @@ export default function SampleList() {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title='file' />
         ),
-        cell: ({ row }) => <div className='w-[300px]'>{row.getValue('fileDataStore')}</div>,
+        cell: ({ row }) => <div className='w-[250px]'>{row.getValue('fileDataStore')}</div>,
         enableSorting: false,
         enableHiding: false,
       },
@@ -115,7 +128,7 @@ export default function SampleList() {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title='Điểm' />
         ),
-        cell: ({ row }) => <div className='w-[100px]'>{row.getValue('rate')}</div>,
+        cell: ({ row }) => <div className='w-[50px]'>{row.getValue('rate')}</div>,
         enableSorting: false,
         enableHiding: false,
       },
@@ -138,6 +151,17 @@ export default function SampleList() {
         enableHiding: false,
       },
       {
+        accessorKey: 'status',
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title='Tình trạng' />
+        ),
+        cell: ({ row }) => (
+          <div>{getStatus(row.getValue('status'))}</div>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
         id: 'actions',
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title='Action' />
@@ -145,6 +169,7 @@ export default function SampleList() {
         cell: ({ row }) => <DataTableCandidateActions row={row}
           handleView={() => handleView(row)}
           handleEdit={() => handleEdit(row)}
+          handleAddTest={() => handleAddTest(row)}
           handleTest={() => handleTest(row)}
           handleDelete={() => handleDelete(row)} />,
       },
@@ -156,14 +181,6 @@ export default function SampleList() {
     setMode(CRUD_MODE.ADD)
     setOpenCRUD(true);
   };
-
-//   const handleView = async (row: Row<Candidate>) => {
-//     const id = row.original.id;
-//     setMode(CRUD_MODE.VIEW);
-//     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
-//     setDetail(selectedData);
-//     setOpenCRUD(true);
-//   };
 const handleView = async (row: Row<Candidate>) => {
     const id = row.original.id;
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id === id) ?? {};
@@ -182,12 +199,18 @@ const handleView = async (row: Row<Candidate>) => {
     setDetail(selectedData);
     setOpenCRUD(true);
   };
+  const handleAddTest = (row: Row<Candidate>) => {
+    const id = row.original.id;
+    setMode(CRUD_MODE.EDIT)
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    setDetail(selectedData);
+    setOpenAddTest(true);
+  };
 
   const handleTest = (row: Row<Candidate>) => {
     const id = row.original.id;
     const testId = row.original.testId;
     const getTest: TestResult = { applicantId: id, applicantTestId: testId };
-    //console.log(selectedData)
     rwsetDetail(getTest);
     setOpenTest(true);
   };
@@ -205,7 +228,7 @@ const handleView = async (row: Row<Candidate>) => {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Applicant list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh sách ứng viên</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -213,12 +236,13 @@ const handleView = async (row: Row<Candidate>) => {
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4' />Add new
+            <IconPlus className='mr-2 h-4 w-4' />Thêm mới
           </Button>
           
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />
+      <FormAddTest openAddTest={openAddTest} setOpenAddTest={setOpenAddTest} mode={mode} detail={detail} />
       <FormTest openTest={openTest} setOpenTest={setOpenTest} detail={rwdetail}/>
     </>
   )

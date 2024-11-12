@@ -5,6 +5,7 @@ export const taxDeductionSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(0).max(255).optional(),
   parameterName: z.string().min(0).max(255).optional(),
+  amount: z.coerce.number().optional(),
   fomulaType: z.coerce.number().optional(),
   terms: z.string().optional()
 });
@@ -15,5 +16,6 @@ export const taxDeductionDefault: TaxDeduction = {
   name: "",
   parameterName:"",
   fomulaType:1,
+  amount:0,
   terms:""
 };

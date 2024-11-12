@@ -30,8 +30,11 @@ import { TfiExport } from "react-icons/tfi";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { GrDocumentPdf } from "react-icons/gr";
 import { GrDocumentCsv } from "react-icons/gr";
-import useDebounce from "@/hooks/use-debounce";
-import { useQuery } from "@tanstack/react-query";
+import { IoIosSend } from "react-icons/io";
+import { FaSave } from "react-icons/fa";
+import FormDetails from "@/app/payroll/salary-summary/form-details";
+import { useMutation } from "@tanstack/react-query";
+import FormPayslip from "@/app/payroll/salary-summary/form-send-payslip";
 
 const pathList: Array<PathItem> = [
   {
@@ -58,6 +61,7 @@ export default function SalarySummaryList() {
   const currentDay = currentDate.getDate();
   const currentMonth: number = new Date().getMonth() + 1;
   const currenYear: number = new Date().getFullYear();
+  let timeoutId: NodeJS.Timeout;
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -66,26 +70,21 @@ export default function SalarySummaryList() {
   const [payrollHeader, setPayrollHeader] = useState<ColumnTableHeader[][]>([]);
   const [payrollColumn, setPayrollColumn] = useState<ColumnMeta[]>([]);
   const [payrollData, setPayrollData] = useState<PayrollDataTable[]>([]);
+  const [payrollDataAllConst, setPayrollDataAllConst] = useState<PayrollDataTable[]>([]);
 
   const [highlightColumns, setHighlightColumns] = useState<ColumnMeta[]>([]);
   const [displayColumns, setDisplayColumns] = useState<ColumnMeta[]>([]);
   const [employeeListSc, setEmployeeListSc] = useState<PayrollResult[]>([]);
 
-  const [selectedEmployee, setSelectedEmployee] = useState<any | null>(null);
+  const [selectedPayroll, setSelectedPayroll] = useState<PayrollResult | undefined>(undefined);
   const [listAllEmployeeIds, setListAllEmployeeIds] = useState<number[]>([]);
-
-  const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
-  const [filters, setFilters] = useState<DataTableFilterMeta>({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    employeeName: { value: null, matchMode: FilterMatchMode.IN },
-    departmentName: { value: null, matchMode: FilterMatchMode.IN }
-  });
-
 
   const [openAE, setOpenAE] = useState<boolean>(false);
   const [openFormManySC, setOpenFormManySC] = useState<boolean>(false);
   const [openFormOtherSC, setOpenFormOtherSC] = useState<boolean>(false);
   const [openFormFormula, setOpenFormFormula] = useState<boolean>(false);
+  const [openFormDetails, setOpenFormDetails] = useState<boolean>(false);
+  const [openFormPayslip, setOpenFormPayslip] = useState<boolean>(false);
 
   const [period, setPeriod] = useState<string>(`${currenYear}/${currentMonth.toString().padStart(2, '0')}`);
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
@@ -95,7 +94,15 @@ export default function SalarySummaryList() {
 
   const [refesh, setRefesh] = useState<boolean>(false);
 
-  const debounced = useDebounce(globalFilterValue, 500);
+  
+  const getPayrollById = useMutation({
+    mutationFn: (id:number) => payrollApiRequest.getEmployeeSalaryDetails(id),
+    onSuccess: (data) => {
+      setSelectedPayroll(data?.metadata)
+      setOpenFormDetails(true);
+    }
+  });
+
 
   //ACTION HANDLER
   const handleAddNew = () => {
@@ -112,6 +119,10 @@ export default function SalarySummaryList() {
 
   const handleAddFormula = () => {
     setOpenFormFormula(true);
+  };
+
+  const handleSendPayslip = () => {
+    setOpenFormPayslip(true);
   };
 
   useEffect(() => {
@@ -149,6 +160,7 @@ export default function SalarySummaryList() {
         setPayrollData(payrollDataList);
         setEmployeeListSc(employeeListScData);
 
+        setPayrollDataAllConst(payrollDataList);
         const lstEmployyId = payrollDataList.map(x => x.employeeId);
         setListAllEmployeeIds(lstEmployyId);
 
@@ -174,11 +186,7 @@ export default function SalarySummaryList() {
     setLoading(false);
   }, [displayColumns])
 
-  useEffect(() => {
-    let _filters = { ...filters };
-    _filters['global'].value = debounced;
-    setFilters(_filters);
-  }, [debounced])
+
 
   const generateTableHeader = (payrollHeaderProp: ColumnTableHeader[][]) => {
     const tableSchemaHeader = payrollHeaderProp ?? [];
@@ -335,8 +343,23 @@ export default function SalarySummaryList() {
 
   }
 
+  const handleSearchChange = (key: string) => {
+    clearTimeout(timeoutId);
+    const matchingData = payrollDataAllConst.filter(x => x.employeeName.toLowerCase().includes(key.toLowerCase()) || x.departmentName.toLowerCase().includes(key.toLowerCase()));
+    if (key.trim() == "") {
+      setPayrollData(payrollDataAllConst);
+    }
+    else {
+      timeoutId = setTimeout(() => {
+        setPayrollData(matchingData);
+      }, 500)
+    }
+
+  }
+
   const onRowSelect = (e: DataTableRowClickEvent) => {
-      const selectedData:PayrollDataTable = e.data;
+    const selectedData: PayrollDataTable = e.data;
+    getPayrollById.mutate(selectedData.payrollId);
   };
   return (
     <>
@@ -371,15 +394,17 @@ export default function SalarySummaryList() {
           </Button>
         </div>
         <div className="flex space-x-1 justify-end">
-
-          <Button variant='outline' size='sm' onClick={handleAddOtherSC} className='bg-gray-500 ml-auto hidden h-8 lg:flex text-white'>
-            <IconPlus className='h-4 w-4 mr-2' />Khoản khác
+          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex bg-primary text-white'>
+            <IconPlus className='mr-1 h-4 w-4 ' />Nhân viên
           </Button>
-          <Button variant='outline' size='sm' onClick={handleAddManySC} className='bg-orange-500 ml-auto hidden h-8 lg:flex text-white'>
-            <IconPlus className='h-4 w-4 mr-2' />Khoản thưởng/trừ
+          <Button variant='outline' size='sm' onClick={handleAddOtherSC} className='border-primary ml-auto hidden h-8 lg:flex'>
+            <IconPlus className='h-4 w-4 mr-1' />Khoản khác
           </Button>
-          <Button variant='outline' size='sm' onClick={handleAddFormula} className='bg-yellow-500 ml-auto hidden h-8 lg:flex text-white'>
-            <IconClearFormatting className='h-4 w-4 mr-2' />Cập nhật công thức
+          <Button variant='outline' size='sm' onClick={handleAddManySC} className='border-primary ml-auto hidden h-8 lg:flex '>
+            <IconPlus className='h-4 w-4 mr-1' />Khoản thưởng/trừ
+          </Button>
+          <Button variant='outline' size='sm' onClick={handleAddFormula} className='border-primary ml-auto hidden h-8 lg:flex '>
+            <IconClearFormatting className='h-4 w-4 mr-1' />Cập nhật công thức
           </Button>
         </div>
       </div>
@@ -387,9 +412,8 @@ export default function SalarySummaryList() {
       <div className='flex justify-between items-center my-2'>
         <div className="flex items-center space-x-2">
           <Input className="w-[150px] lg:w-[250px] h-8 "
-            value={globalFilterValue}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGlobalFilterValue(e.target.value)}
-            placeholder="Keyword Search" />
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
+            placeholder="Tìm kiếm nhân viên, phòng ban, ..." />
 
           <MultiSelect
             loading={loading}
@@ -490,10 +514,13 @@ export default function SalarySummaryList() {
         </div>
         <div className="flex justify-end space-x-1">
           <Button onClick={toggleRefesh} variant='outline' size='sm' className='bg-green-500 ml-auto hidden h-8 lg:flex text-white '>
-            <IconRefresh className='mr-2 h-4 w-4' />Sync
+            <IconRefresh className='mr-1 h-4 w-4' />Sync
           </Button>
-          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4 ' />Thêm nhân viên
+          <Button onClick={toggleRefesh} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
+            <FaSave className='mr-1 h-4 w-4' />Lưu kết quả
+          </Button>
+          <Button onClick={handleSendPayslip} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
+            <IoIosSend className='mr-1 h-4 w-4' />Gửi phiếu lương
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="h-8">
@@ -518,20 +545,23 @@ export default function SalarySummaryList() {
         </div>
       </div>
 
-      <div>
+      <div className="mt-2">
+        <div>
+          <h1 className="uppercase text-center font-semibold text-lg bg-[#f9fafb] py-1 border border-b-0">
+            Bảng lương tổng hợp tháng {period.split('/')[1]} năm {period.split('/')[0]}
+          </h1>
+        </div>
         <DataTable
           loading={loading}
           value={payrollData}
           headerColumnGroup={headerGroup}
           footerColumnGroup={footerGroup}
-          filters={filters}
           showGridlines size="small" scrollable
           scrollHeight="400px"
           selectionMode="single"
-          selection={selectedEmployee}
           onRowDoubleClick={onRowSelect}
           emptyMessage="No employee found."
-          className="mt-2" pt={{
+          pt={{
             table: {
               className: 'border border-collapse '
             },
@@ -577,7 +607,8 @@ export default function SalarySummaryList() {
       <FormAddManySC employeeListSc={employeeListSc} openForm={openFormManySC} setOpenForm={setOpenFormManySC} period={period} toggleRefesh={toggleRefesh} />
       <FormAddOtherSC employeeListSc={employeeListSc} openForm={openFormOtherSC} setOpenForm={setOpenFormOtherSC} period={period} toggleRefesh={toggleRefesh} />
       <FormAddFormula employeeListSc={employeeListSc} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
-    
+      <FormDetails payroll={selectedPayroll} openForm={openFormDetails} setOpenForm={setOpenFormDetails} period={period} toggleRefesh={toggleRefesh} />
+      <FormPayslip openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} />
     </>
   )
 };

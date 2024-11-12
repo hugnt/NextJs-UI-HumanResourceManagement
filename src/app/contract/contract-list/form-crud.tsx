@@ -463,7 +463,6 @@ export default function FormCRUD(props: FormProps) {
                           options={allowanceListOptions}
                           isDisabled={isDisabled}
                         />
-
                       <FormMessage />
                     </FormItem>
                   )}

@@ -2,7 +2,6 @@ import { Allowance } from "@/data/schema/allowance.schema";
 import { ContractSalary } from "@/data/schema/contractSalary.schema";
 import { Insurance } from "@/data/schema/insurance.schema";
 import { TaxDeduction } from "@/data/schema/taxDeduction.schema";
-import { ReactNode } from "react";
 import { z } from "zod";
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
@@ -92,7 +91,7 @@ export interface PayrollDataTable {
 
 export interface PayrollResult {
   id: number;
-  month: number; // Cần định nghĩa MonthPeriod
+  month: number; 
   year: number;
   employeeId: number;
   contractId: number;
