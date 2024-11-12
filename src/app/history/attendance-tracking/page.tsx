@@ -47,7 +47,9 @@ const QUERY_KEY = {
     keyList: "employee-work-shift",
     mutationKey: "print-work-shift"
 }
-export default function page() {
+export default function HistoryAttendance({employeeId} : {employeeId?: number}) {
+    const user = useCurrentUser().currentUser!
+    let id = employeeId == null ? user.id : employeeId;
     const queryClient = useQueryClient()
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
@@ -75,7 +77,6 @@ export default function page() {
         setPeriod(period);
         setDateRange(range)
     }
-    const user = useCurrentUser().currentUser;
     const getShiftTimeKey = (index: number): ShiftTimeString => {
         switch (index) {
             case 0:
@@ -95,7 +96,7 @@ export default function page() {
         queryFn: () => {
             let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            return workShiftApiRequest.getAllWorkShiftByPartimeEmployee(1, startDate!, endDate!)
+            return workShiftApiRequest.getAllWorkShiftByPartimeEmployee(id, startDate!, endDate!)
         },
     });
     console.log(update)
@@ -105,7 +106,7 @@ export default function page() {
         mutationFn: () => {
             let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            return workShiftApiRequest.printPartimeWorkShiftToExcel(1, startDate!, endDate!)
+            return workShiftApiRequest.printPartimeWorkShiftToExcel(id, startDate!, endDate!)
         }
     })
     return (

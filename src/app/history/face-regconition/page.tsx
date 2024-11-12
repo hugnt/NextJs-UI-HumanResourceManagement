@@ -16,8 +16,8 @@ import Webcam from 'react-webcam';
 import { toaster } from '@/components/custom/_toast';
 import { Button } from '@/components/custom/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import employeeApiRequest from '@/apis/faceRecognition';
 import { handleSuccessApi } from '@/lib/utils';
+import faceRegisApiRequest from '@/apis/faceRecognition';
 const pathList: Array<PathItem> = [
   { name: "History", url: "/time-keeping" },
   { name: "Face Registration", url: "/history/face-recognition" },
@@ -37,7 +37,8 @@ const dataURItoBlob = (dataURI: string) => {
   return new Blob([uint8Array], { type: 'image/png' });
 }
 const QUERY_KEY = {
-  MUTATION_KEY: "face-regis",
+  MUTATION_ADD_KEY: "face-regis",
+  MUTATION_UDPTE_KEY: "update-face-regis",
   KEY_LIST: "get-by-employee-id"
 }
 export default function Page() {
@@ -51,6 +52,8 @@ export default function Page() {
   const [imageFiles, setImageFiles] = useState<(File | null)[]>([]);
   const [descriptor, setDescriptor] = useState<Float32Array>();
   const [descriptions, setDescriptions] = useState<(Float32Array | null)[]>([])
+  const [ids, setIds] = useState<number[]>([]);
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
 
   const handleCameraClick = () => {
     setIsCameraOpen((prev) => !prev);
@@ -112,7 +115,8 @@ export default function Page() {
   };
 
   const regisFace = () => {
-    if (descriptions.length < 5) {
+    console.log(capturedImage.length)
+    if (capturedImage.length < 5) {
       toaster.error({
         title: 'Trạng thái khuôn mặt',
         message: "Không đủ trạng thái khuôn mặt",
@@ -123,26 +127,53 @@ export default function Page() {
       return;
     }
     const formData = new FormData();
-    for (let i = 0; i < 5; i++) {
-      formData.append("faceRegises[" + i + "].faceFile", imageFiles[0]!)
-      formData.append("faceRegises[" + i + "].statusFaceTurn", (i + 1).toString())
-      formData.append("faceRegises[" + i + "].descriptor", JSON.stringify(descriptions[0]))
-      //console.log(imageFiles[0]!, (i + 1).toString(), JSON.stringify(descriptions[0]))
+    // Add (Post)
+    if (!isUpdate) {
+      for (let i = 0; i < 5; i++) {
+        formData.append("faceRegises[" + i + "].faceFile", imageFiles[i]!)
+        formData.append("faceRegises[" + i + "].statusFaceTurn", (i + 1).toString())
+        formData.append("faceRegises[" + i + "].descriptor", JSON.stringify(descriptions[i]))
+        //console.log(imageFiles[0]!, (i + 1).toString(), JSON.stringify(descriptions[0]))
+      }
+      mutate(formData)
+    } else {
+      let index = 0;
+      for (let i = 0; i < 5; i++) {
+        if (imageFiles[i] != null) {
+          formData.append("faceRegisUpdates[" + index + "].faceFile", imageFiles[i]!)
+          formData.append("faceRegisUpdates[" + index + "].statusFaceTurn", (i + 1).toString())
+          formData.append("faceRegisUpdates[" + index + "].descriptor", JSON.stringify(descriptions[i]))
+          formData.append("faceRegisUpdates[" + index + "].id", ids[i].toString()!)
+          console.log(imageFiles[i]!, (i + 1).toString(), JSON.stringify(descriptions[i]), ids[index].toString()!)
+          index++
+        }
+      }
+      mutateUpdate(formData)
     }
-    mutate(formData)
+    console.log(isUpdate)
   }
 
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY.KEY_LIST],
-    queryFn: () => employeeApiRequest.getAllFaceRegisByEmployeeId(1)
+    queryFn: () => faceRegisApiRequest.getAllFaceRegisByEmployeeId(1)
   })
 
   const { mutate, isPending } = useMutation({
-    mutationKey: [QUERY_KEY.MUTATION_KEY],
-    mutationFn: (data: FormData) => employeeApiRequest.registrationFace(1, data),
+    mutationKey: [QUERY_KEY.MUTATION_ADD_KEY],
+    mutationFn: (data: FormData) => faceRegisApiRequest.registrationFace(1, data),
     onSuccess(data) {
       if (data.isSuccess) {
         handleSuccessApi({ message: "Face registration successfully" })
+      }
+    },
+  })
+
+  const { mutate: mutateUpdate, isPending: _ } = useMutation({
+    mutationKey: [QUERY_KEY.MUTATION_UDPTE_KEY],
+    mutationFn: (data: FormData) => faceRegisApiRequest.updateRegisFace(1, data),
+    onSuccess(data) {
+      if (data.isSuccess) {
+        handleSuccessApi({ message: "Face update registration successfully" })
       }
     },
   })
@@ -219,9 +250,12 @@ export default function Page() {
   }, [isCameraOpen, modelsLoaded]);
 
   useEffect(() => {
-    if (data) {
-      let urls = data.metadata!.map(item => item.url);
+    if (data && data.metadata && data.metadata.length > 0) {
+      let urls = data.metadata.map(item => item.url);
+      let idArray = data.metadata.map(item => item.id);
       setCapturedImage(urls)
+      setIds(idArray)
+      setIsUpdate(true);
     }
   }, [data, isLoading])
   return (
@@ -293,7 +327,7 @@ export default function Page() {
           ))}
         </div>
         <div className='flex items-center justify-end'>
-          <Button loading={isPending} onClick={() => regisFace()}>Save</Button>
+          {capturedImage.length == 5 && imageFiles.length > 0 ? <Button loading={isPending} onClick={() => regisFace()}>Save</Button> : <></>}
         </div>
 
       </div>
