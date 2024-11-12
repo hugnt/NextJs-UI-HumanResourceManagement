@@ -105,9 +105,8 @@ export default function page() {
                 handleCameraClick()
                 setHistory(undefined)
                 let id = Number(match.toString().split('_')[0])
-                mutate(id);
+                mutate(id); 
               }
-
             }
           }
         }, 200);

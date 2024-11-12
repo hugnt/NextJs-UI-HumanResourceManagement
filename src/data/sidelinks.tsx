@@ -40,6 +40,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconBuilding size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Employee List',
@@ -66,6 +67,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconContract size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Contract List',
@@ -117,13 +119,14 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
-        roles: [Role.Admin, Role.Admin],
+        roles: [Role.Admin, Role.Partime],
       },
       {
         title: 'Work shift',
         label: '',
         href: '/time-keeping/work-shift',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Leave application',
@@ -144,6 +147,14 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/history/attendance-tracking',
         icon: <IconFileText size={18} />,
+        roles: [Role.Partime],
+      },
+      {
+        title: 'Fulltime Attendance',
+        label: '',
+        href: '/history/fulltime-attendance',
+        icon: <IconFileText size={18} />,
+        roles: [Role.Fulltime],
       },
       {
         title: 'Face Registration',
@@ -158,24 +169,28 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconCashRegister size={18} />,
+
     sub: [
       {
         title: 'Salary Summary',
         label: '',
         href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Salary Calculation',
         label: '',
         href: '/payroll/salary-calculation',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Salary advance',
         label: '',
         href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
+        roles: [Role.Partime, Role.Fulltime],
       }
     ],
   },
@@ -184,6 +199,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconBusinessplan size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Formula list',
@@ -222,6 +238,7 @@ export const sidelinks: SideLink[] = [
     label: '3',
     href: '',
     icon: <IconAddressBook size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Test Result',
