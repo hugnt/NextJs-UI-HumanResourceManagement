@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -35,6 +36,7 @@ import { FaSave } from "react-icons/fa";
 import FormDetails from "@/app/payroll/salary-summary/form-details";
 import { useMutation } from "@tanstack/react-query";
 import FormPayslip from "@/app/payroll/salary-summary/form-send-payslip";
+import ExcelJS from 'exceljs'
 
 const pathList: Array<PathItem> = [
   {
@@ -94,9 +96,9 @@ export default function SalarySummaryList() {
 
   const [refesh, setRefesh] = useState<boolean>(false);
 
-  
+
   const getPayrollById = useMutation({
-    mutationFn: (id:number) => payrollApiRequest.getEmployeeSalaryDetails(id),
+    mutationFn: (id: number) => payrollApiRequest.getEmployeeSalaryDetails(id),
     onSuccess: (data) => {
       setSelectedPayroll(data?.metadata)
       setOpenFormDetails(true);
@@ -361,6 +363,108 @@ export default function SalarySummaryList() {
     const selectedData: PayrollDataTable = e.data;
     getPayrollById.mutate(selectedData.payrollId);
   };
+
+  const exportExcelFile = () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("My Sheet");
+    const startRow = 1;
+    const startTableRow = 5;
+    const tableMaxCols = payrollColumn.length;
+
+    sheet.properties.defaultRowHeight = 20;
+
+    sheet.getRow(startRow).values = ['BẢNG LƯƠNG THÁNG ? NĂM 2024'];
+    const cell_0 = sheet.getCell(startRow, 1).address;
+    const cell_end = sheet.getCell(startRow, tableMaxCols).address;
+    sheet.mergeCells(cell_0, cell_end);
+
+    var spaceStart = 0;
+    var lstColPass: number[] = [];
+    payrollHeader?.map((x, i) => {
+      //const startCol = spaceStart <= 0 ? 0 : spaceStart - 1;
+      console.log("lstColPass", lstColPass)
+      var startColSpace = 0;
+      var currentColumn = 1;
+      for (let j = 1; j <= x.length; j++) {
+        const y = x[j - 1];
+        const rowSpan = y.rowSpan <= 1 ? 0 : y.rowSpan;
+        const colSpan = y.colSpan <= 1 ? 0 : y.colSpan;
+        const curRow = startRow + i + 1;
+        var curCol = currentColumn + startColSpace;
+        while (lstColPass.includes(curCol)) {
+          curCol += 1;
+          currentColumn++;
+        }
+        //if(checkIn) startColSpace+=1;//điều hướng tới ô kế bên
+        if (rowSpan != 0) {
+          const cell_first = sheet.getCell(curRow, curCol).address;
+          const cell_last = sheet.getCell(curRow + rowSpan - 1, curCol).address;
+          sheet.mergeCells(cell_first, cell_last);
+          lstColPass.push(curCol);
+          //spaceStart += 1;
+        }
+        if (colSpan != 0) {
+          const cell_first = sheet.getCell(curRow, curCol).address;
+          const cell_last = sheet.getCell(curRow, curCol + colSpan - 1).address;
+          console.log("cell_first,cell_last:", cell_first, "-", cell_last)
+          sheet.mergeCells(cell_first, cell_last);
+          console.log("cell_first,cell_last:", cell_first, "-", cell_last)
+          startColSpace += colSpan - 1;       
+        }
+        currentColumn++;
+
+        console.log("j, startColSpace:",j," - ",startColSpace)
+        sheet.getCell(curRow, curCol).value = y.header;
+        console.log(curRow + "-" + curCol + ":" + y.header)
+        sheet.getCell(curRow, curCol).alignment = {
+          horizontal: 'center',
+          vertical: 'middle'
+        };
+      }
+
+      sheet.getRow(startRow + i + 1).font = {
+        ...sheet.getRow(startRow + i + 1).font,
+        bold: true,
+      };
+
+    });
+
+    sheet.columns = payrollColumn.map(x => ({
+      key: x.field.replace("dp.", ""),
+    }));
+
+    sheet.columns.forEach((col, i) => {
+      col.width = payrollColumn[i].header.length < 12 ? 12 : payrollColumn[i].header.length
+    })
+
+
+    payrollData?.map((payroll, i) => {
+      const rowData: any = {
+        employeeName: payroll.employeeName,
+        departmentName: payroll.departmentName,
+      };
+
+      for (const [key, value] of Object.entries(payroll.dp)) {
+        rowData[key] = value;
+      }
+      //console.log("rowData: ",rowData)
+      sheet.addRow(rowData);
+    })
+
+    //console.log("columns: ",sheet.columns);
+
+    workbook.xlsx.writeBuffer().then(function (data) {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "test2.xlsx";
+      anchor.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
   return (
     <>
       <div className='mb-2 flex items-center justify-between space-y-2 '>
@@ -529,8 +633,8 @@ export default function SalarySummaryList() {
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Choose export file</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <SiMicrosoftexcel size={16} className="me-2" /> xmls
+              <DropdownMenuItem onClick={exportExcelFile}>
+                <SiMicrosoftexcel size={16} className="me-2" /> xlsx
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <GrDocumentPdf size={16} className="me-2" />pdf
@@ -560,6 +664,7 @@ export default function SalarySummaryList() {
           scrollHeight="400px"
           selectionMode="single"
           onRowDoubleClick={onRowSelect}
+
           emptyMessage="No employee found."
           pt={{
             table: {
