@@ -180,5 +180,5 @@ export default function FormCRUD(props: FormProps) {
       </AlertDialog>
 
     </div>
-  )
+  ) 
 }

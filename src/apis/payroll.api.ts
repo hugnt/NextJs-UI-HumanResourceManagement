@@ -17,6 +17,7 @@ const payrollApiRequest = {
     getPayrollTableHeader: (period:string) => http.get<ApiResponse<ColumnTableHeader[][]>>(`/payrolls/table-schema/header/${period}`),
     getPayrollTableColumn: (period:string) => http.get<ApiResponse<ColumnMeta[]>>(`/payrolls/table-schema/column/${period}`),
     getList: (period:string) => http.get<ApiResponse<PayrollDataTable[]>>(`/payrolls/${period}`),
+    sendPayslip: (period:string,body: number[]) => http.post<ApiResponse<boolean>>(`/payrolls/employee-salary/payslip/${period}`,body),
 };
 
 export default payrollApiRequest;
