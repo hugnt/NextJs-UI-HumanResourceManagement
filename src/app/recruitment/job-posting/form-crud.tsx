@@ -145,11 +145,7 @@ export default function FormCRUD(props: FormProps) {
         <Sheet open={openCRUD} onOpenChange={setOpenCRUD}>
           <SheetContent className="p-0 overflow-y-auto sm:max-w-[800px] !sm:w-[800px] min-w-[800px]">
             <SheetHeader className="px-4 pt-3">
-              <SheetTitle>Chi tiết lương</SheetTitle>
-              <SheetDescription>
-                Hiển thị chi tiết thông tin về các khoản lương, thành phần lương
-                của nhân viên được trong tháng
-              </SheetDescription>
+              <SheetTitle>Chi tiết công việc</SheetTitle>
             </SheetHeader>
             <Form {...form}>
               <form

@@ -15,6 +15,7 @@ import {
   candidateSchema,
 } from "@/data/schema/candidate.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CandidateStatus } from "@/data/schema/candidate.schema";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -123,7 +124,11 @@ export default function FormCRUD(props: FormProps) {
     formData.append("positionId", data.positionId?.toString() ?? "0");
     formData.append("rate", data.rate?.toString() ?? "0");
     formData.append("testId", data.testId?.toString() ?? "0");
+    formData.append("interviewerName", data.interviewerName!);
+    formData.append("status", (data.status as number).toString()); 
+    
     formData.forEach((value, key) => console.log(key, value));
+
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(formData);
     else if (mode == CRUD_MODE.EDIT) {
       updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
@@ -337,14 +342,14 @@ export default function FormCRUD(props: FormProps) {
                       </FormItem>
                     )}
                   />
-                  {/* <FormField
+                  <FormField
                     control={form.control}
                     name="status"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Tình trạng ứng viên</FormLabel>
                         <Select
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => field.onChange(Number(value))} // Parse the value as a number
                           defaultValue={field.value?.toString()}
                           disabled={isDisabled}
                         >
@@ -354,22 +359,15 @@ export default function FormCRUD(props: FormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {listDataTest.data?.metadata?.map((item, index) => {
-                              return (
-                                <SelectItem
-                                  key={index}
-                                  value={item.id?.toString() ?? "0"}
-                                >
-                                  {item.name}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
+                          <SelectItem value={CandidateStatus.Wait.toString()}>Wait</SelectItem>
+                          <SelectItem value={CandidateStatus.Decline.toString()}>Decline</SelectItem>
+                          <SelectItem value={CandidateStatus.Pass.toString()}>Pass</SelectItem>
+                        </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
                     )}
-                  /> */}
+                  />
                 </div>
                 <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                   <Button

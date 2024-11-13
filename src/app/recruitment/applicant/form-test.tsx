@@ -27,6 +27,13 @@ import questionApiRequest from "@/apis/question.api";
 import applicantApiRequest from "@/apis/candidate.api";
 import testApiRequest from "@/apis/test.api";
 import testResultApiRequest from "@/apis/testResult.api";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import test from "node:test";
 import { number } from "prop-types";
 import { Candidate } from "@/data/schema/candidate.schema";
@@ -132,128 +139,107 @@ export default function FormTest(props: FormTest) {
 
   return (
     <div>
-      <AlertDialog open={openTest} onOpenChange={setOpenTest} >
-      <AlertDialogContent
-          className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
-          <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Sample Details</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogDescription />
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
-              <div className="p-2 text-sm space-y-3">
-              <FormField
-                  control={form.control}
-                  name="applicantId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ứng viên</FormLabel>
-                      <Select 
-                       onValueChange={field.onChange} 
-                       defaultValue={field.value?.toString()}>
-                        <FormControl >
-                          <SelectTrigger >
-                            <SelectValue  placeholder="Tên ứng viên" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {
-                            listDataApplicant.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
-                            })
-                          }
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+        <Sheet open={openTest} onOpenChange={setOpenTest}>
+          <SheetContent className="p-0 overflow-y-auto sm:max-w-[800px] !sm:w-[800px] min-w-[800px]">
+            <SheetHeader className="px-4 pt-3">
+              <SheetTitle>Chi tiết công việc</SheetTitle>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
+                <div className="p-2 text-sm space-y-3">
                 <FormField
-                  control={form.control}
-                  name="applicantTestId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Chọn test</FormLabel>
-                      <Select 
-                       onValueChange={field.onChange} 
-                       defaultValue={field.value?.toString()}>
-                        <FormControl >
-                          <SelectTrigger disabled>
-                            <SelectValue  placeholder="Tên bộ Test" />
-                          </SelectTrigger>
+                    control={form.control}
+                    name="applicantId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ứng viên</FormLabel>
+                        <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value?.toString()}>
+                          <FormControl >
+                            <SelectTrigger >
+                              <SelectValue  placeholder="Tên ứng viên" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {
+                              listDataApplicant.data?.metadata?.map((item, index) => {
+                                return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                              })
+                            }
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="applicantTestId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Chọn test</FormLabel>
+                        <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value?.toString()}>
+                          <FormControl >
+                            <SelectTrigger disabled>
+                              <SelectValue  placeholder="Tên bộ Test" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {
+                              listDataTest.data?.metadata?.map((item, index) => {
+                                return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                              })
+                            }
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {listDataQuestion.data?.metadata?.map((item, index) => (
+                    <div key={index} >
+                      <FormField
+                        name="point"
+                        control={form.control}
+                        render={({ field }) => (
+                          <FormItem className="flex items-center justify-between space-x-3 w-full">
+                              <FormLabel className="whitespace-nowrap">{item.questionText}</FormLabel>
+                              <Input 
+                              type="number" 
+                              placeholder="Nhập điểm"
+                              value={points[item.id ?? 0] || ""}  // Sử dụng giá trị từ state `points`
+                              onChange={(e) => {const newPoints = { ...points, [item.id ?? 0]: Number(e.target.value) };
+                              setPoints(newPoints);}}
+                              className="input-class p-1 border border-gray-300 rounded"
+                              />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  <FormField control={form.control} name="comment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Điểm tổng</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nhận xét" {...field} disabled={isDisabled} />
                         </FormControl>
-                        <SelectContent>
-                          {
-                            listDataTest.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
-                            })
-                          }
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {listDataQuestion.data?.metadata?.map((item, index) => (
-                  <div key={index} >
-                    <FormField
-                      name="point"
-                      control={form.control}
-                      render={({ field }) => (
-                        <FormItem className="flex items-center justify-between space-x-3 w-full">
-                            <FormLabel className="whitespace-nowrap">{item.questionText}</FormLabel>
-                            <Input 
-                            type="number" 
-                            placeholder="Nhập điểm"
-                            value={points[item.id ?? 0] || ""}  // Sử dụng giá trị từ state `points`
-                            onChange={(e) => {const newPoints = { ...points, [item.id ?? 0]: Number(e.target.value) };
-                            setPoints(newPoints);}}
-                            className="input-class p-1 border border-gray-300 rounded"
-                            />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                ))}
-                {/* {listDataQuestion.data?.metadata?.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <FormLabel>{item.questionText}</FormLabel>
-                    <FormField
-                      name="point" // Đặt tên động nhưng không phụ thuộc vào `FormField`
-                      control={form.control}
-                      render={({ field }) => (
-                        <Input 
-                          type="number" 
-                          placeholder="Nhập điểm"
-                          value={points[item.id ?? 0] || ""}  // Sử dụng giá trị từ state `points`
-                          onChange={(e) => {const newPoints = { ...points, [item.id ?? 0]: Number(e.target.value) };
-                          setPoints(newPoints);}}
-                          className="input-class p-1 border border-gray-300 rounded"
-                        />
-                      )}
-                    />
-                  </div>
-                ))} */}
-                <FormField control={form.control} name="comment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Điểm tổng</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nhận xét" {...field} disabled={isDisabled} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
-                  <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-                  <Button type="submit" size='sm'>Save</Button>
-              </AlertDialogFooter>
-            </form>
-          </Form>
-        </AlertDialogContent> 
-      </AlertDialog>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
+                    <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+                    <Button type="submit" size='sm'>Save</Button>
+                </AlertDialogFooter>
+              </form>
+            </Form>
+          </SheetContent>
+        </Sheet>
     </div>
   )
 }
