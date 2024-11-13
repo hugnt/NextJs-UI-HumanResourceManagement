@@ -79,7 +79,7 @@ export default function EmployeeList() {
     {
       accessorKey: 'positionName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Vị trí' />
+        <DataTableColumnHeader column={column} title='Chức vụ' />
       ),
       cell: ({ row }) => <div>{row.getValue('positionName')}</div>,
       enableSorting: true,
