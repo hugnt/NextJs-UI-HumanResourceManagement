@@ -13,17 +13,21 @@ import {
 import { useMutation } from '@tanstack/react-query'
 import authApiRequest from '@/apis/auth.api'
 import { useRouter } from 'next/navigation'
-import { AccountInfo } from '@/data/schema/auth.schema'
+import { AccountInfo, Role } from '@/data/schema/auth.schema'
 const KEY = {
   KEY_LOGOUT: "log-out"
 }
-export function UserNav({user} : {user : AccountInfo}) {
+export function UserNav({ user }: { user: AccountInfo }) {
   const router = useRouter();
   const logout = useMutation({
     mutationKey: [KEY.KEY_LOGOUT],
     mutationFn: () => authApiRequest.logout(),
     onSuccess: () => {
-      router.push('/login');
+      if (user.role == Role.Admin) {
+        router.push('/login-admin');
+      } else {
+        router.push('/login-employee');
+      }
     }
   })
   console.log(user)
@@ -48,19 +52,10 @@ export function UserNav({user} : {user : AccountInfo}) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {user.role != Role.Admin ? <DropdownMenuItem onClick={() => router.push('/profile')}>
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
+          </DropdownMenuItem> : <></>}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => logout.mutate()} >

@@ -19,14 +19,17 @@ import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
 
 const KEY = {
   KEY_LOGIN: "login"
 }
+const authPaths = ['/login-admin'];
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const pathname = usePathname();
+  var layout = authPaths.includes(pathname) ? 1 : 0;
   const router = useRouter();
   const form = useForm<Auth>({
     resolver: zodResolver(authSchema),
@@ -46,9 +49,26 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }
   })
 
+  const { mutate: mutateLoginEmployee, isPending: isPendingLoginEmployee } = useMutation({
+    mutationKey : [KEY.KEY_LOGIN],
+    mutationFn: (body: Auth) => {
+      return authApiRequest.employeeLogin(body)
+    },
+    onSuccess: (data) => {
+      if (data.isSuccess) {
+        router.push('/profile');
+      }
+      handleErrorApi({ error: data.message })
+    }
+  })
+
   function onSubmit(data: Auth) {
-    console.log(data)
-    mutateLogin(data)
+    if(layout == 1){
+      mutateLogin(data)
+    }else{
+      mutateLoginEmployee(data)
+    }
+    
   }
 
   return (
@@ -88,7 +108,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' loading={isPendingLogin}>
+            <Button className='mt-2' loading={isPendingLogin || isPendingLoginEmployee}>
               Login
             </Button>
           </div>
