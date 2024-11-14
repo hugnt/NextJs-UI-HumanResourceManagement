@@ -81,9 +81,16 @@ export default function FormCRUD(props: FormProps) {
         } : leaveApplicationDefault,
     });
     const onSubmit = (data: leaveApplication) => {
-        if (mode === CRUD_MODE.ADD) addDataMutation.mutate(data);
-        else if (mode === CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
-        else if (mode === CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
+        // Chuyển đổi giá trị statusLeave từ chuỗi thành enum
+        //data.statusLeave = parseInt(data.statusLeave);
+    
+        if (mode === CRUD_MODE.ADD) {
+            addDataMutation.mutate(data);
+        } else if (mode === CRUD_MODE.EDIT) {
+            updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+        } else if (mode === CRUD_MODE.DELETE) {
+            deleteDataMutation.mutate(data.id ?? 0);
+        }
     }
 
     const handleCloseForm = (e: any) => {
@@ -125,7 +132,7 @@ export default function FormCRUD(props: FormProps) {
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         {listDataEmployeeQuery.data?.metadata?.map((item) => (
-                                                            <SelectItem key={item.id} value={item.id.toString()} style={{ color: 'black', fontSize: '1rem' }}>
+                                                            <SelectItem key={item.id} value={item.id.toString()}>
                                                                 <div>
                                                                     <p>{item.Name}</p>
                                                                 </div>

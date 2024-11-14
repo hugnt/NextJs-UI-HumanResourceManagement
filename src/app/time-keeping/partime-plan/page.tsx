@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
     ResizableHandle,
     ResizablePanel,
@@ -10,6 +10,8 @@ import Card from './_components/card';
 import { useQuery } from '@tanstack/react-query';
 import workShiftApiRequest from '@/apis/work-shift.api';
 import { StatusCalendar } from '@/data/schema/work-shift.schema';
+import { useCurrentUser } from '@/app/system/ui/auth-context';
+import { Role } from '@/data/schema/auth.schema';
 const pathList: Array<PathItem> = [
     {
         name: "TimeKeeping",
@@ -22,7 +24,8 @@ const pathList: Array<PathItem> = [
 ];
 
 const QUERY_KEY = {
-    KEY: "partime-plans"
+    KEY: "partime-plans",
+    KEY_CURRENT: "partime-plans-by-current"
 }
 const statusMap = [
     { label: "SUBMIT", status: StatusCalendar.Submit },
@@ -37,6 +40,15 @@ export default function page() {
         queryKey: [QUERY_KEY.KEY],
         queryFn: () => workShiftApiRequest.getAllPartimePlans(),
     });
+    const { data: dataByCurrentUser } = useQuery({
+        queryKey: [QUERY_KEY.KEY_CURRENT],
+        queryFn: () => workShiftApiRequest.getAllPartimePlanByCurrentEmployeeId(),
+    });
+    const user = useCurrentUser().currentUser;
+
+    const relevantData = useMemo(() => {
+        return user!.role === Role.Admin ? data : dataByCurrentUser;
+    }, [user!.role, data, dataByCurrentUser]);
 
     return (
         <>
@@ -50,7 +62,7 @@ export default function page() {
                 direction="horizontal"
                 className="min-h-[550px] rounded-lg border mb-4"
             >
-                {data?.metadata && (
+                {relevantData && (
                     <ResizablePanelGroup direction="horizontal" className="min-h-[550px] rounded-lg border mb-4">
                         {statusMap.map(({ label, status }) => (
                             <>
@@ -61,9 +73,10 @@ export default function page() {
                                             <h3 className="font-semibold">{label}</h3>
                                         </div>
                                         <div className='overflow-y-auto h-[500px] overflow-x-hidden mt-2'>
-                                            {data.metadata!.filter(item => item.statusCalendar == status)
+
+                                            {relevantData.metadata!.filter(item => item.statusCalendar == status)
                                                 .map((item, index) => (
-                                                    <Card key={index} partimePlanResult={item}/>
+                                                    <Card key={index} partimePlanResult={item} />
                                                 ))}
                                         </div>
                                     </div>

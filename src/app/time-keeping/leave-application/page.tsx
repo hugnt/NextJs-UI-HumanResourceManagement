@@ -31,15 +31,15 @@ const dataFilter: Array<DataFilter> = [
     options: [
       {
         label: 'Draft',
-        value: 'Draft'
+        value: '1'
       },
       {
         label: 'Approved',
-        value: 'Approved'
+        value: '2'
       },
       {
         label: 'Refuse',
-        value: 'Refuse'
+        value: '3'
       }
     ],
   },

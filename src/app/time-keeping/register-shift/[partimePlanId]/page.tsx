@@ -22,6 +22,8 @@ import { Input } from '@/components/ui/input';
 import { handleSuccessApi } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useCurrentUser } from '@/app/system/ui/auth-context';
+import { Role } from '@/data/schema/auth.schema';
 const pathList: Array<PathItem> = [
     {
         name: "TimeKeeping",
@@ -49,6 +51,7 @@ const KEY = {
     MUTATE_KEY: 'process-partimeplan'
 }
 export default function page({ params }: { params: { partimePlanId: number } }) {
+    const user = useCurrentUser().currentUser!
     const router = useRouter();
     const [calendars, setCalendars] = useState<WorkShift[]>([])
     const dataDetailPartimePlan = useQuery({
@@ -108,23 +111,22 @@ export default function page({ params }: { params: { partimePlanId: number } }) 
             };
 
             // Only process shifts if the index is valid
-            if (index < listData.length && listData[index].presentShift === `${year}-${month}-${day}`) {
-                if(listData[index].shiftTime === ShiftTime.Morning){
+            console.log(listData[index])
+            while (index < listData.length && listData[index].presentShift === `${year}-${month}-${day}`) {
+                if (listData[index].shiftTime === ShiftTime.Morning) {
                     workShift.isCheckMorning = true;
-                    index ++
                 }
-                if(listData[index].shiftTime === ShiftTime.Afternoon){
+                if (listData[index].shiftTime === ShiftTime.Afternoon) {
                     workShift.isCheckAfternoon = true;
-                    index ++
                 }
-                if(listData[index].shiftTime === ShiftTime.Evening){
+                if (listData[index].shiftTime === ShiftTime.Evening) {
                     workShift.isCheckEvening = true;
-                    index ++
                 }
+                index++
             }
 
             workShifts.push(workShift);
-            
+
         }
         console.log(workShifts)
 
@@ -226,12 +228,16 @@ export default function page({ params }: { params: { partimePlanId: number } }) 
                                 </TableBody>
                             </Table>
                             {
-                                
+
                                 dataDetailPartimePlan.data!.metadata!.statusCalendar == StatusCalendar.Submit ?
-                                    <div className='flex item-center justify-end mt-6 ml-6'>
-                                        <Button loading={processPartimePlan.isPending} onClick={() => processPartimePlan.mutate(StatusCalendar.Approved)} variant="default" className='mt-3'>Approved</Button>
-                                        <Button loading={processPartimePlan.isPending} onClick={() => processPartimePlan.mutate(StatusCalendar.Refuse)} variant="destructive" className='mt-3 ml-3'>Refuse</Button>
-                                    </div>
+                                    <>
+                                        {user.role == Role.Admin ? <div className='flex item-center justify-end mt-6 ml-6'>
+                                            <Button loading={processPartimePlan.isPending} onClick={() => processPartimePlan.mutate(StatusCalendar.Approved)} variant="default" className='mt-3'>Approved</Button>
+                                            <Button loading={processPartimePlan.isPending} onClick={() => processPartimePlan.mutate(StatusCalendar.Refuse)} variant="destructive" className='mt-3 ml-3'>Refuse</Button>
+                                        </div> : <div className='flex item-center justify-end mt-6 ml-6'>
+                                            <Button variant="secondary" className='mt-3'>Waiting for process ...</Button>
+                                        </div>}
+                                    </>
                                     : dataDetailPartimePlan.data!.metadata!.statusCalendar == StatusCalendar.Refuse ?
                                         <div className='flex item-center justify-end mt-6 ml-6'>
                                             <Button disabled={true} variant="destructive" className='mt-3'>Refused</Button>
