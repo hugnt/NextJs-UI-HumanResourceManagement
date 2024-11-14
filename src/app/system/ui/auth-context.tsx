@@ -25,7 +25,7 @@ export const useCurrentUser = () => {
             id: 1,
             email: 'hoang@gmail.com',
             name: 'Hoang Nguyen',
-            role: Role.User,
+            role: Role.Admin,
             typeContrat: TypeContract.Fulltime
         }
 
