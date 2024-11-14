@@ -1,3 +1,4 @@
+'use client'
 import AppBreadcrumb, { PathItem } from '@/components/custom/_breadcrumb'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +13,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import DatePicker from '@/components/custom/date-picker';
+import { useParams } from 'next/navigation'
+import { Button } from '@/components/ui/button';
 const pathList: Array<PathItem> = [
     {
         name: "Contract",
@@ -23,6 +26,9 @@ const pathList: Array<PathItem> = [
     },
 ];
 export default function page() {
+    const params = useParams<{ id: string }>();
+    const id = Number(params.id);
+    //call api get apllicant by id => name, Email, ...
     return (
         <>
             <div className='mb-2 flex items-center justify-between space-y-2'>
@@ -130,6 +136,13 @@ export default function page() {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="mt-6 flex justify-end pr-20">
+                <Button>Gửi email nhập thông tin cá nhân</Button>
+                {/* Hợp đòng mới được tạo -> có id là: k */}
+                {/* Kiểm tra gửi email thành công => click vào đường dẫn => employee-shared/emnployee-information/id->{k}của hợp đồng*/}
+            
             </div>
         </>
     )
