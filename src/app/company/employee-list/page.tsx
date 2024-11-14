@@ -11,7 +11,7 @@ import { Employee, employeeDefault } from "@/data/schema/employee.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
@@ -24,30 +24,13 @@ const pathList: Array<PathItem> = [
   },
 ];
 
-//Filter by
-const dataFilter: Array<DataFilter> = [
-  {
-    columnName: 'name',
-    title: 'Tên nhân viên',
-    options: [
-      {
-        label: '5%',
-        value: '0.05'
-      },
-      {
-        label: '10%',
-        value: '0.1'
-      }
-    ],
-  },
-];
-
 //react query key
 const QUERY_KEY = {
   keyList: "employee-list",
 }
 
 export default function EmployeeList() {
+  const [dataFilter, setDataFilter] = useState<Array<DataFilter>>([]);
   const [detail, setDetail] = useState<Employee>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
@@ -55,7 +38,34 @@ export default function EmployeeList() {
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
     queryFn: () => employeeApiRequest.getList(),
+
   });
+
+  useEffect(() => {
+    if(!listDataQuery.data) return;
+    const lstDepartment = listDataQuery.data.metadata?.map(x => x.departmentName) ?? [];
+    const lstPosition = listDataQuery.data.metadata?.map(x => x.positionName) ?? [];
+    const lstDataFilter: Array<DataFilter> = [
+      {
+        columnName: 'departmentName',
+        title: 'Phòng ban',
+        options: lstDepartment.map(x => ({
+          label: x ?? "",
+          value: x ?? ""
+        })),
+      },
+      {
+        columnName: 'positionName',
+        title: 'Chức vụ',
+        options: lstPosition.map(x => ({
+          label: x ?? "",
+          value: x ?? ""
+        })),
+      },
+    ];
+    setDataFilter(lstDataFilter);
+  }, [listDataQuery.data])
+
 
   const columnsDef: ColumnDef<Employee>[] = [
     {
@@ -167,10 +177,10 @@ export default function EmployeeList() {
 
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
-          <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
+          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
             <IconPlus className='mr-2 h-4 w-4' />Thêm
           </Button>
-          
+
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />

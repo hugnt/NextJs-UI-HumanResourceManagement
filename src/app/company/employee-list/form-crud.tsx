@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -33,7 +32,6 @@ import { IoMdClose } from "react-icons/io";
 import LoadingSpinIcon from "@/components/loading-spin-icon";
 import employeeApiRequest from "@/apis/employee.api";
 import { FaSave } from "react-icons/fa";
-import contractApiRequest from "@/apis/contract.api";
 import taxDeductionApiRequest from "@/apis/taxDeduction.api";
 import { Employee, employeeDefault, employeeSchema } from "@/data/schema/employee.schema";
 type FormProps = {
