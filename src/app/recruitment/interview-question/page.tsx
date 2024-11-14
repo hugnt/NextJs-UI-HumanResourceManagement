@@ -79,15 +79,6 @@ export default function QuestionList() {
       enableHiding: false,
     },
     {
-      accessorKey: 'point',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full point' />
-      ),
-      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('point')}</div>,
-      enableSorting: true,
-      enableHiding: false,
-    },
-    {
       id: 'actions',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Action' />

@@ -2,8 +2,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
-import { AccountInfo } from '@/data/schema/auth.schema';
+import { AccountInfo, Role } from '@/data/schema/auth.schema';
 import loading from '@/app/loading';
+import { TypeContract } from '@/data/schema/contract.schema';
 
 // Define the context type
 interface AuthContextType {
@@ -15,9 +16,19 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Hook to access the current user context
 export const useCurrentUser = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useCurrentUser must be used within an AuthProvider");
+    // const context = useContext(AuthContext);
+    // if (!context) {
+    //     throw new Error("useCurrentUser must be used within an AuthProvider");
+    // }
+    const context = {
+        currentUser:{
+            id: 1,
+            email: 'hoang@gmail.com',
+            name: 'Hoang Nguyen',
+            role: Role.Admin,
+            typeContrat: TypeContract.Fulltime
+        }
+
     }
     return context;
 }
@@ -40,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if(isLoading) return <></>
     return (
         <AuthContext.Provider value={{ currentUser }}>
-            {isLoading ? null : children}
+            {isLoading ? <>Loading ...</> : children}
         </AuthContext.Provider>
     );
 };

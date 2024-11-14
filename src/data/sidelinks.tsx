@@ -1,19 +1,16 @@
 
 import {
   IconCashRegister,
-  IconUserCog,
   IconLayoutDashboard,
   IconCalendarTime,
   IconSettings,
   IconAddressBook,
   IconFileText,
-  IconUserSquare,
   IconContract,
   IconBusinessplan,
   IconBuilding
 } from '@tabler/icons-react'
 import { Role } from './schema/auth.schema'
-import { TypeContract } from './schema/contract.schema'
 
 
 
@@ -23,7 +20,6 @@ export interface NavLink {
   href: string
   icon: JSX.Element,
   roles?: Role[],
-  typeContract?: TypeContract[]
   //Những roles trong này thì không được có hiện
 }
 
@@ -35,7 +31,7 @@ export const sidelinks: SideLink[] = [
   {
     title: 'Dashboard',
     label: '',
-    href: '/',
+    href: '/dashboard',
     icon: <IconLayoutDashboard size={18} />,
     roles: [Role.Admin]
   },
@@ -44,6 +40,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconBuilding size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Employee List',
@@ -70,6 +67,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconContract size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Contract List',
@@ -114,29 +112,26 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/time-keeping/register-shift',
         icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Timekeeping history',
-        label: '',
-        href: '/contract-list',
-        icon: <IconFileText size={18} />,
+        roles: [Role.Partime],
       },
       {
         title: 'Partime Plan',
         label: '',
         href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin, Role.Partime],
       },
       {
         title: 'Work shift',
         label: '',
         href: '/time-keeping/work-shift',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Leave application',
         label: '',
-        href: 'time-keeping/leave-application',
+        href: '/time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
     ]
@@ -152,6 +147,14 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/history/attendance-tracking',
         icon: <IconFileText size={18} />,
+        roles: [Role.Partime],
+      },
+      {
+        title: 'Fulltime Attendance',
+        label: '',
+        href: '/history/fulltime-attendance',
+        icon: <IconFileText size={18} />,
+        roles: [Role.Fulltime],
       },
       {
         title: 'Face Registration',
@@ -166,24 +169,28 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconCashRegister size={18} />,
+
     sub: [
       {
         title: 'Salary Summary',
         label: '',
         href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Salary Calculation',
         label: '',
         href: '/payroll/salary-calculation',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin],
       },
       {
         title: 'Salary advance',
         label: '',
         href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
+        roles: [Role.Partime, Role.Fulltime],
       }
     ],
   },
@@ -192,6 +199,7 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '',
     icon: <IconBusinessplan size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
         title: 'Formula list',
@@ -230,17 +238,18 @@ export const sidelinks: SideLink[] = [
     label: '3',
     href: '',
     icon: <IconAddressBook size={18} />,
+    roles: [Role.Admin],
     sub: [
       {
-        title: 'Job postings list',
+        title: 'Test Result',
         label: '',
-        href: '/recruitment/job-posting',
+        href: '/recruitment/test-result',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Candidate Profiles',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/applicant',
         icon: <IconFileText size={18} />,
       },
       {
@@ -261,26 +270,12 @@ export const sidelinks: SideLink[] = [
         href: '/recruitment/interview-question',
         icon: <IconFileText size={18} />,
       },
-    ],
-  },
-  {
-    title: 'Account management',
-    label: '',
-    href: '',
-    icon: <IconUserCog size={18} />,
-    sub: [
       {
-        title: 'Account list',
+        title: 'Job posting',
         label: '',
-        href: '/account-list',
+        href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
-      {
-        title: 'Role list',
-        label: '',
-        href: '/role-list',
-        icon: <IconFileText size={18} />,
-      }
     ],
   },
   {

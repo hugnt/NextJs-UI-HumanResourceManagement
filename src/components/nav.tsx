@@ -41,7 +41,7 @@ export default function Nav({
 }: NavProps) {
 
   const user = useCurrentUser().currentUser;
-  const renderLink = ({ sub, roles, typeContract, ...rest }: SideLink) => {
+  const renderLink = ({ sub, roles, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`
     if (isCollapsed && sub)
       return (
@@ -54,8 +54,8 @@ export default function Nav({
       )
 
 
-    if (roles && !roles.includes(user!.role) && typeContract && typeContract.includes(user!.typeContrat))
-      return <></>
+    // if (roles && !roles.includes(user!.role))
+    //   return <></>
 
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />
@@ -155,8 +155,7 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
       <CollapsibleContent className='collapsibleDropdown' asChild>
         <ul>
           {sub!.map((sublink) => {
-            if (sublink.roles && !sublink.roles.includes(user!.role)
-              && sublink.typeContract && sublink.typeContract.includes(user!.typeContrat)) {
+            if (sublink.roles && !sublink.roles.includes(user!.role)) {
               return <></>
             }
             return <li key={sublink.title} className='my-1 ml-8'>

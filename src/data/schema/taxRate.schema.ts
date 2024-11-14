@@ -6,7 +6,9 @@ export const taxRateSchema = z.object({
   name: z.string().min(0).max(255).optional(),
   parameterName: z.string().min(0).max(255).optional(),
   percent: z.coerce.number().min(0).max(1).optional(),
-  condition: z.string().optional()
+  condition: z.string().optional(),
+  minTaxIncome: z.coerce.number().optional(),
+  maxTaxIncome: z.coerce.number().optional()
 });
 
 export type TaxRate = z.infer<typeof taxRateSchema>;
@@ -15,5 +17,7 @@ export const taxRateDefault: TaxRate = {
   name: "",
   parameterName:"",
   percent:0,
-  condition:""
+  condition:"",
+  minTaxIncome: 1,
+  maxTaxIncome: 2,
 };

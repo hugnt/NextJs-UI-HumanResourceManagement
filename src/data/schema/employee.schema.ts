@@ -5,6 +5,8 @@ export const employeeSchema = z.object({
   name: z.string().optional(),
   contractId: z.coerce.number().optional(),
   dateOfBirth: z.date().optional(),
+  age: z.coerce.number().optional(),
+  tenure: z.coerce.number().optional(),
   gender: z.boolean().optional(),
   address: z.string().optional(),
   countrySide: z.string().optional(),
@@ -31,6 +33,8 @@ export const employeeDefault: Employee = {
   id: 0,
   name: "",
   dateOfBirth: new Date(),
+  age: 0,
+  tenure: 0,
   gender: false,
   address: "",
   countrySide: "",
@@ -47,3 +51,37 @@ export const employeeDefault: Employee = {
   phoneNumber: "",
   email: ""
 };
+
+export type FaceRegisResult = {
+  id: number,
+  url: string,
+  statusFaceTurn: number,
+  descriptor: string
+}
+
+export type ProfileDetail = {
+  userName?: string;
+  password?: string;
+  email?: string;
+  typeContract?: string;
+  departmentName?: string;
+  positionName?: string;
+  contractTypeName?: string;
+  name?: string;
+  dob: string;
+  address?: string;
+  gender?: string;
+  countryside?: string;
+  nationalId?: string;
+  level?: string;
+  major?: string;
+  baseSalary: number;
+  baseInsurance: number;
+  requiredDays: number;
+  requiredHours: number;
+  wageDaily: number;
+  wageHourly: number;
+  factor: number;
+  fireUrlBase?: string;
+  fileUrlSigned?: string;
+}
