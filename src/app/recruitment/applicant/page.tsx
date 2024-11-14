@@ -18,7 +18,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { useState } from "react";
 import { TestResult } from "@/data/schema/testResult.schema";
-import { Contract } from "@/data/schema/contract.schema";
+import { useRouter } from 'next/navigation'
+
 const pathList: Array<PathItem> = [
   {
     name: "Tuyển dụng",
@@ -72,8 +73,7 @@ export default function SampleList() {
   const [openAddTest, setOpenAddTest] = useState<boolean>(false);
   const [openTest, setOpenTest] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
-  const [openContract, setOpenContract] = useState<boolean>(false);
-  const [contractmode, setcontractMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
+  const router = useRouter();
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
@@ -176,11 +176,7 @@ export default function SampleList() {
           handleEdit={() => handleEdit(row)}
           handleAddTest={() => handleAddTest(row)}
           handleTest={() => handleTest(row)}
-          handleContract={
-            candidateStatus === CandidateStatus.Pass
-              ? () => handleContract(row)
-              : undefined
-          }
+          handleAddContract={() => handleAddContract(row)}
           handleDelete={() => handleDelete(row)} />
         },
       },
@@ -225,16 +221,6 @@ const handleView = async (row: Row<Candidate>) => {
     rwsetDetail(getTest);
     setOpenTest(true);
   };
-  const handleContract = (row: Row<Candidate>) => {
-    const id = row.original.id;
-    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
-    const createContract: Contract = { 
-      name: selectedData.name, 
-      positionId: selectedData.positionId,
-      positionName: selectedData.positionName};
-    contractDetail(createContract);
-    setOpenContract(true);
-  };
 
   const handleDelete = (row: Row<Candidate>) => {
     const id = row.original.id;
@@ -244,7 +230,11 @@ const handleView = async (row: Row<Candidate>) => {
     setOpenCRUD(true);
   };
 
-
+  const handleAddContract = (row: Row<Candidate>) => {
+    const id = row.original.id;
+    //const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    router.push(`/contract/contract-upsert/${id}`)
+  };
   return (
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
