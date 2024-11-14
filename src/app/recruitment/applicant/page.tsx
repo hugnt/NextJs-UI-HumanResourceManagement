@@ -176,7 +176,11 @@ export default function SampleList() {
           handleEdit={() => handleEdit(row)}
           handleAddTest={() => handleAddTest(row)}
           handleTest={() => handleTest(row)}
-          handleAddContract={() => handleAddContract(row)}
+          handleAddContract={
+            candidateStatus === CandidateStatus.Pass
+              ? () => handleAddContract(row)
+              : undefined
+          }
           handleDelete={() => handleDelete(row)} />
         },
       },
