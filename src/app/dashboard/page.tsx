@@ -2,11 +2,7 @@
 "use client";
 import dashboardApiRequest from "@/apis/dashboard.api";
 import { Button } from "@/components/ui/button";
-import { TrendingUp } from "lucide-react";
 import React, { useState } from "react";
-import { DataTable } from "../data-table"
-import { leaveApplication, columns } from "../columns"
-import { start } from "repl";
 
 import {
     Table,
@@ -23,7 +19,6 @@ import positionApiRequest from "@/apis/position.api";
 import contractApiRequest from "@/apis/contract.api";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { useQuery } from "@tanstack/react-query";
-import QuantityCard from "@/components/QuantityCard";
 import { Employee } from "@/data/schema/employee.schema";
 import { ApiResponse } from "@/data/type/response.type";
 import { DepartmentUserCount } from "@/data/schema/department.schema";
@@ -32,7 +27,6 @@ import { LabelList, Pie, PieChart, Bar, BarChart, XAxis, YAxis, CartesianGrid } 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -44,7 +38,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Contract, TypeContract } from "@/data/schema/contract.schema";
-import { count } from "console";
 
 type DynamicChartConfig = {
   [key: string]: {
