@@ -16,19 +16,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Hook to access the current user context
 export const useCurrentUser = () => {
-    // const context = useContext(AuthContext);
-    // if (!context) {
-    //     throw new Error("useCurrentUser must be used within an AuthProvider");
-    // }
-    const context = {
-        currentUser:{
-            id: 1,
-            email: 'hoang@gmail.com',
-            name: 'Hoang Nguyen',
-            role: Role.Admin,
-            typeContrat: TypeContract.Fulltime
-        }
-
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useCurrentUser must be used within an AuthProvider");
     }
     return context;
 }
