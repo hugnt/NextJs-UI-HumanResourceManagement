@@ -36,6 +36,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import applicantApiRequest from "@/apis/candidate.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
@@ -153,17 +160,12 @@ export default function FormCRUD(props: FormProps) {
 
   return (
     <div>
-      <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD}>
-        {mode != CRUD_MODE.DELETE ? (
-          <AlertDialogContent
-            className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}
-          >
-            <AlertDialogHeader className="flex justify-between align-middle p-2 py-1 bg-primary">
-              <AlertDialogTitle className="text-slate-50">
-                Sample Details
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogDescription />
+      {mode != CRUD_MODE.DELETE ? (
+        <Sheet open={openCRUD} onOpenChange={setOpenCRUD}>
+          <SheetContent className="p-0 overflow-y-auto sm:max-w-[800px] !sm:w-[800px] min-w-[800px]">
+            <SheetHeader className="px-4 pt-3">
+              <SheetTitle>Chi tiết công việc</SheetTitle>
+            </SheetHeader>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -385,36 +387,38 @@ export default function FormCRUD(props: FormProps) {
                 </AlertDialogFooter>
               </form>
             </Form>
-          </AlertDialogContent>
-        ) : (
-          //DELETE FORM
-          <AlertDialogContent
-            className={`gap-0 top-[50%] border-none overflow-hidden p-0 w-[400px] sm:rounded-[0.3rem]`}
-          >
-            <AlertDialogHeader>
-              <AlertDialogTitle></AlertDialogTitle>
-            </AlertDialogHeader>
-            <div className="text-center pt-8 pb-4 flex justify-center">
-              <PiTrashLight size={100} color="rgb(248 113 113)" />
-            </div>
-            <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
-              Are you absolutely sure to delete?
-            </AlertDialogDescription>
-            <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-              <Button
-                onClick={handleCloseForm}
-                className="bg-gray-400  hover:bg-red-500"
-                size="sm"
-              >
-                Close
-              </Button>
-              <Button className="" size="sm" onClick={() => onSubmit(detail)}>
-                Confirm
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        )}
+          </SheetContent>
+        </Sheet>
+       ) : (
+      <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD}>
+            //DELETE FORM
+            <AlertDialogContent
+              className={`gap-0 top-[50%] border-none overflow-hidden p-0 w-[400px] sm:rounded-[0.3rem]`}
+            >
+              <AlertDialogHeader>
+                <AlertDialogTitle></AlertDialogTitle>
+              </AlertDialogHeader>
+              <div className="text-center pt-8 pb-4 flex justify-center">
+                <PiTrashLight size={100} color="rgb(248 113 113)" />
+              </div>
+              <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
+                Are you absolutely sure to delete?
+              </AlertDialogDescription>
+              <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
+                <Button
+                  onClick={handleCloseForm}
+                  className="bg-gray-400  hover:bg-red-500"
+                  size="sm"
+                >
+                  Close
+                </Button>
+                <Button className="" size="sm" onClick={() => onSubmit(detail)}>
+                  Confirm
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
       </AlertDialog>
+      )}
     </div>
   );
 }
