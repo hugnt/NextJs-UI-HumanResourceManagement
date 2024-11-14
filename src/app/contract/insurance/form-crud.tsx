@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import insuranceApiRequest from "@/apis/insurance.api";
 import { handleSuccessApi } from "@/lib/utils";
@@ -82,6 +82,15 @@ export default function FormCRUD(props: FormProps) {
     
   }
 
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    const updatedValue = "PARAM_INSURANCE_" + e.target.value.trim().normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .toUpperCase().replace(/[^A-Z0-9]/g, '_')
+      .replace(/_{2,}/g, '_');
+    form.setValue('parameterName', updatedValue);
+  }
+
   const handleCloseForm = (e: any) => {
     e.preventDefault();
     setOpenCRUD(false);
@@ -113,7 +122,7 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Insurance name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter insurance name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Enter insurance name" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -149,7 +158,7 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Parameter Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter parameter name" {...field} disabled={isDisabled} />
+                        <Input placeholder="PARAM_INSURANCE_" {...field} disabled />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

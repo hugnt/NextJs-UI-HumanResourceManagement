@@ -131,7 +131,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Leave application',
         label: '',
-        href: 'time-keeping/leave-application',
+        href: '/time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
     ]
