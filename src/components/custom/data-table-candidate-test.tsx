@@ -17,6 +17,7 @@ interface DataTableCandidateActionsProps<TData> {
   row: Row<TData>,
   handleView?: () => void,
   handleEdit?: () => void,
+  handleAddTest?: () => void,
   handleDelete?: () => void,
   handleTest?: () => void,
   handleAddContract?: () => void,
@@ -41,7 +42,7 @@ export default function DataTableCandidateActions<TData>({ row, handleView, hand
         <DropdownMenuItem onClick={handleAddContract}>Tạo hợp đồng</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDelete} className='text-red-500'>
-          Delete
+          Xóa
           <DropdownMenuShortcut>
         
             <IconTrash size={16} />
