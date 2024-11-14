@@ -2,7 +2,7 @@
 import AppBreadcrumb, { PathItem } from '@/components/custom/_breadcrumb'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Select,
     SelectContent,
@@ -12,9 +12,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import DatePicker from '@/components/custom/date-picker';
 import { useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button';
+import contractTypeApiRequest from '@/apis/contractType.api';
+import { useQuery } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { Contract, contractDefault } from '@/data/schema/contract.schema';
+import allowanceApiRequest from '@/apis/allowance.api';
+import contractSalaryApiRequest from '@/apis/contractSalary.api';
+import departmentApiRequest from '@/apis/department.api';
+import insuranceApiRequest from '@/apis/insurance.api';
+import positionApiRequest from '@/apis/position.api';
+import contractApiRequest from '@/apis/contract.api';
 const pathList: Array<PathItem> = [
     {
         name: "Contract",
@@ -25,9 +34,56 @@ const pathList: Array<PathItem> = [
         url: "/contract/contract-upsert"
     },
 ];
+const { register, handleSubmit } = useForm<Contract>({
+    defaultValues: contractDefault,
+});
+const [, setSuccessMessage] = useState<string | null>(null);
+const QUERY_KEY = {
+    keyList: "contracts",
+    keySubContractType: "contractTypes",
+    keySubDepartment: "departments",
+    keySubPosition: "positions",
+    keySubContractSalary: "contractSalarys",
+    keySubAllowance: "allowances",
+    keySubInsurance: "insurances",
+}
+//List data
+const listDataContractType = useQuery({
+    queryKey: [QUERY_KEY.keySubContractType],
+    queryFn: () => contractTypeApiRequest.getList()
+});
+const listDataDepartment = useQuery({
+    queryKey: [QUERY_KEY.keySubDepartment],
+    queryFn: () => departmentApiRequest.getList()
+});
+const listDataPosition = useQuery({
+    queryKey: [QUERY_KEY.keySubPosition],
+    queryFn: () => positionApiRequest.getList()
+});
+const listDataContractSalary = useQuery({
+    queryKey: [QUERY_KEY.keySubContractSalary],
+    queryFn: () => contractSalaryApiRequest.getList()
+});
+const listDataAllowance = useQuery({
+    queryKey: [QUERY_KEY.keySubAllowance],
+    queryFn: () => allowanceApiRequest.getList()
+});
+const listDataInurance = useQuery({
+    queryKey: [QUERY_KEY.keySubInsurance],
+    queryFn: () => insuranceApiRequest.getList()
+});
 export default function page() {
     const params = useParams<{ id: string }>();
     const id = Number(params.id);
+    const onSubmit = async (data: Contract) => {
+        try {
+            await contractApiRequest.addnew(id, data);
+            setSuccessMessage("Thông tin nhân viên đã được lưu, email đã được gửi!");
+        } catch (error) {
+            console.error("Lỗi khi tạo nhân viên mới:", error);
+            setSuccessMessage(null);
+        }
+    };
     //call api get apllicant by id => name, Email, ...
     return (
         <>
@@ -42,44 +98,37 @@ export default function page() {
                 <div className='w-full mx-auto grid grid-cols-2 gap-2'>
                     <div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Tên</Label>
+                            <Label htmlFor="name">Tên</Label>
                             <Input type="text" value="Lã Hồng Phúc" placeholder="Tên ứng viên" disabled={true} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Loại hợp đồng</Label>
+                            <Label htmlFor="contractTypeId">Loại hợp đồng</Label>
                             <Select>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Chọn loại hợp đồng" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Loại hợp đồng</SelectLabel>
-                                        <SelectItem value="apple">Hợp đồng có thời hạn</SelectItem>
-                                        <SelectItem value="banana">Hợp đồng không thời hạn</SelectItem>
-                                    </SelectGroup>
+                                    {
+                                        listDataContractType.data?.metadata?.map((item, index) => {
+                                            return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                                        })
+                                    }
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Ngày bắt đầu làm</Label>
-                            <Input type="text" value="11/4/2023" placeholder="Tên ứng viên" disabled={true} />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Ngày kết thúc hợp đồng</Label>
-                            <Input type="text" value="11/4/2025" placeholder="Tên ứng viên" disabled={true} />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Loại nhân viên</Label>
+                            <Label htmlFor="typeContract">Loại nhân viên</Label>
                             <Select>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Chọn loại nhân viên" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Loại nhân viên</SelectLabel>
-                                        <SelectItem value="apple">Nhân viên fulltime</SelectItem>
-                                        <SelectItem value="banana">Nhân viên partime</SelectItem>
-                                    </SelectGroup>
+                                    <SelectItem value={"1"}>
+                                        Partime
+                                    </SelectItem>
+                                    <SelectItem value={"2"}>
+                                        Fulltime
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -87,50 +136,56 @@ export default function page() {
                     <div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
                             <Label htmlFor="email">Email</Label>
-                            <Input type="text" value="phucminhbeos@gmail.com" placeholder="Tên ứng viên" disabled={true} />
+                            <Input type="text" value="phucminhbeos@gmail.com" placeholder="email cua ung vien" disabled={true} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Ngày tạo hợp đồng</Label>
-                            <Input type="text" value="10/04/2024" placeholder="Tên ứng viên" disabled={true} />
+                            <Label htmlFor="startDate">Ngày tạo hợp đồng</Label>
+                            <Input type="date" {...register("startDate")} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Vị trí</Label>
-                            <Input type="text" value="Kĩ sư phần mềm" placeholder="Tên ứng viên" disabled={true} />
+                            <Label htmlFor="endDate">Ngày kết thúc hợp đồng</Label>
+                            <Input type="date" {...register("endDate")} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Phòng ban</Label>
-                            <Input type="text" value="Công nghệ thông tin" placeholder="Tên ứng viên" disabled={true} />
+                            <Label htmlFor="positionId">Vị trí</Label>
+                            <SelectContent>
+                                {
+                                    listDataPosition.data?.metadata?.map((item, index) => {
+                                        return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                                    })
+                                }
+                            </SelectContent>
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                            <Label htmlFor="email">Chọn loại hơp đồng lương</Label>
+                            <Label htmlFor="departmentId">Phòng ban</Label>
+                            <SelectContent>
+                                {
+                                    listDataDepartment.data?.metadata?.map((item, index) => {
+                                        return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
+                                    })
+                                }
+                            </SelectContent>
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                            <Label htmlFor="contractSalaryId">Chọn loại hơp đồng lương</Label>
                             <Select>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Chọn loại hơp đồng lương" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Loại hợp đồng lương</SelectLabel>
-                                        <SelectItem value="apple">
-                                            <div className='text-[14px]'>
-                                                <p>Lương cơ bản :<strong>1.000.000VND</strong></p>
-                                                <p>Lương bảo hiểm :<strong>1.000.000VND</strong></p>
-                                                <p>Số ngày quy định làm việc :<strong>25 ngày</strong></p>
-                                                <p>Số giờ quy định làm việc :<strong>8 giờ/ngày</strong></p>
-                                                <p>Lương hàng ngày :<strong>500.000VND</strong></p>
-                                                <p>Lương hàng giờ :<strong>100.000VND/h</strong></p>
-                                            </div>
-                                        </SelectItem>
-                                        <SelectItem value="banana">
-                                            <div className='text-[14px]'>
-                                                <p>Lương cơ bản :<strong>1.000.000VND</strong></p>
-                                                <p>Lương bảo hiểm :<strong>1.000.000VND</strong></p>
-                                                <p>Số ngày quy định làm việc :<strong>25 ngày</strong></p>
-                                                <p>Số giờ quy định làm việc :<strong>8 giờ/ngày</strong></p>
-                                                <p>Lương hàng ngày :<strong>500.000VND</strong></p>
-                                                <p>Lương hàng giờ :<strong>100.000VND/h</strong></p>
-                                            </div>
-                                        </SelectItem>
-                                    </SelectGroup>
+                                    {
+                                        listDataContractSalary.data?.metadata?.map((item, index) => {
+                                            return <SelectItem key={index} value={item.id?.toString() ?? "0"}>
+                                                Base Salary: {item.baseSalary}<br />
+                                                Base Insurance: {item.baseInsurance}<br />
+                                                Factor: {item.factor}<br />
+                                                Required Days: {item.requiredDays}<br />
+                                                Required Hours: {item.requiredHours}<br />
+                                                Wage Daily: {item.wageDaily}<br />
+                                                Wage Hourly: {item.wageHourly}<br />
+                                            </SelectItem>
+                                        })
+                                    }
                                 </SelectContent>
                             </Select>
                         </div>
@@ -139,11 +194,11 @@ export default function page() {
             </div>
 
             <div className="mt-6 flex justify-end pr-20">
-                <Button>Gửi email nhập thông tin cá nhân</Button>
+                <Button size='sm' onClick={() => handleSubmit(onSubmit)}>Gửi email</Button>
                 {/* Hợp đòng mới được tạo -> có id là: k */}
                 {/* Kiểm tra gửi email thành công => click vào đường dẫn => employee-shared/emnployee-information/id->{k}của hợp đồng*/}
-            
             </div>
         </>
     )
 }
+

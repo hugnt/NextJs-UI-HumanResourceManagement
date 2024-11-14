@@ -113,7 +113,7 @@ export default function NewPage() {
                     </div>
                 </div>
                 <div className="mt-6 flex justify-end pr-20">
-                    <Button type="submit">Lưu</Button>
+                    <Button type="submit" >Lưu</Button>
                 </div>
             </form>
         </>
