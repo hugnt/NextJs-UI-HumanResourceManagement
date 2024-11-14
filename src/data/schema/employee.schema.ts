@@ -53,7 +53,35 @@ export const employeeDefault: Employee = {
 };
 
 export type FaceRegisResult = {
+  id: number,
   url: string,
   statusFaceTurn: number,
   descriptor: string
+}
+
+export type ProfileDetail = {
+  userName?: string;
+  password?: string;
+  email?: string;
+  typeContract?: string;
+  departmentName?: string;
+  positionName?: string;
+  contractTypeName?: string;
+  name?: string;
+  dob: string;
+  address?: string;
+  gender?: string;
+  countryside?: string;
+  nationalId?: string;
+  level?: string;
+  major?: string;
+  baseSalary: number;
+  baseInsurance: number;
+  requiredDays: number;
+  requiredHours: number;
+  wageDaily: number;
+  wageHourly: number;
+  factor: number;
+  fireUrlBase?: string;
+  fileUrlSigned?: string;
 }

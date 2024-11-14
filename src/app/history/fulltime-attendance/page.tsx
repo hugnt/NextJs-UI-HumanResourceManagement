@@ -5,9 +5,7 @@ import { DateRange } from 'react-day-picker';
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -36,7 +34,9 @@ const QUERY_KEY = {
     mutationKey: "print-work-shift"
 }
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-export default function page() {
+export default function FullTimeAttendance({employeeId} : {employeeId?: number}) {
+    const user = useCurrentUser().currentUser!;
+    let id = employeeId == null ? user.id : employeeId;
     const queryClient = useQueryClient()
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
@@ -64,13 +64,13 @@ export default function page() {
         setPeriod(period);
         setDateRange(range)
     }
-    const user = useCurrentUser().currentUser;
+
     const { data, isLoading } = useQuery({
         queryKey: [QUERY_KEY.keyList, update],
         queryFn: () => {
             let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            return workShiftApiRequest.getAllWorkShiftByFullTimeEmployee(1, startDate!, endDate!)
+            return workShiftApiRequest.getAllWorkShiftByFullTimeEmployee(id, startDate!, endDate!)
         },
     });
     const { mutate, isPending } = useMutation({
@@ -78,7 +78,7 @@ export default function page() {
         mutationFn: () => {
             let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            return workShiftApiRequest.printFullTimeAttendanceToExcel(1, startDate!, endDate!)
+            return workShiftApiRequest.printFullTimeAttendanceToExcel(id, startDate!, endDate!)
         }
     })
     const getDays = (value: string): string[] => {

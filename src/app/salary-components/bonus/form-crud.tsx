@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import bonusApiRequest from "@/apis/bonus.api";
 import { handleSuccessApi } from "@/lib/utils";
@@ -45,7 +45,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: (body: Bonus) => bonusApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Inserted Successfully!" });
+      handleSuccessApi({ message: "Thêm Mới Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -54,7 +54,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: ({ id, body }: { id: number, body: Bonus }) => bonusApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Updated Successfully!" });
+      handleSuccessApi({ message: "Cập Nhật Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -63,7 +63,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: (id: number) => bonusApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Deleted Successfully!" });
+      handleSuccessApi({ message: "Xóa Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -81,6 +81,15 @@ export default function FormCRUD(props: FormProps) {
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
 
     
+  }
+
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    const updatedValue = "PARAM_BONUS_" + e.target.value.trim().normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .toUpperCase().replace(/[^A-Z0-9]/g, '_')
+      .replace(/_{2,}/g, '_');
+    form.setValue('parameterName', updatedValue);
   }
 
   const handleCloseForm = (e: any) => {
@@ -103,7 +112,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Thêm Mới</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -112,9 +121,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bonus name</FormLabel>
+                      <FormLabel>Tên Thưởng Thêm</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter bonus name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Nhập tên thưởng thêm" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -123,9 +132,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="parameterName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Parameter name</FormLabel>
+                      <FormLabel>Tham Số</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter parameter name" {...field} value={field.value ?? ''} disabled={isDisabled} />
+                        <Input placeholder="PARAM_BONUS_" {...field} value={field.value ?? ''} disabled />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -134,10 +143,10 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="amount"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Bonus Amount</FormLabel>
+                    <FormLabel>Số Lượng Thưởng Thêm</FormLabel>
                     <FormControl>
                         <Input 
-                        placeholder="Enter bonus amount" 
+                        placeholder="Nhập số lượng" 
                         type="number"
                         {...field} 
                         value={field.value ?? ''}
@@ -150,9 +159,9 @@ export default function FormCRUD(props: FormProps) {
                 />
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
-                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
                 {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                  <Button type="submit" size='sm'>Save</Button>}
+                  <Button type="submit" size='sm'>Lưu</Button>}
               </AlertDialogFooter>
             </form>
           </Form>
@@ -167,11 +176,11 @@ export default function FormCRUD(props: FormProps) {
               <PiTrashLight  size={100} color="rgb(248 113 113)"/>
             </div>
             <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
-              Are you absolutely sure to delete?
+              Bạn có chắc chắn muốn xóa bản ghi này?
             </AlertDialogDescription>
             <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Confirm</Button>
+              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
+              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Xác Nhận</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         }

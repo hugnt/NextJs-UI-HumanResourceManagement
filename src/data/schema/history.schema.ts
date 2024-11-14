@@ -16,3 +16,9 @@ export type HistoryUpsert = {
     statusHistory: StatusHistory,
     timeSweep: string
 }
+
+export type HistoryCheckResult = {
+    employeeName : string,
+    id: number,
+    timeSweep: string
+}
