@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { useState } from "react";
 import { TestResult } from "@/data/schema/testResult.schema";
-
+import { Contract } from "@/data/schema/contract.schema";
 const pathList: Array<PathItem> = [
   {
     name: "Tuyển dụng",
@@ -66,11 +66,14 @@ const QUERY_KEY = {
 
 export default function SampleList() {
   const [rwdetail, rwsetDetail] = useState<Test>({});
+  const [contractdetail, contractDetail] = useState<Test>({});
   const [detail, setDetail] = useState<Candidate>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [openAddTest, setOpenAddTest] = useState<boolean>(false);
   const [openTest, setOpenTest] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
+  const [openContract, setOpenContract] = useState<boolean>(false);
+  const [contractmode, setcontractMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
   const listDataQuery = useQuery({
     queryKey: [QUERY_KEY.keyList],
@@ -166,12 +169,20 @@ export default function SampleList() {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title='Action' />
         ),
-        cell: ({ row }) => <DataTableCandidateActions row={row}
+        cell: ({ row }) => {
+          const candidateStatus = row.getValue('status');
+          return <DataTableCandidateActions row={row}
           handleView={() => handleView(row)}
           handleEdit={() => handleEdit(row)}
           handleAddTest={() => handleAddTest(row)}
           handleTest={() => handleTest(row)}
-          handleDelete={() => handleDelete(row)} />,
+          handleContract={
+            candidateStatus === CandidateStatus.Pass
+              ? () => handleContract(row)
+              : undefined
+          }
+          handleDelete={() => handleDelete(row)} />
+        },
       },
   ];
 
@@ -213,6 +224,16 @@ const handleView = async (row: Row<Candidate>) => {
     const getTest: TestResult = { applicantId: id, applicantTestId: testId };
     rwsetDetail(getTest);
     setOpenTest(true);
+  };
+  const handleContract = (row: Row<Candidate>) => {
+    const id = row.original.id;
+    const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    const createContract: Contract = { 
+      name: selectedData.name, 
+      positionId: selectedData.positionId,
+      positionName: selectedData.positionName};
+    contractDetail(createContract);
+    setOpenContract(true);
   };
 
   const handleDelete = (row: Row<Candidate>) => {
