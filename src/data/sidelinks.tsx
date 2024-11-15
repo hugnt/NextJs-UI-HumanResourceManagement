@@ -13,7 +13,6 @@ import {
   IconBuilding
 } from '@tabler/icons-react'
 import { Role } from './schema/auth.schema'
-import { TypeContract } from './schema/contract.schema'
 
 
 
@@ -23,7 +22,6 @@ export interface NavLink {
   href: string
   icon: JSX.Element,
   roles?: Role[],
-  typeContract?: TypeContract[]
   //Những roles trong này thì không được có hiện
 }
 
@@ -114,18 +112,14 @@ export const sidelinks: SideLink[] = [
         label: '',
         href: '/time-keeping/register-shift',
         icon: <IconFileText size={18} />,
-      },
-      {
-        title: 'Timekeeping history',
-        label: '',
-        href: '/contract-list',
-        icon: <IconFileText size={18} />,
+        roles: [Role.Partime],
       },
       {
         title: 'Partime Plan',
         label: '',
         href: '/time-keeping/partime-plan',
         icon: <IconFileText size={18} />,
+        roles: [Role.Admin, Role.Admin],
       },
       {
         title: 'Work shift',
@@ -232,15 +226,15 @@ export const sidelinks: SideLink[] = [
     icon: <IconAddressBook size={18} />,
     sub: [
       {
-        title: 'Job postings list',
+        title: 'Test Result',
         label: '',
-        href: '/recruitment/job-posting',
+        href: '/recruitment/test-result',
         icon: <IconFileText size={18} />,
       },
       {
         title: 'Candidate Profiles',
         label: '',
-        href: '/job-posting-list',
+        href: '/recruitment/applicant',
         icon: <IconFileText size={18} />,
       },
       {
@@ -259,6 +253,12 @@ export const sidelinks: SideLink[] = [
         title: 'Interview Question',
         label: '',
         href: '/recruitment/interview-question',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Job posting',
+        label: '',
+        href: '/recruitment/job-posting',
         icon: <IconFileText size={18} />,
       },
     ],

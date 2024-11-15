@@ -58,6 +58,7 @@
     "react-signature-canvas": "^1.0.6",
     "react-time-picker": "^7.0.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.13.2",
     "react-webcam": "^7.2.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
