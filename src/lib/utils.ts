@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { toaster } from "@/components/custom/_toast"
@@ -73,32 +74,16 @@ export const formatCurrency = (value?: number) => {
 };
 
 
-
-
-
-const exportExcel = (data:any,fileName:string) => {
-  import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(data);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer = xlsx.write(workbook, {
-          bookType: 'xlsx',
-          type: 'array'
-      });
-
-      saveAsExcelFile(excelBuffer, fileName);
-  });
-};
-
-const saveAsExcelFile = (buffer:any, fileName:string) => {
-  import('file-saver').then((module) => {
-      if (module && module.default) {
-          let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-          let EXCEL_EXTENSION = '.xlsx';
-          const data = new Blob([buffer], {
-              type: EXCEL_TYPE
-          });
-
-          module.default.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-      }
-  });
+export const dataURLtoFile = (dataurl: string, filename: string): File => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || '';
+  const bstr = atob(arr[arr.length - 1]);
+  let n = bstr.length;
+  let u8arr = new Uint8Array(n);
+  
+  while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  
+  return new File([u8arr], filename, { type: mime });
 };
