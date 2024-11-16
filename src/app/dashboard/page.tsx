@@ -542,7 +542,7 @@ export default function Dashboard() {
                 <p>Loading...</p>
               ) : (
                 <div>
-                  <p>Số đơn ứng trước: {advanceCountData!.metadata}</p>
+                  <p>Số đơn ứng trước: {advanceCountData&&advanceCountData!.metadata}</p>
                 </div>
               )}
               <button 
@@ -822,7 +822,7 @@ export default function Dashboard() {
                   <TableBody>
                       {
                           leaveApplicationLoading ? <></> :
-                          leaveApplicationData!.metadata?.map((item, index) => {
+                          leaveApplicationData&&leaveApplicationData!.metadata?.map((item, index) => {
                                   return <TableRow key={index}>
                                   <TableCell className="font-medium">{item.statusLeave}</TableCell>
                                   <TableCell className="font-medium">{item.employeeId}</TableCell>
@@ -869,7 +869,7 @@ export default function Dashboard() {
                   <TableBody>
                       {
                           expiringContractLoading ? <></> :
-                          expiringContractData!.metadata?.map((item, index) => {
+                          expiringContractData&&expiringContractData!.metadata?.map((item, index) => {
                               return <TableRow key={index}>
                               <TableCell >{item.id}</TableCell>
                               <TableCell>{item.name}</TableCell>

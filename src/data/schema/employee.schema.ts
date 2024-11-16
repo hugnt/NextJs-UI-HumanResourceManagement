@@ -91,4 +91,6 @@ export type ProfileDetail = {
   factor: number;
   fireUrlBase?: string;
   fileUrlSigned?: string;
+  contractId?:number;
+  employeeSignStatus?:number; // 1-signed; 2-not signed
 }
