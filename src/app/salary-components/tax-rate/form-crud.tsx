@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import taxRateApiRequest from "@/apis/taxRate.api";
 import { handleSuccessApi } from "@/lib/utils";
@@ -44,7 +44,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: (body: TaxRate) => taxRateApiRequest.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Inserted Successfully!" });
+      handleSuccessApi({ message: "Thêm Mới Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -53,7 +53,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: ({ id, body }: { id: number, body: TaxRate }) => taxRateApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Updated Successfully!" });
+      handleSuccessApi({ message: "Cập Nhật Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -62,7 +62,7 @@ export default function FormCRUD(props: FormProps) {
     mutationFn: (id: number) => taxRateApiRequest.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Deleted Successfully!" });
+      handleSuccessApi({ message: "Xóa Thành Công!" });
       setOpenCRUD(false);
     }
   });
@@ -78,6 +78,15 @@ export default function FormCRUD(props: FormProps) {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
+  }
+
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    const updatedValue = "PARAM_TAXRATE_" + e.target.value.trim().normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .toUpperCase().replace(/[^A-Z0-9]/g, '_')
+      .replace(/_{2,}/g, '_');
+    form.setValue('parameterName', updatedValue);
   }
 
   const handleCloseForm = (e: any) => {
@@ -100,7 +109,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[500px] sm:max-w-[${size}px] !sm:w-[${size}px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Thêm Mới</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -109,9 +118,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tax rate name</FormLabel>
+                      <FormLabel>Tên Tỷ Lệ Thuế</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter tax rate name" {...field} disabled={isDisabled} />
+                        <Input placeholder="Nhập tên tỷ lệ thuế" {...field} disabled={isDisabled} onChange={(e) => { field.onChange(e); handleChangeName(e); }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -120,9 +129,9 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="parameterName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Paremeter name</FormLabel>
+                      <FormLabel>Tên Tham Số</FormLabel>
                       <FormControl>
-                        <Input placeholder="Format PARAM_TAXRATE_<...>" {...field} disabled={isDisabled} />
+                        <Input placeholder="PARAM_TAXRATE_" {...field} disabled />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -131,20 +140,42 @@ export default function FormCRUD(props: FormProps) {
                  <FormField control={form.control} name="percent"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Percent</FormLabel>
+                      <FormLabel>Tỷ lệ</FormLabel>
                       <FormControl>
-                        <Input placeholder="(%) enter 0 -> 1" {...field} disabled={isDisabled} />
+                        <Input placeholder="(%) nhập từ 0 đến 1" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField control={form.control} name="minTaxIncome"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Thu Nhập Tính Thuế Tối Thiểu</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nhập thu nhập thuế tối thiểu" {...field} disabled={isDisabled} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="maxTaxIncome"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Thu Nhập Tính Thuế Tối Đa</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập thu nhập thuế tối đa" {...field} disabled={isDisabled} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
                 <FormField control={form.control} name="condition"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Terms</FormLabel>
+                      <FormLabel>Điều Khoản</FormLabel>
                       <FormControl>
-                        <Input placeholder="Descriptions about Tax Rate" {...field} disabled={isDisabled} />
+                        <Input placeholder="Nhập điều khoản về tỷ lệ thuế" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -152,9 +183,9 @@ export default function FormCRUD(props: FormProps) {
                 />
               </div>
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
-                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
                 {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                  <Button type="submit" size='sm'>Save</Button>}
+                  <Button type="submit" size='sm'>Lưu</Button>}
               </AlertDialogFooter>
             </form>
           </Form>
@@ -169,16 +200,16 @@ export default function FormCRUD(props: FormProps) {
               <PiTrashLight  size={100} color="rgb(248 113 113)"/>
             </div>
             <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
-              Are you absolutely sure to delete?
+              Bạn có chắc chắn muốn xóa bản ghi này?
             </AlertDialogDescription>
             <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Confirm</Button>
+              <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Đóng</Button>
+              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Xác nhận</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         }
       </AlertDialog>
 
     </div>
-  )
+  ) 
 }

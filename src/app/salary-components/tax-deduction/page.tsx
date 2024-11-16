@@ -15,11 +15,11 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Salary Components",
+    name: "Thành Phần Lương",
     url: "/salary-components"
   },
   {
-    name: "Tax Deduction",
+    name: "Khấu Trừ Thuế",
     url: "/salary-components/tax-deduction"
   },
 ];
@@ -65,7 +65,7 @@ export default function SampleList() {
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Tax deduction name' />
+        <DataTableColumnHeader column={column} title='Tên Khấu Trừ Thuế' />
       ),
       cell: ({ row }) => <div className='w-[150px]'>{row.getValue('name')}</div>,
       enableSorting: false,
@@ -74,7 +74,7 @@ export default function SampleList() {
     {
       accessorKey: 'parameterName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Parameter' />
+        <DataTableColumnHeader column={column} title='Tham số' />
       ),
       cell: ({ row }) => <div className='font-semibold italic'>{row.getValue('parameterName')}</div>,
       enableSorting: false,
@@ -83,7 +83,7 @@ export default function SampleList() {
     {
       accessorKey: 'fomulaType',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Type' />
+        <DataTableColumnHeader column={column} title='Loại' />
       ),
       cell: ({ row }) => <div className='font-semibold'>{row.getValue('fomulaType')}</div>,
       enableSorting: true,
@@ -92,7 +92,7 @@ export default function SampleList() {
     {
       accessorKey: 'terms',
       header: ({ column }) => (
-        <DataTableColumnHeader className="ps-5" column={column} title='Terms' />
+        <DataTableColumnHeader className="ps-5" column={column} title='Điều Khoản' />
       ),
       cell: ({ row }) => <div className='ps-5'>{row.getValue('terms')}</div>,
       enableSorting: false,
@@ -146,7 +146,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Tax Deduction list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh Sách Khấu Trừ Thuế</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function SampleList() {
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4' />Add new
+            <IconPlus className='mr-2 h-4 w-4' />Thêm Mới
           </Button>
           
         </DataTable>

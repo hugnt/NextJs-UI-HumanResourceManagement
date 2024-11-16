@@ -1,12 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
+import dashboardApiRequest from "@/apis/dashboard.api";
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
 import departmentApiRequest from "@/apis/department.api";
 import employeeApiRequest from "@/apis/employee.api";
 import positionApiRequest from "@/apis/position.api";
 import contractApiRequest from "@/apis/contract.api";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { useQuery } from "@tanstack/react-query";
-import QuantityCard from "@/components/QuantityCard";
 import { Employee } from "@/data/schema/employee.schema";
 import { ApiResponse } from "@/data/type/response.type";
 import { DepartmentUserCount } from "@/data/schema/department.schema";
@@ -34,12 +46,27 @@ type DynamicChartConfig = {
   };
 };
 
+const ITEMS_PER_PAGE = 10;
+
+const chartConfig = {
+  desktop: {
+      label: "Count",
+      color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig
+
 //react query key
 const QUERY_KEY = {
   employee: "employees",
   department: "departments",
   position: "positions",
-  contract: "contracts"
+  contract: "contracts",
+  employeeCountKey: "employee-count-by-base-salary",
+  jobCountKey: "job-posting-count",
+  applicantCountKey: "applicant-count",
+  applicantCountByPositionKey: "applicant-count-by-position",
+  leaveApplicationKey: "leave-applications-today",
+  advanceCountKey: "advances-by-pay-period"
 }
 
 const pathList: Array<PathItem> = [
@@ -49,7 +76,7 @@ const pathList: Array<PathItem> = [
   },
 ];
 
-export default function SampleList() {
+export default function Dashboard() {
   const { data: employeeData, isLoading, isError } = useQuery({
     queryKey: [QUERY_KEY.employee],
     queryFn: () => employeeApiRequest.getList(),
@@ -115,22 +142,22 @@ export default function SampleList() {
     { level: "engineer", count: EngineerCount, fill: "var(--color-engineer)" },
   ]
   const ageRangeChartData = [
-    { age: "<25", count: under25Count, fill: "var(--color-under25Count)" },
-    { age: "25-34", count: from25to34Count, fill: "var(--color-from25to34Count)" },
-    { age: "35-34", count: from35to44Count, fill: "var(--color-from35to44Count)" },
-    { age: "45-54", count: from45to54Count, fill: "var(--color-from45to54Count)" },
-    { age: ">55", count: over55Count, fill: "var(--color-over55Count)" },
+    { age: "<25", count: under25Count, fill: "hsl(var(--chart-1))" },
+    { age: "25-34", count: from25to34Count, fill: "hsl(var(--chart-2))" },
+    { age: "35-34", count: from35to44Count, fill: "hsl(var(--chart-3))" },
+    { age: "45-54", count: from45to54Count, fill: "hsl(var(--chart-4))" },
+    { age: ">55", count: over55Count, fill: "hsl(var(--chart-5))" },
   ]
   const tenureRangeChartData = [
-    { year: "<1", count: under1YearCount, fill: "var(--color-under1YearCount)" },
-    { year: "1-3", count: from1to3YearsCount, fill: "var(--color-from1to3YearsCount)" },
-    { year: "4-7", count: from4to7YearsCount, fill: "var(--color-from4to7YearsCount)" },
-    { year: "8-10", count: from8to10YearsCount, fill: "var(--color-from8to10YearsCount)" },
-    { year: ">10", count: over10YearsCount, fill: "var(--color-over10YearsCount)" },
+    { year: "<1", count: under1YearCount, fill: "hsl(var(--chart-1))" },
+    { year: "1-3", count: from1to3YearsCount, fill: "hsl(var(--chart-2))" },
+    { year: "4-7", count: from4to7YearsCount, fill: "hsl(var(--chart-3))" },
+    { year: "8-10", count: from8to10YearsCount, fill: "hsl(var(--chart-4))" },
+    { year: ">10", count: over10YearsCount, fill: "hsl(var(--chart-5))" },
   ]
   const departmentChartData = departmentData?.map(department => ({
     id: department.id,
-    name: department.name, // Use department name for the chart label
+    name: department.name,
     count: department.employeeCount,   // Employee count
     fill: `var(--color-${department.id})`, // Dynamic color based on department ID
   }));
@@ -174,6 +201,9 @@ export default function SampleList() {
       label: "Cử Nhân",
       color: "hsl(var(--chart-4))",
     },
+    applicant:{
+      label: "Số đơn ứng tuyển"
+    }
   } satisfies ChartConfig
 
   // Add dynamic department configurations
@@ -188,31 +218,197 @@ export default function SampleList() {
     };
   });
 
+  //Get contracts before expiring date 30 days
+    //#region 
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    const [selectedDate, setSelectedDate] = useState<string>(formattedDate);
+    const [startDate, setStartDate] = useState<string>(formattedDate);
+    const [endDate, setEndDate] = useState<string>(formattedDate);
+    const [change, setChange] = useState<number>(0)
+    //#endregion
+
+    //Employee count by base salary
+    //#region 
+    const { data: employeeCountData, isLoading: employeeCountLoading } = useQuery({
+        queryKey: [QUERY_KEY.employeeCountKey],
+        queryFn: () => dashboardApiRequest.getEmployeeCountByBaseSalary()
+    })
+
+  const chartApplicantPosition : DynamicChartConfig={
+    count: {
+      label: "Số đơn ứng tuyển: ",
+      
+    }}
+
+    const employeeCountListData = employeeCountData?.metadata?.map(item => ({
+        baseSalary: item.baseSalary,
+        count: item.count,
+        fill: `hsl(var(--chart-1))`
+    })) || [];
+
+    const { data: applicationByPositionData, isLoading: applicationByPositionLoading } = useQuery({
+        queryKey: [QUERY_KEY.applicantCountByPositionKey],
+        queryFn: () => dashboardApiRequest.getApplicantCountByPosition()
+    })
+    const applicantCountListData = applicationByPositionData?.metadata?.map(item => ({
+        positionName: item.name,
+        count: item.count,
+        color: "hsl(var(--chart-1))"
+    }))
+    //#endregion
+
+    //Count job posting, applicant, advances
+    //#region 
+    const { data: jobCountData, isLoading: jobCountLoading } = useQuery({
+        queryKey: [QUERY_KEY.jobCountKey],
+        queryFn: () => dashboardApiRequest.getJobPostingCount()
+    })
+
+    const { data: applicantCountData, isLoading: applicantCountLoading } = useQuery({
+        queryKey: [QUERY_KEY.applicantCountKey],
+        queryFn: () => dashboardApiRequest.getApplicantCount()
+    })
+
+    const { data: advanceCountData, isLoading: advanceCountLoading } = useQuery({
+        queryKey: [QUERY_KEY.advanceCountKey],
+        queryFn: () => dashboardApiRequest.getAdvanceCountByPeriod(startDate, endDate)
+    })
+    //#endregion
+
+    //leave application, expiring contracts
+    //#region 
+    const { data: leaveApplicationData, isLoading: leaveApplicationLoading } = useQuery({
+        queryKey: [QUERY_KEY.leaveApplicationKey],
+        queryFn: () => dashboardApiRequest.getLeaveApplicationsToday()
+    });
+
+
+    const { data: expiringContractData, isLoading: expiringContractLoading } = useQuery({
+        queryKey: [QUERY_KEY.leaveApplicationKey, change],
+        queryFn: () => dashboardApiRequest.getExpiringContracts(selectedDate)
+    })
+    //#endregion
+
+    //get date change
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedDate(event.target.value);
+  };
+
+  const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEndDate(event.target.value);
+  };
+
   return (
-    <>
-      <div className='mb-2 flex items-center justify-between space-y-2'>
+    <div className="space-y-5">
+      <div className='flex items-center justify-between space-y-2'>
         <div>
           <h2 className='text-2xl font-bold tracking-tight'>Dash Board</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
+      {/* đếm số lượng */}
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5"> 
         {isLoading ? (
           <p>Đang tải dữ liệu...</p>
         ) : isError ? (
           <p>Đã xảy ra lỗi khi tải dữ liệu</p>
         ) : (
           <>
-            <QuantityCard title="Số Lượng Nhân Viên" quantity={totalEmployees ?? 0} />
-            <QuantityCard title="Số Lượng Phòng Ban" quantity={totalDepartment ?? 0} />
-            <QuantityCard title="Số Lượng Chức Vụ" quantity={positionData ?? 0} />
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                    Số Lượng Nhân Viên
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{
+                        totalEmployees ?? 0
+                    }</div>
+                    <p className="text-xs text-muted-foreground">
+                        số nhân viên trong công ty
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                    Số Lượng Phòng Ban
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{
+                        totalDepartment ?? 0
+                    }</div>
+                    <p className="text-xs text-muted-foreground">
+                        số lượng phòng ban đang có
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                    Số Lượng Chức Vụ
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{
+                        totalDepartment ?? 0
+                    }</div>
+                    <p className="text-xs text-muted-foreground">
+                        số chức vụ hiện tại trong công ty
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                    Số Lượng Tin Tuyển Dụng
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{
+                        jobCountData?.metadata ?? 0
+                    }</div>
+                    <p className="text-xs text-muted-foreground">
+                        tổng số tin tuyển dụng đã đăng
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                    Số Lượng Đơn Ứng Tuyển
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{
+                        applicantCountData?.metadata ?? 0
+                    }</div>
+                    <p className="text-xs text-muted-foreground">
+                        tổng số đơn ứng tuyển đã nhận
+                    </p>
+                </CardContent>
+            </Card>
           </>
         )}
-        {/* Thêm các thẻ thống kê khác tương tự */}
       </div>
 
-      <div className="flex gap-4">
+      {/* thống kê */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="flex flex-col">
           <CardHeader className="items-center pb-0">
             <CardTitle>Tỉ Lệ Nam-Nữ</CardTitle>
@@ -314,107 +510,167 @@ export default function SampleList() {
             </div>
           </CardFooter>
         </Card>
-      </div>
 
-      <div>
-      {/* <Card className="flex flex-col">
+        <Card className="flex flex-col">
           <CardHeader className="items-center pb-0">
-            <CardTitle>Department Employee Count</CardTitle>
-            <CardDescription>Các phòng ban trống sẽ vẫn hiển thị</CardDescription>
+            <CardTitle>
+              Các Đơn Ứng Lương Kì Lương Này
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 pb-0">
-            <ChartContainer
-              config={chartConfigDepartment}
-              className="mx-auto aspect-square max-h-[500px] [&_.recharts-text]:fill-background"
-            >
-              <PieChart>
-                <ChartTooltip
-                  content={<ChartTooltipContent nameKey="count" hideLabel />}
-                />
-                <Pie data={departmentChartData} dataKey="count">
-                  <LabelList
-                    dataKey="id"
-                    className="fill-background"
-                    stroke="none"
-                    fontSize={10}
-                    formatter={(value: keyof typeof chartConfigDepartment) =>
-                      chartConfigDepartment[value]?.label
-                    }
+          <br />
+          <CardContent>
+            <div>
+              <div style={{ marginBottom: '20px' }}>
+                <label>
+                  Ngày bắt đầu: <span></span>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
                   />
-                </Pie>
-              </PieChart>
-            </ChartContainer>
+                </label>
+                <label>
+                  Ngày kết thúc:
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                  />
+                </label>
+              </div>
+              {advanceCountLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <div>
+                  <p>Số đơn ứng trước: {advanceCountData!.metadata}</p>
+                </div>
+              )}
+              <button 
+                onClick={() => setChange(change + 1)} 
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200 w-full mt-4">
+                Hiển thị thông tin
+              </button>
+            </div>               
           </CardContent>
-          <CardFooter className="flex-col gap-2 text-sm">
-            <div className="leading-none text-muted-foreground">
-              Showing total employee counts by department
-            </div>
-          </CardFooter>
-      </Card> */}
+        </Card>
       </div>
 
-      <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Nhân Viên - Phòng Ban</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfigDepartment}>
-              <BarChart
-                accessibilityLayer
-                data={departmentChartData}
-                layout="vertical"
-                margin={{
-                  left: +200,
-                }}
-              >
-                <CartesianGrid horizontal={false} />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  hide
-                />
-                <XAxis dataKey="count" type="number" hide />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
-                />
-                <Bar
-                  dataKey="count"
-                  layout="vertical"
-                  fill="var(--color-desktop)"
-                  radius={4}
-                >
-                  <LabelList
-                    width={300}
-                    dataKey="name"
-                    position="left"
-                    offset={8}
-                    className="fill-[--color-label]"
-                    fontSize={12}
-                  />
-                  <LabelList
-                    dataKey="count"
-                    position="right"
-                    offset={8}
-                    className="fill-foreground"
-                    fontSize={12}
-                  />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-          <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="leading-none text-muted-foreground">
-              Hiển Thị Số Lượng Nhân Viên Theo Phòng Ban
-            </div>
-          </CardFooter>
-        </Card>
+      <div className="flex justify-between space-x-4">
+          <Card className="w-1/2">
+              <CardHeader>
+                  <CardTitle>Nhân Viên - Phòng Ban</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <ChartContainer config={chartConfigDepartment}>
+                      <BarChart
+                          accessibilityLayer
+                          data={departmentChartData}
+                          layout="vertical"
+                          margin={{
+                              left: 200,
+                          }}
+                      >
+                          <CartesianGrid horizontal={false} />
+                          <YAxis
+                              dataKey="name"
+                              type="category"
+                              tickLine={false}
+                              tickMargin={10}
+                              axisLine={false}
+                              hide
+                          />
+                          <XAxis dataKey="count" type="number" hide />
+                          <ChartTooltip
+                              cursor={false}
+                              content={<ChartTooltipContent indicator="line" />}
+                          />
+                          <Bar
+                              dataKey="count"
+                              layout="vertical"
+                              fill="var(--color-desktop)"
+                              radius={4}
+                          >
+                              <LabelList
+                                  width={300}
+                                  dataKey="name"
+                                  position="left"
+                                  offset={8}
+                                  className="fill-[--color-label]"
+                                  fontSize={12}
+                              />
+                              <LabelList
+                                  dataKey="count"
+                                  position="right"
+                                  offset={8}
+                                  className="fill-foreground"
+                                  fontSize={12}
+                              />
+                          </Bar>
+                      </BarChart>
+                  </ChartContainer>
+              </CardContent>
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                  <div className="leading-none text-muted-foreground">
+                      Hiển Thị Số Lượng Nhân Viên Theo Phòng Ban
+                  </div>
+              </CardFooter>
+          </Card>
 
-        <Card>
+          <Card className="w-1/2">
+              <CardHeader>
+                  <CardTitle>Thống kê Đơn Ứng Tuyển Theo Vị Trí</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <ChartContainer config={chartApplicantPosition}>
+                      <BarChart
+                          accessibilityLayer
+                          data={applicantCountListData}
+                          layout="vertical"
+                          margin={{
+                              left: -20,
+                          }}
+                      >
+                          <XAxis type="number" dataKey="count" hide />
+                          <YAxis
+                              dataKey="positionName"
+                              type="category"
+                              tickLine={false}
+                              tickMargin={10}
+                              axisLine={false}
+                              tickFormatter={(value) => value.slice(0, 40)}
+                              width={200}
+                          />
+                          <ChartTooltip
+                              cursor={false}
+                              content={<ChartTooltipContent hideLabel />}
+                          />
+                          <Bar 
+                              dataKey="count" 
+                              fill="hsl(var(--chart-1))" 
+                              radius={5} 
+                              barSize={20}
+                          >
+                              <LabelList
+                                  dataKey="count"
+                                  position="right"
+                                  offset={8}
+                                  className="fill-foreground"
+                                  fontSize={12}
+                              />
+                          </Bar>
+                      </BarChart>
+                  </ChartContainer>
+              </CardContent>
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                  <div className="leading-none text-muted-foreground">
+                      Hiển Thị Các Vị Trí Được Ứng Tuyển Nhiều Nhất
+                  </div>
+              </CardFooter>
+          </Card>
+      </div>
+      
+      <div className="flex flex-wrap gap-4">
+        <Card className="flex-1">
           <CardHeader>
             <CardTitle>Nhân Viên - Range Tuổi</CardTitle>
           </CardHeader>
@@ -457,7 +713,7 @@ export default function SampleList() {
           </CardFooter>
         </Card>
 
-        <Card>
+        <Card className="flex-1">
           <CardHeader>
             <CardTitle>Nhân Viên - Thâm Niên (Năm)</CardTitle>
           </CardHeader>
@@ -500,6 +756,134 @@ export default function SampleList() {
           </CardFooter>
         </Card>
       </div>
-    </>
+
+      <div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Số Lượng Nhân Viên Theo Mức Lương Cơ Bản</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer  config={chartConfig}>
+                    <BarChart
+                        accessibilityLayer
+                        data={employeeCountListData}
+                        margin={{
+                            top: 20,
+                        }}
+                        height={10}
+                    >
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="baseSalary"
+                            tickLine={false}
+                            tickMargin={5}
+                            axisLine={false}
+                            tickFormatter={(value) => String(value).slice(0, 9)}
+                        />
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent hideLabel />}
+                        />
+                        <Bar dataKey="count" fill="hsl(var(--chart-1))" radius={8} barSize={40}>
+                            <LabelList
+                                position="top"
+                                offset={12}
+                                className="fill-foreground"
+                                fontSize={12}
+                            />
+                        </Bar>
+                    </BarChart>
+                </ChartContainer>
+            </CardContent>
+            <CardFooter className="flex-col items-start gap-2 text-sm">
+                <div className="leading-none text-muted-foreground">
+                    Hiển Thị Số Lượng Nhân Viên Theo Các Mức Lương Cơ Bản
+                </div>
+            </CardFooter>
+        </Card>
+      </div>
+
+      <div>
+          <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle>
+                      Danh Sách Các Đơn Xin Nghỉ Trong Ngày
+                  </CardTitle>
+              </CardHeader>
+              <Table>
+                  <TableHeader>
+                      <TableRow>
+                      <TableHead className="w-[100px]">Trạng thái</TableHead>
+                      <TableHead>Mã nhân viên</TableHead>
+                      <TableHead className="text-center">Lí do nghỉ</TableHead>
+                      <TableHead className="text-center">Hồi đáp</TableHead>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                      {
+                          leaveApplicationLoading ? <></> :
+                          leaveApplicationData!.metadata?.map((item, index) => {
+                                  return <TableRow key={index}>
+                                  <TableCell className="font-medium">{item.statusLeave}</TableCell>
+                                  <TableCell className="font-medium">{item.employeeId}</TableCell>
+                                  <TableCell className="font-medium">{item.description}</TableCell>
+                                  <TableCell className="font-medium">{item.replyMessage}</TableCell>
+                                  </TableRow>
+                              })
+                      }
+                  </TableBody>
+              </Table>
+          </Card>
+      </div>
+      
+      <div>
+          <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle>
+                      Danh sách hợp đồng sắp hết hạn
+                  </CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <label>
+                      Lấy ngày hết hạn hợp đồng: <span></span>
+                      <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={handleDateChange}
+                      />
+                  </label>
+                  <span style={{ margin: '0 20px' }}></span>
+                  <Button onClick={() => setChange(change + 1)}>Lấy Danh Sách</Button>
+              </CardContent>
+              
+              <Table>
+                  <TableCaption>Danh Sách Hợp Đồng Trước Ngày Hết Hạn 30 Ngày</TableCaption>
+                  <TableHeader>
+                      <TableRow>
+                      <TableHead className="w-[150px]">Mã Hợp Đồng</TableHead>
+                      <TableHead>Tên Nhân Viên</TableHead>
+                      <TableHead className="text-center">Ngày Bắt Đầu</TableHead>
+                      <TableHead className="text-center">Ngày Két Thúc</TableHead>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                      {
+                          expiringContractLoading ? <></> :
+                          expiringContractData!.metadata?.map((item, index) => {
+                              return <TableRow key={index}>
+                              <TableCell >{item.id}</TableCell>
+                              <TableCell>{item.name}</TableCell>
+                              <TableCell>{item.startDate}</TableCell>
+                              <TableCell >{item.endDate}</TableCell>
+                              </TableRow>
+                          })
+                      }
+                  </TableBody>
+                  </Table>
+
+          </Card>
+          
+      </div>
+    </div>
   );
 };

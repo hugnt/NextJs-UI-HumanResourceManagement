@@ -3,9 +3,12 @@ import { z } from "zod";
 export const employeeSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().optional(),
+  contractId: z.coerce.number().optional(),
+
   dateOfBirth: z.date().optional(),
   age: z.coerce.number().optional(),
   tenure: z.coerce.number().optional(),
+
   gender: z.boolean().optional(),
   address: z.string().optional(),
   countrySide: z.string().optional(),
@@ -21,12 +24,17 @@ export const employeeSchema = z.object({
   avatar: z.string().optional(),
   phoneNumber: z.string().optional(),
   email: z.string().optional(),
+
+  taxDeductionIds: z.array(z.coerce.number()).optional(),
+  userName: z.string().optional(),
+  password: z.string().optional(),
 });
 
 export type Employee = z.infer<typeof employeeSchema>;
 export const employeeDefault: Employee = {
   id: 0,
   name: "",
+  contractId: 0,
   dateOfBirth: new Date(),
   age: 0,
   tenure: 0,
@@ -44,7 +52,11 @@ export const employeeDefault: Employee = {
   departmentName: "",
   avatar: "",
   phoneNumber: "",
-  email: ""
+  email: "",
+
+  taxDeductionIds:[],
+  userName:"",
+  password:""
 };
 
 export type FaceRegisResult = {

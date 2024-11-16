@@ -2,7 +2,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
-import { AccountInfo } from '@/data/schema/auth.schema';
+import { AccountInfo, Role } from '@/data/schema/auth.schema';
+import loading from '@/app/loading';
+import { TypeContract } from '@/data/schema/contract.schema';
 
 // Define the context type
 interface AuthContextType {

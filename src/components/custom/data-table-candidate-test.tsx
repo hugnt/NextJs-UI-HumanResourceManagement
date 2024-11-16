@@ -17,11 +17,13 @@ interface DataTableCandidateActionsProps<TData> {
   row: Row<TData>,
   handleView?: () => void,
   handleEdit?: () => void,
+  handleAddTest?: () => void,
   handleDelete?: () => void,
-  handleTest?: () => void
+  handleTest?: () => void,
+  handleAddContract?: () => void,
 }
 
-export default function DataTableCandidateActions<TData>({ row, handleView, handleEdit, handleTest, handleDelete }: DataTableCandidateActionsProps<TData>) {
+export default function DataTableCandidateActions<TData>({ row, handleView, handleEdit, handleAddTest, handleTest, handleAddContract,handleDelete }: DataTableCandidateActionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,12 +36,16 @@ export default function DataTableCandidateActions<TData>({ row, handleView, hand
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>Test</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleTest}>Score</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleView}>Xem hồ sơ</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEdit}>Sửa ứng viên</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleAddTest}>Thay bộ kiểm tra</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleTest}>Phỏng vấn</DropdownMenuItem>
+        {handleAddContract && (
+          <DropdownMenuItem onClick={handleAddContract}>Tạo hợp đồng</DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDelete} className='text-red-500'>
-          Delete
+          Xóa
           <DropdownMenuShortcut>
         
             <IconTrash size={16} />

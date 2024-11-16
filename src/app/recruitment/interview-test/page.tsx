@@ -15,11 +15,11 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Recruitment",
+    name: "Tuyển dụng",
     url: ""
   },
   {
-    name: "Test",
+    name: "Bài kiểm tra",
     url: "/Recruitment/Test"
   },
 ];
@@ -27,8 +27,8 @@ const pathList: Array<PathItem> = [
 //Filter by
 const dataFilter: Array<DataFilter> = [
   {
-    columnName: 'name',
-    title: 'Name',
+    columnName: 'testName',
+    title: 'Tên bài kiểm tra',
     options: [
       {
         label: 'Start with W',
@@ -124,7 +124,7 @@ export default function TestList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Test list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh sách bài kiểm tra</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -132,9 +132,8 @@ export default function TestList() {
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4' />Add new
+            <IconPlus className='mr-2 h-4 w-4' />Thêm mới
           </Button>
-          
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />

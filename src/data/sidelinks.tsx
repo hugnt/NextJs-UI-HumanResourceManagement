@@ -45,7 +45,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Employee List',
         label: '',
-        href: '/employee-list',
+        href: '/company/employee-list',
         icon: <IconFileText size={18} />,
       },
       {
@@ -73,6 +73,12 @@ export const sidelinks: SideLink[] = [
         title: 'Contract List',
         label: '',
         href: '/contract/contract-list',
+        icon: <IconFileText size={18} />,
+      },
+      {
+        title: 'Contract Approval',
+        label: '',
+        href: '/contract/contract-approval',
         icon: <IconFileText size={18} />,
       },
       {
@@ -131,7 +137,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Leave application',
         label: '',
-        href: 'time-keeping/leave-application',
+        href: '/time-keeping/leave-application',
         icon: <IconFileText size={18} />,
       },
     ]

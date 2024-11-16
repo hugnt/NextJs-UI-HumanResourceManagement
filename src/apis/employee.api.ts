@@ -15,6 +15,8 @@ const employeeApiRequest = {
     createNewPageFlexibleDashboard: () => http.post<ApiResponse<PageFlexibleDashboardResult>>('dashboards/create-flexible-dashboards', {}),
     getAllChartByPageFlexibleId: (pageId: number) => http.get<ApiResponse<ChartResult[]>>(`dashboards/${pageId}/charts`),
     createNewChart: (value: Chart) => http.post<ApiResponse<boolean>>(`dashboards/charts`, value),
+    getDetailByContractId: (contractId: number) => http.get<ApiResponse<Employee>>(`/employees/contract/${contractId}`),
+    getAllContractNotInUsed: () => http.get<ApiResponse<number[]>>(`/employees/contract/not-inused`),
 };
 
 export default employeeApiRequest;

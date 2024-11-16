@@ -8,7 +8,7 @@ export const contractListSchema = z.object({
   fileURL: z.string().url("Invalid URL").optional(),
   employeeSignStatus: z.enum(["signed", "not_signed"]),
   companySignStatus: z.enum(["signed", "not_signed"]),
-  contractStatus: z.enum(["expired", "valid", "terminated", "pending"]),
+  contractStatus: z.enum(["expired", "valid", "terminated", "pending", "approved", "declined"]),
   IsFulltime: z.enum(["Yes", "No"]),
 });
 

@@ -18,11 +18,11 @@ import { useState } from "react";
 
 const pathList: Array<PathItem> = [
   {
-    name: "Recruitment",
+    name: "Tuyển dụng",
     url: ""
   },
   {
-    name: "Job Posting",
+    name: "Đăng bài tuyển dụng",
     url: "/recruitment/job-posting"
   },
 ];
@@ -31,7 +31,7 @@ const pathList: Array<PathItem> = [
 const dataFilter: Array<DataFilter> = [
   {
     columnName: 'description',
-    title: 'Description',
+    title: 'Mô tả',
     options: [
       {
         label: 'Start with W',
@@ -175,7 +175,7 @@ export default function SampleList() {
     {
       id: 'actions',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Action' />
+        <DataTableColumnHeader column={column} title='Chọn' />
       ),
       cell: ({ row }) => <DataTableJobPostingActions row={row}
         handleView={() => handleView(row)}
@@ -229,7 +229,7 @@ export default function SampleList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>JobPosting list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh sách bài đăng</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function SampleList() {
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="description">
           <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
-            <IconPlus className='mr-2 h-4 w-4' />Add new
+            <IconPlus className='mr-2 h-4 w-4' />Thêm mới
           </Button>
           
         </DataTable>
