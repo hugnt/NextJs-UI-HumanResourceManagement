@@ -48,13 +48,6 @@ type DynamicChartConfig = {
 
 const ITEMS_PER_PAGE = 10;
 
-const chartConfig = {
-  desktop: {
-      label: "Count",
-      color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig
-
 //react query key
 const QUERY_KEY = {
   employee: "employees",
@@ -82,25 +75,60 @@ export default function Dashboard() {
     queryFn: () => employeeApiRequest.getList(),
     select: (data: ApiResponse<Employee[]>) => data.metadata || [], // Lấy toàn bộ dữ liệu nhân viên
   });
-  const MasterCount = employeeData?.filter(employee => employee.level === "Thạc sĩ").length || 0;
-  const BachelorCount = employeeData?.filter(employee => employee.level === "Đại học").length || 0;
-  const DoctorateCount = employeeData?.filter(employee => employee.level === "Tiến sĩ").length || 0;
-  const EngineerCount = employeeData?.filter(employee => employee.level === "Kỹ sư").length || 0;
-  const maleCount = employeeData?.filter(employee => employee.gender === true).length || 0;
-  const femaleCount = employeeData?.filter(employee => employee.gender === false).length || 0;
+
+  const levels = [
+    { name: "Thạc sĩ", key: "master", fill: "var(--color-master)" },
+    { name: "Đại học", key: "bachelor", fill: "var(--color-bachelor)" },
+    { name: "Tiến sĩ", key: "doctorate", fill: "var(--color-doctorate)" },
+    { name: "Kỹ sư", key: "engineer", fill: "var(--color-engineer)" },
+  ];
+  
+  const genders = [
+    { name: "male", key: true, fill: "var(--color-male)" },
+    { name: "female", key: false, fill: "var(--color-female)" },
+  ];
+  
+  const chartData = genders.map(gender => ({
+    gender: gender.name,
+    count: employeeData?.filter(employee => employee.gender === gender.key).length || 0,
+    fill: gender.fill
+  }));
+
+  const levelChartData = levels.map(level => ({
+    level: level.key,
+    count: employeeData?.filter(employee => employee.level === level.name).length || 0,
+    fill: level.fill
+  }));
   const totalEmployees = employeeData?.length || 0;
   //range tuổi
-  const under25Count = employeeData?.filter(employee => employee.age !== undefined && employee.age < 25).length || 0;
-  const from25to34Count = employeeData?.filter(employee => employee.age !== undefined && employee.age >= 25 && employee.age <= 34).length || 0;
-  const from35to44Count = employeeData?.filter(employee => employee.age !== undefined && employee.age >= 35 && employee.age <= 44).length || 0;
-  const from45to54Count = employeeData?.filter(employee => employee.age !== undefined && employee.age >= 45 && employee.age <= 54).length || 0;
-  const over55Count = employeeData?.filter(employee => employee.age !== undefined && employee.age > 55).length || 0;
+  const ageRanges = [
+    { label: "<25", condition: (age: number) => age < 25, fill: "hsl(var(--chart-1))" },
+    { label: "25-34", condition: (age: number) => age >= 25 && age <= 34, fill: "hsl(var(--chart-2))" },
+    { label: "35-44", condition: (age: number) => age >= 35 && age <= 44, fill: "hsl(var(--chart-3))" },
+    { label: "45-54", condition: (age: number) => age >= 45 && age <= 54, fill: "hsl(var(--chart-4))" },
+    { label: ">55", condition: (age: number) => age > 55, fill: "hsl(var(--chart-5))" },
+  ];
+
+  const ageRangeChartData = ageRanges.map(range => ({
+    age: range.label,
+    count: employeeData?.filter(employee => employee.age !== undefined && range.condition(employee.age)).length || 0,
+    fill: range.fill
+  }));
   //range thâm niên 
-  const under1YearCount = employeeData?.filter(employee => employee.tenure !== undefined && employee.tenure < 1).length;
-  const from1to3YearsCount = employeeData?.filter(employee => employee.tenure !== undefined && employee.tenure >= 1 && employee.tenure <= 3).length;
-  const from4to7YearsCount = employeeData?.filter(employee => employee.tenure !== undefined && employee.tenure >= 4 && employee.tenure <= 7).length;
-  const from8to10YearsCount = employeeData?.filter(employee => employee.tenure !== undefined && employee.tenure >= 8 && employee.tenure <= 10).length;
-  const over10YearsCount = employeeData?.filter(employee => employee.tenure !== undefined && employee.tenure > 10).length;
+  const tenureRanges = [
+    { label: "<1", condition: (tenure: number) => tenure < 1, fill: "hsl(var(--chart-1))" },
+    { label: "1-3", condition: (tenure: number) => tenure >= 1 && tenure <= 3, fill: "hsl(var(--chart-2))" },
+    { label: "4-7", condition: (tenure: number) => tenure >= 4 && tenure <= 7, fill: "hsl(var(--chart-3))" },
+    { label: "8-10", condition: (tenure: number) => tenure >= 8 && tenure <= 10, fill: "hsl(var(--chart-4))" },
+    { label: ">10", condition: (tenure: number) => tenure > 10, fill: "hsl(var(--chart-5))" },
+  ];
+  
+  // Tính số lượng cho từng khoảng thời gian công tác
+  const tenureRangeChartData = tenureRanges.map(range => ({
+    year: range.label,
+    count: employeeData?.filter(employee => employee.tenure !== undefined && range.condition(employee.tenure)).length || 0,
+    fill: range.fill
+  }));
 
   const { data: departmentData } = useQuery({
     queryKey: [QUERY_KEY.department],
@@ -127,34 +155,11 @@ export default function Dashboard() {
     (contract) => contract.typeContract === TypeContract.Partime
   ).length;
 
-  const chartData = [
-    { gender: "male", count: maleCount, fill: "var(--color-male)" },
-    { gender: "female", count: femaleCount, fill: "var(--color-female)" },
-  ];
   const contractChartData = [
     { employeeType: "fulltime", countContractLabel: fullTimeCount, fill: "var(--color-fulltime)" },
     { employeeType: "partime", countContractLabel: partTimeCount, fill: "var(--color-partime)" },
   ];
-  const levelChartData = [
-    { level: "master", count: MasterCount, fill: "var(--color-master)" },
-    { level: "bachelor", count: BachelorCount, fill: "var(--color-bachelor)" },
-    { level: "doctorate", count: DoctorateCount, fill: "var(--color-doctorate)" },
-    { level: "engineer", count: EngineerCount, fill: "var(--color-engineer)" },
-  ]
-  const ageRangeChartData = [
-    { age: "<25", count: under25Count, fill: "hsl(var(--chart-1))" },
-    { age: "25-34", count: from25to34Count, fill: "hsl(var(--chart-2))" },
-    { age: "35-34", count: from35to44Count, fill: "hsl(var(--chart-3))" },
-    { age: "45-54", count: from45to54Count, fill: "hsl(var(--chart-4))" },
-    { age: ">55", count: over55Count, fill: "hsl(var(--chart-5))" },
-  ]
-  const tenureRangeChartData = [
-    { year: "<1", count: under1YearCount, fill: "hsl(var(--chart-1))" },
-    { year: "1-3", count: from1to3YearsCount, fill: "hsl(var(--chart-2))" },
-    { year: "4-7", count: from4to7YearsCount, fill: "hsl(var(--chart-3))" },
-    { year: "8-10", count: from8to10YearsCount, fill: "hsl(var(--chart-4))" },
-    { year: ">10", count: over10YearsCount, fill: "hsl(var(--chart-5))" },
-  ]
+
   const departmentChartData = departmentData?.map(department => ({
     id: department.id,
     name: department.name,
@@ -260,6 +265,7 @@ export default function Dashboard() {
         count: item.count,
         color: "hsl(var(--chart-1))"
     }))
+
     //#endregion
 
     //Count job posting, applicant, advances
