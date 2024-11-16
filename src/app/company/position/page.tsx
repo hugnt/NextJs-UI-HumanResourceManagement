@@ -77,6 +77,15 @@ export default function SampleList() {
       enableHiding: false,
     },
     {
+      accessorKey: 'currentPositionsFilled',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Số người hiện có' />
+      ),
+      cell: ({ row }) => <div className='w-[200px]'>{row.getValue('currentPositionsFilled')}</div>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       accessorKey: 'departmentName',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Phòng ban' />
@@ -140,10 +149,10 @@ export default function SampleList() {
 
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
-          <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
+          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
             <IconPlus className='mr-2 h-4 w-4' />Add new
           </Button>
-          
+
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />

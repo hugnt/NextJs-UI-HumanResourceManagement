@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 import AppBreadcrumb, { PathItem } from '@/components/custom/_breadcrumb';
 
@@ -10,6 +11,7 @@ import Information from './_components/information';
 import WorkingDepartment from './_components/working-department';
 import InforSalary from './_components/infor-salary';
 import ContractFile from './_components/contract-file';
+import SignContract from './_components/contract-file';
 const pathList: Array<PathItem> = [
     { name: "Profile", url: "/profile" },
 ];
@@ -62,9 +64,13 @@ export default function page() {
                                 factor={data!.metadata!.factor!}
                             />
                         </div>
-                        <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-8 mt-8 mb-8'>
-                            <ContractFile fileUrlBase={data!.metadata!.fireUrlBase!}/>
-                            <ContractFile fileUrlSigned={data!.metadata!.fileUrlSigned!}/>
+                        <div className='my-8'>
+                            <SignContract contractId={data!.metadata!.contractId ?? 0}
+                                name={data!.metadata!.name!}
+                                fileUrlBase={data!.metadata!.fireUrlBase!}
+                                fileUrlSigned={data!.metadata!.fileUrlSigned!}
+                                employeeSignStatus={data!.metadata!.employeeSignStatus!} />
+
                         </div>
                     </>
 

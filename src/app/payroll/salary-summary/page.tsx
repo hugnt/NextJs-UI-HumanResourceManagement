@@ -37,6 +37,7 @@ import FormDetails from "@/app/payroll/salary-summary/form-details";
 import { useMutation } from "@tanstack/react-query";
 import FormPayslip from "@/app/payroll/salary-summary/form-send-payslip";
 import ExcelJS from 'exceljs'
+import FormSaveResult from "@/app/payroll/salary-summary/form-save-result";
 
 const pathList: Array<PathItem> = [
   {
@@ -57,14 +58,13 @@ const QUERY_KEY = {
   keyTableSchemaColumn: 'payroll-table-schema-column',
   keyEmployeeSalaryList: 'payrolls-employee-salary-list',
 }
+const currentDate = new Date();
+const currentDay = currentDate.getDate();
+const currentMonth: number = new Date().getMonth() + 1;
+const currenYear: number = new Date().getFullYear();
+let timeoutId: NodeJS.Timeout;
 
 export default function SalarySummaryList() {
-  const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentMonth: number = new Date().getMonth() + 1;
-  const currenYear: number = new Date().getFullYear();
-  let timeoutId: NodeJS.Timeout;
-
   const [loading, setLoading] = useState<boolean>(false);
 
   const [headerGroup, setHeaderGroup] = useState<ReactNode>();
@@ -87,6 +87,7 @@ export default function SalarySummaryList() {
   const [openFormFormula, setOpenFormFormula] = useState<boolean>(false);
   const [openFormDetails, setOpenFormDetails] = useState<boolean>(false);
   const [openFormPayslip, setOpenFormPayslip] = useState<boolean>(false);
+  const [openFormSaveRS, setOpenFormSaveRS] = useState<boolean>(false);
 
   const [period, setPeriod] = useState<string>(`${currenYear}/${currentMonth.toString().padStart(2, '0')}`);
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
@@ -105,27 +106,6 @@ export default function SalarySummaryList() {
     }
   });
 
-
-  //ACTION HANDLER
-  const handleAddNew = () => {
-    setOpenAE(true);
-  };
-
-  const handleAddManySC = () => {
-    setOpenFormManySC(true);
-  };
-
-  const handleAddOtherSC = () => {
-    setOpenFormOtherSC(true);
-  };
-
-  const handleAddFormula = () => {
-    setOpenFormFormula(true);
-  };
-
-  const handleSendPayslip = () => {
-    setOpenFormPayslip(true);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -187,7 +167,6 @@ export default function SalarySummaryList() {
     setFooterGroup(footerColumn);
     setLoading(false);
   }, [displayColumns])
-
 
 
   const generateTableHeader = (payrollHeaderProp: ColumnTableHeader[][]) => {
@@ -465,11 +444,12 @@ export default function SalarySummaryList() {
       window.URL.revokeObjectURL(url);
     });
   };
+
   return (
     <>
       <div className='mb-2 flex items-center justify-between space-y-2 '>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Payroll Calculation</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Tổng hợp bảng lương</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -498,16 +478,16 @@ export default function SalarySummaryList() {
           </Button>
         </div>
         <div className="flex space-x-1 justify-end">
-          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex bg-primary text-white'>
+          <Button onClick={()=>setOpenAE(true)} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex bg-primary text-white'>
             <IconPlus className='mr-1 h-4 w-4 ' />Nhân viên
           </Button>
-          <Button variant='outline' size='sm' onClick={handleAddOtherSC} className='border-primary ml-auto hidden h-8 lg:flex'>
+          <Button variant='outline' size='sm' onClick={()=>setOpenFormOtherSC(true)} className='border-primary ml-auto hidden h-8 lg:flex'>
             <IconPlus className='h-4 w-4 mr-1' />Khoản khác
           </Button>
-          <Button variant='outline' size='sm' onClick={handleAddManySC} className='border-primary ml-auto hidden h-8 lg:flex '>
+          <Button variant='outline' size='sm' onClick={()=>setOpenFormManySC(true)} className='border-primary ml-auto hidden h-8 lg:flex '>
             <IconPlus className='h-4 w-4 mr-1' />Khoản thưởng/trừ
           </Button>
-          <Button variant='outline' size='sm' onClick={handleAddFormula} className='border-primary ml-auto hidden h-8 lg:flex '>
+          <Button variant='outline' size='sm' onClick={()=>setOpenFormFormula(true)} className='border-primary ml-auto hidden h-8 lg:flex '>
             <IconClearFormatting className='h-4 w-4 mr-1' />Cập nhật công thức
           </Button>
         </div>
@@ -620,10 +600,10 @@ export default function SalarySummaryList() {
           <Button onClick={toggleRefesh} variant='outline' size='sm' className='bg-green-500 ml-auto hidden h-8 lg:flex text-white '>
             <IconRefresh className='mr-1 h-4 w-4' />Sync
           </Button>
-          <Button onClick={toggleRefesh} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
+          <Button onClick={()=>setOpenFormSaveRS(true)} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
             <FaSave className='mr-1 h-4 w-4' />Lưu kết quả
           </Button>
-          <Button onClick={handleSendPayslip} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
+          <Button onClick={()=>setOpenFormPayslip(true)} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex  '>
             <IoIosSend className='mr-1 h-4 w-4' />Gửi phiếu lương
           </Button>
           <DropdownMenu>
@@ -714,6 +694,7 @@ export default function SalarySummaryList() {
       <FormAddFormula employeeListSc={employeeListSc} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
       <FormDetails payroll={selectedPayroll} openForm={openFormDetails} setOpenForm={setOpenFormDetails} period={period} toggleRefesh={toggleRefesh} />
       <FormPayslip employeeListSc={employeeListSc} openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} />
+      <FormSaveResult openSaveRS={openFormSaveRS} setOpenSaveRS={setOpenFormSaveRS} period={period} payrollHeader={payrollHeader} payrollColumn={payrollColumn} payrollData={payrollData}/>
     </>
   )
 };

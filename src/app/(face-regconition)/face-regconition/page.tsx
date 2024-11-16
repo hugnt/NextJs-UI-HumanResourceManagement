@@ -92,7 +92,7 @@ export default function page() {
         const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
 
         const intervalId = setInterval(async () => {
-          if (videoRef.current) {
+          if (videoRef.current && isCameraOpen) {
             const detections = await faceapi
               .detectSingleFace(videoRef.current)
               .withFaceLandmarks()
@@ -103,9 +103,9 @@ export default function page() {
               console.log('Match:', match.toString());
               if (!match.toString().includes("unknown")) {
                 handleCameraClick()
-                setHistory(undefined)
                 let id = Number(match.toString().split('_')[0])
                 mutate(id);
+                setHistory(undefined)
               }
             }
           }

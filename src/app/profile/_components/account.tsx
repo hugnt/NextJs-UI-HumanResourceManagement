@@ -39,7 +39,7 @@ export default function Account({ userName, password, email }: Props) {
         setPasswordFE(password)
     }
 
-    const { mutate, isPending } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: [QUERY_KEY.MUTATION_KEY],
         mutationFn: ({ id, accountUpdate }: { id: number; accountUpdate: AccountUpdate }) => {
             console.log(id, accountUpdate)
