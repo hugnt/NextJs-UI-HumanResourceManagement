@@ -22,13 +22,12 @@ export const payrollDefault: Payroll = {
   parameterName: "",
 };
 
-
 export interface PayrollPeriod {
   month: number;
   year: number;
 }
 export interface PayrollListUpsert {
-  period:PayrollPeriod;
+  period: PayrollPeriod;
   employeeIds: number[];
 }
 
@@ -37,8 +36,6 @@ export interface ColumnMeta {
   header: string;
   frozen: boolean;
 }
-
-
 
 export interface DynamicTableObject {
   employeeId: number;
@@ -58,8 +55,8 @@ export interface PayrollSC {
 export interface PayrollOtherSC {
   payrollId: number;
   employeeName: string;
-  otherBonus:number;
-  otherDeduction:number;
+  otherBonus: number;
+  otherDeduction: number;
   positionName: string;
   departmentName: string;
 }
@@ -73,25 +70,25 @@ export interface PayrollFormula {
 export interface ColumnTableHeader {
   field: string;
   header: string;
-  rowSpan:number;
-  colSpan:number;
-  id:number;
-  listParentIds:number[]
+  rowSpan: number;
+  colSpan: number;
+  id: number;
+  listParentIds: number[];
 }
 
 export interface PayrollDataTable {
-  payrollId: number,
-  employeeId: number,
-  contractId: number,
-  employeeName: string,
-  positionName: string,
-  departmentName: string,
+  payrollId: number;
+  employeeId: number;
+  contractId: number;
+  employeeName: string;
+  positionName: string;
+  departmentName: string;
   dp: Record<string, number>;
 }
 
 export interface PayrollResult {
   id: number;
-  month: number; 
+  month: number;
   year: number;
   employeeId: number;
   contractId: number;
@@ -121,3 +118,16 @@ export interface PayrollUpsert {
   listBonusIds?: number[];
   listDeductionIds?: number[];
 }
+
+export interface PayrollHistory{
+  name?: string;
+  month?:number;
+  year?:number;
+  createdAt?: Date;
+  note?:string;
+  payrollHeader?:ColumnTableHeader[][],
+  payrollColumn?:ColumnMeta[],
+  payrollData?:PayrollDataTable[]
+
+}
+
