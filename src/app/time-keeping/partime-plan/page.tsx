@@ -36,15 +36,18 @@ const statusMap = [
 
 
 export default function page() {
+    const user = useCurrentUser().currentUser;
     const { data } = useQuery({
         queryKey: [QUERY_KEY.KEY],
         queryFn: () => workShiftApiRequest.getAllPartimePlans(),
+        enabled: user!.role === Role.Admin
     });
     const { data: dataByCurrentUser } = useQuery({
         queryKey: [QUERY_KEY.KEY_CURRENT],
         queryFn: () => workShiftApiRequest.getAllPartimePlanByCurrentEmployeeId(),
+        enabled: user!.role === Role.Partime
     });
-    const user = useCurrentUser().currentUser;
+    
 
     const relevantData = useMemo(() => {
         return user!.role === Role.Admin ? data : dataByCurrentUser;

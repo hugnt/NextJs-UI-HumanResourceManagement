@@ -80,3 +80,7 @@ export type ProfileDetail = {
   fireUrlBase?: string;
   fileUrlSigned?: string;
 }
+export type TypeResult = {
+  value: string, 
+  valueType: string
+}

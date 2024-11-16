@@ -86,8 +86,6 @@ export default function FormCRUD(props: FormProps) {
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
-
-
   }
 
   const handleCloseForm = (e: any) => {
