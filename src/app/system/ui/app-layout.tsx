@@ -10,7 +10,7 @@ const regisFacePath = ['/face-regconition']
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    var layout = authPaths.includes(pathname) ? 0 : 1;
+    let layout = authPaths.includes(pathname) ? 0 : 1;
     if (regisFacePath.includes(pathname)) layout = 2;
     return (
         <>

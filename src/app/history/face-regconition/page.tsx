@@ -251,8 +251,8 @@ export default function Page() {
 
   useEffect(() => {
     if (data && data.metadata && data.metadata.length > 0) {
-      let urls = data.metadata.map(item => item.url);
-      let idArray = data.metadata.map(item => item.id);
+      const urls = data.metadata.map(item => item.url);
+      const idArray = data.metadata.map(item => item.id);
       setCapturedImage(urls)
       setIds(idArray)
       setIsUpdate(true);

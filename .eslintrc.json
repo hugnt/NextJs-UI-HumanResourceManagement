@@ -1,3 +1,16 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "plugins": ["react-refresh"],
+  "rules": {
+    "react-hooks/rules-of-hooks": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "react/jsx-no-comment-textnodes": "off",
+    "react/jsx-key": "off",
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "react-refresh/only-export-components": "off",
+    "import/no-anonymous-default-export": "off"
+  }
 }

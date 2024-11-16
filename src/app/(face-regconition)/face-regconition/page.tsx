@@ -104,7 +104,7 @@ export default function page() {
               if (!match.toString().includes("unknown")) {
                 handleCameraClick()
                 setHistory(undefined)
-                let id = Number(match.toString().split('_')[0])
+                const id = Number(match.toString().split('_')[0])
                 mutate(id);
               }
             }

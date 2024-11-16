@@ -29,7 +29,7 @@ const KEY = {
 const authPaths = ['/login-admin'];
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const pathname = usePathname();
-  var layout = authPaths.includes(pathname) ? 1 : 0;
+  const layout = authPaths.includes(pathname) ? 1 : 0;
   const router = useRouter();
   const form = useForm<Auth>({
     resolver: zodResolver(authSchema),

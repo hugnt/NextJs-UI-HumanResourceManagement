@@ -93,7 +93,7 @@ export default function SampleList() {
     {
       accessorKey: 'email',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='email' />
+        <DataTableColumnHeader column={column} title='Email' />
       ),
       cell: ({ row }) => <div className='w-[100px]'>{row.getValue('email')}</div>,
       enableSorting: false,
@@ -111,7 +111,7 @@ export default function SampleList() {
     {
         accessorKey: 'fileDataStore',
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title='file' />
+          <DataTableColumnHeader column={column} title='File' />
         ),
         cell: ({ row }) => <div className='w-[250px]'>{row.getValue('fileDataStore')}</div>,
         enableSorting: false,
@@ -147,7 +147,7 @@ export default function SampleList() {
       {
         accessorKey: 'interviewerName',
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title='người phỏng vấn' />
+          <DataTableColumnHeader column={column} title='Người phỏng vấn' />
         ),
         cell: ({ row }) => <div className='w-[100px]'>{row.getValue('interviewerName')}</div>,
         enableSorting: false,

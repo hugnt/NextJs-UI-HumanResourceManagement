@@ -49,7 +49,7 @@ const QUERY_KEY = {
 }
 export default function HistoryAttendance({employeeId} : {employeeId?: number}) {
     const user = useCurrentUser().currentUser!
-    let id = employeeId == null ? user.id : employeeId;
+    const id = employeeId == null ? user.id : employeeId;
     const queryClient = useQueryClient()
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
@@ -94,8 +94,8 @@ export default function HistoryAttendance({employeeId} : {employeeId?: number}) 
     const { data, isLoading } = useQuery({
         queryKey: [QUERY_KEY.keyList, update],
         queryFn: () => {
-            let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             return workShiftApiRequest.getAllWorkShiftByPartimeEmployee(id, startDate!, endDate!)
         },
     });
@@ -104,8 +104,8 @@ export default function HistoryAttendance({employeeId} : {employeeId?: number}) 
     const { mutate, isPending } = useMutation({
         mutationKey: [QUERY_KEY.mutationKey],
         mutationFn: () => {
-            let startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-            let endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const startDate = new Date(dateRange?.from!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const endDate = new Date(dateRange?.to!.getTime()! + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             return workShiftApiRequest.printPartimeWorkShiftToExcel(id, startDate!, endDate!)
         }
     })

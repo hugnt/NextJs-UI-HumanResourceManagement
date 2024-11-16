@@ -86,27 +86,27 @@ export default function page() {
                     <TableBody>
                         {
                             workShifts.map((workShift, index) => {
-                                var indexDay = 0;
+                                let indexDay = 0;
                                 return <TableRow key={index}>
                                     <TableCell className='h-[100px]'>{workShift}</TableCell>
                                     {
                                         dayOfWeeks.map((_, subIndex) => {
-                                            let listShiftTimes = listDataQuery.data?.metadata![index]
+                                            const listShiftTimes = listDataQuery.data?.metadata![index]
                                             let stringShow = "";
                                             let iconAddShow = false;
 
                                             if (listShiftTimes != null
                                                 && listShiftTimes.calendarResult[indexDay] != null
                                                 && subIndex + 1 == listShiftTimes.calendarResult[indexDay].day) {
-                                                let timeStart = listShiftTimes.calendarResult[indexDay].timeStart!.slice(0, 5);
-                                                let timeEnd = listShiftTimes.calendarResult[indexDay].timeEnd!.slice(0, 5);
+                                                const timeStart = listShiftTimes.calendarResult[indexDay].timeStart!.slice(0, 5);
+                                                const timeEnd = listShiftTimes.calendarResult[indexDay].timeEnd!.slice(0, 5);
                                                 indexDay++;
                                                 stringShow = `${timeStart} - ${timeEnd}`
                                             } else {
                                                 stringShow = "Chưa có"
                                                 iconAddShow = true;
                                             }
-                                            let calendar = listShiftTimes?.calendarResult[indexDay - 1]
+                                            const calendar = listShiftTimes?.calendarResult[indexDay - 1]
                                             return <TableCell key={subIndex} className='h-[100px]'>
                                                 <div className='flex items-center justify-between'>
                                                     <p>{stringShow}</p>

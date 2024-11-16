@@ -34,12 +34,12 @@ export default function DataTableJobPostingActions<TData>({ row, handleView, han
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        <DropdownMenuItem onClick={handlePosting}>Posting</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleView}>Xem chi tiết</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEdit}>Sửa</DropdownMenuItem>
+        <DropdownMenuItem onClick={handlePosting}>Đăng bài</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDelete} className='text-red-500'>
-          Delete
+          Xóa
           <DropdownMenuShortcut>
         
             <IconTrash size={16} />

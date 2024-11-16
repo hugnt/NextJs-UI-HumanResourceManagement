@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/custom/button";
 import {
   AlertDialog,
@@ -195,10 +197,16 @@ export default function FormCRUD(props: FormProps) {
                       <FormItem>
                         <FormLabel>Nhập mô tả</FormLabel>
                         <FormControl>
-                          <Input
+                          <ReactQuill
+                            value={field.value || ""}
+                            onChange={(value) => field.onChange(value)} // Cập nhật giá trị vào form
+                            readOnly={isDisabled} // Vô hiệu hóa nếu cần
+                            modules={{
+                              toolbar: [
+                                [{ list: "ordered" }, { list: "bullet" }]
+                              ],
+                            }}
                             placeholder="Nhập mô tả"
-                            {...field}
-                            disabled={isDisabled}
                           />
                         </FormControl>
                         <FormMessage />

@@ -93,8 +93,8 @@ export default function page() {
     return result;
   };
   const showCalendar = () => {
-    let start = startDate
-    let end = endDate
+    const start = startDate
+    const end = endDate
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     let stringFalse = "";
@@ -119,11 +119,11 @@ export default function page() {
     }
     const diffTime = Math.abs(end!.getTime() - start!.getTime()); // Difference in milliseconds
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
-    let listCalendar: WorkShift[] = []
+    const listCalendar: WorkShift[] = []
     for (let i = 0; i <= diffDays; i++) {
-      let dayOfWeek = addDays(start!, i)
-      let { day, month, year } = extractDateInfo(dayOfWeek);
-      let workShift: WorkShift = {
+      const dayOfWeek = addDays(start!, i)
+      const { day, month, year } = extractDateInfo(dayOfWeek);
+      const workShift: WorkShift = {
         day: getDayOfWeek(dayOfWeek) + " - " + `${day}/${month}/${year}`,
         isCheckMorning: false,
         isCheckAfternoon: false,
@@ -142,7 +142,7 @@ export default function page() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["register-shift"],
     mutationFn: () => {
-      let workPlanInsert: WorkPlanInsert = {
+      const workPlanInsert: WorkPlanInsert = {
         timeStart: formatDateToLocal(startDate!),
         timeEnd: formatDateToLocal(endDate!),
         statusCalendar: StatusCalendar.Submit,
