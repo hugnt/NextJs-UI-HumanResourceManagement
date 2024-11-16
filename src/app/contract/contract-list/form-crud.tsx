@@ -149,7 +149,7 @@ export default function FormCRUD(props: FormProps) {
       value: item.id, // Assuming `item.id` is the identifier for each allowance
     };
   });
-  
+
   return (
     <div>
       <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD} >
@@ -163,7 +163,7 @@ export default function FormCRUD(props: FormProps) {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
               <div className="p-2 text-sm space-y-3 grid grid-cols-2 gap-1" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <FormField control={form.control} name="name" render={({ field }) => (
-                  <FormItem className="col-span-2"> 
+                  <FormItem className="col-span-2">
                     <FormLabel>Employee Name</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
@@ -176,12 +176,9 @@ export default function FormCRUD(props: FormProps) {
                   <FormItem>
                     <FormLabel>Date of Birth</FormLabel>
                     <FormControl>
-                      <Input
-                        type="datetime-local"
-                        {...field}
-                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                        
-                        disabled={isDisabled}
+                      <Input type="date"
+                        onChange={field.onChange}
+                        value={field.value ? field.value.toString().split('T')[0] : new Date().toString()}
                       />
                     </FormControl>
                     <FormMessage />
@@ -250,11 +247,9 @@ export default function FormCRUD(props: FormProps) {
                   <FormItem>
                     <FormLabel>Date of making ID</FormLabel>
                     <FormControl>
-                      <Input
-                        type="datetime-local"
-                        {...field}
-                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                        disabled={isDisabled}
+                      <Input type="date"
+                        onChange={field.onChange}
+                        value={field.value ? field.value.toString().split('T')[0] : new Date().toString()}
                       />
                     </FormControl>
                     <FormMessage />
@@ -335,11 +330,9 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Start Date</FormLabel>
                       <FormControl>
-                        <Input
-                          type="datetime-local"
-                          {...field}
-                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                          disabled={isDisabled}
+                        <Input type="date"
+                          onChange={field.onChange}
+                          value={field.value ? field.value.toString().split('T')[0] : new Date().toString()}
                         />
                       </FormControl>
                       <FormMessage />
@@ -352,11 +345,9 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>End Date</FormLabel>
                       <FormControl>
-                        <Input
-                          type="datetime-local"
-                          {...field}
-                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                          disabled={isDisabled}
+                        <Input type="date"
+                          onChange={field.onChange}
+                          value={field.value ? field.value.toString().split('T')[0] : new Date().toString()}
                         />
                       </FormControl>
                       <FormMessage />
@@ -370,10 +361,10 @@ export default function FormCRUD(props: FormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Choose phòng ban</FormLabel>
-                      <Select2  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue  placeholder="Choose phòng ban cho vị trí này" />
+                            <SelectValue placeholder="Choose phòng ban cho vị trí này" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -395,10 +386,10 @@ export default function FormCRUD(props: FormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Choose chức vụ</FormLabel>
-                      <Select2  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue  placeholder="Choose chức vụ cho vị trí này" />
+                            <SelectValue placeholder="Choose chức vụ cho vị trí này" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -420,23 +411,23 @@ export default function FormCRUD(props: FormProps) {
                   render={({ field }) => (
                     <FormItem className="col-span-2">
                       <FormLabel>Choose lương</FormLabel>
-                      <Select2  onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue  placeholder="Choose lương cho vị trí này" />
+                            <SelectValue placeholder="Choose lương cho vị trí này" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {
                             listDataContractSalary.data?.metadata?.map((item, index) => {
-                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>                              
-                                Base Salary: {item.baseSalary}<br/>
-                                Base Insurance: {item.baseInsurance}<br/>
-                                Factor: {item.factor}<br/>
-                                Required Days: {item.requiredDays}<br/>
-                                Required Hours: {item.requiredHours}<br/>
-                                Wage Daily: {item.wageDaily}<br/>
-                                Wage Hourly: {item.wageHourly}<br/>
+                              return <SelectItem key={index} value={item.id?.toString() ?? "0"}>
+                                Base Salary: {item.baseSalary}<br />
+                                Base Insurance: {item.baseInsurance}<br />
+                                Factor: {item.factor}<br />
+                                Required Days: {item.requiredDays}<br />
+                                Required Hours: {item.requiredHours}<br />
+                                Wage Daily: {item.wageDaily}<br />
+                                Wage Hourly: {item.wageHourly}<br />
                               </SelectItem>
                             })
                           }
@@ -450,19 +441,19 @@ export default function FormCRUD(props: FormProps) {
                 <FormField
                   control={form.control}
                   name="allowanceIds"
-                  render={({ field}) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>Choose Allowance</FormLabel>
                       <Select
-                          onChange={(selectedOptions) => {
-                            field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
-                          }}
-                          value={allowanceListOptions?.filter(option => field.value?.includes(option.value??0))}
-                          closeMenuOnSelect={false}
-                          isMulti
-                          options={allowanceListOptions}
-                          isDisabled={isDisabled}
-                        />
+                        onChange={(selectedOptions) => {
+                          field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
+                        }}
+                        value={allowanceListOptions?.filter(option => field.value?.includes(option.value ?? 0))}
+                        closeMenuOnSelect={false}
+                        isMulti
+                        options={allowanceListOptions}
+                        isDisabled={isDisabled}
+                      />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -475,14 +466,14 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Choose Insurance</FormLabel>
                       <Select
-                          onChange={(selectedOptions) => {
-                            field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
-                          }}
-                          value={insuranceListOptions?.filter(option => field.value?.includes(option.value??0))}
-                          closeMenuOnSelect={false}
-                          isMulti
-                          options={insuranceListOptions}
-                          isDisabled={isDisabled} 
+                        onChange={(selectedOptions) => {
+                          field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
+                        }}
+                        value={insuranceListOptions?.filter(option => field.value?.includes(option.value ?? 0))}
+                        closeMenuOnSelect={false}
+                        isMulti
+                        options={insuranceListOptions}
+                        isDisabled={isDisabled}
                       />
                       <FormMessage />
                     </FormItem>
@@ -504,7 +495,7 @@ export default function FormCRUD(props: FormProps) {
               <AlertDialogTitle></AlertDialogTitle>
             </AlertDialogHeader>
             <div className="text-center pt-8 pb-4 flex justify-center">
-              <PiTrashLight  size={100} color="rgb(248 113 113)"/>
+              <PiTrashLight size={100} color="rgb(248 113 113)" />
             </div>
             <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
               Are you absolutely sure to delete?

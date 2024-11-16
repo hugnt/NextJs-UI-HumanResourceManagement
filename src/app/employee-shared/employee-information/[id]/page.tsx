@@ -4,7 +4,7 @@ import { Button } from "@/components/custom/button";
 import { newEmployee, newEmployeeDefault } from "@/data/schema/newEmployee.schema";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Select,
     SelectContent,
@@ -16,12 +16,19 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
+import applicantApiRequest from "@/apis/candidate.api";
+import { useQuery } from "@tanstack/react-query";
+import contractApiRequest from "@/apis/contract.api";
 
 export default function NewPage() {
     const params = useParams<{ id: string }>();
     const id = Number(params.id);
     const { register, handleSubmit, setValue } = useForm<newEmployee>({
         defaultValues: newEmployeeDefault,
+    });
+    const listDataContract = useQuery({
+        queryKey: ["contracts"],
+        queryFn: () => contractApiRequest.getList()
     });
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -35,6 +42,13 @@ export default function NewPage() {
             setSuccessMessage(null);
         }
     };
+    useEffect(() => {
+        const contracts = listDataContract?.data?.metadata;
+        const contract = contracts?.find(
+            (item) => item.id !== undefined && item.id === id
+        );
+        setValue("name", contract?.name??"");
+    }, [listDataContract.data])
 
     return (
         <>
@@ -55,7 +69,7 @@ export default function NewPage() {
                     <div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
                             <Label htmlFor="name">Tên</Label>
-                            <Input {...register("name")} placeholder="Tên ứng viên" />
+                            <Input type="text" {...register("name")} />
                         </div>
 
                         <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
