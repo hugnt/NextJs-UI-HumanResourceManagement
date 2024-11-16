@@ -94,3 +94,7 @@ export type ProfileDetail = {
   contractId?:number;
   employeeSignStatus?:number; // 1-signed; 2-not signed
 }
+export type TypeResult = {
+  value: string, 
+  valueType: string
+}
