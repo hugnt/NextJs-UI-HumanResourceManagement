@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Chart, chartDefault, ChartType } from '@/data/schema/flexibleDashboard.schema';
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation';
-import React, {  useState } from 'react'
-import {  FaPen } from 'react-icons/fa';
+import React, { useState } from 'react'
+import { FaPen } from 'react-icons/fa';
 import { BarChartHorizontal } from '../_components/barchart-horizontal';
 import { Button } from '@/components/custom/button';
 import { CRUD_MODE } from '@/data/const';
@@ -85,8 +85,8 @@ export default function page({ params }: { params: { flexibleId: number } }) {
                 <div className='mt-4'>
                     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
                         {
-                            data!.metadata?.map((item, index) => {
-                                return <div key={index} className={`col-span-${item.size}`} onDoubleClick={() => {}}>
+                            data?.metadata?.map((item, index) => {
+                                return <div key={index} className={`col-span-${item.size}`} onDoubleClick={() => { }}>
                                     {item.chartType == ChartType.BarChartHorizontal ? <BarChartHorizontal title={item.title} data={parseLabelResults(item.data)} firstDescription={item.firstDescription} secondDescription={item.secondDescription} /> : <></>}
                                     {item.chartType == ChartType.BarChartVertical ? <BarChartVertical title={item.title} data={parseLabelResults(item.data)} first_description={item.firstDescription} second_description={item.secondDescription} /> : <></>}
                                     {item.chartType == ChartType.PieChart ? <PieChartCustom title={item.title} data={parseLabelResults(item.data)} firstDescription={item.firstDescription} secondDescription={item.secondDescription} /> : <></>}
