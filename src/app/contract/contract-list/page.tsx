@@ -91,137 +91,144 @@ export default function ContractList() {
     {
       accessorKey: 'name', // Employee Level
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Employee Name' />
+        <DataTableColumnHeader column={column} title='Tên Nhân Viên' />
       ),
-      cell: ({ row }) => <div>{row.getValue('name')}</div>
+      cell: ({ row }) => <div className="w-[180px]">{row.getValue('name')}</div>,
+      enableHiding: true,
     },
     {
       accessorKey: 'contractTypeName', // Use contractTypeId to access the FK
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Contract Type' />
+        <DataTableColumnHeader column={column} title='Loại Hợp Đồng' />
       ),
       cell: ({ row }) => (
         <div className='w-[200px]'>{row.getValue('contractTypeName')}</div>
       ),
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
-    {
-      accessorKey: 'startDate', // Add other columns as necessary
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Start Date' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('startDate')}</div>,
-    },
+    // {
+    //   accessorKey: 'startDate', // Add other columns as necessary
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Start Date' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('startDate')}</div>,
+    //   enableHiding: true,
+    // },
     {
       accessorKey: 'endDate', // Add other columns as necessary
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='End Date' />
+        <DataTableColumnHeader column={column} title='Ngày Hết Hạn' />
       ),
-      cell: ({ row }) => <div>{row.getValue('endDate')}</div>,
+      cell: ({ row }) => <div>{new Intl.DateTimeFormat('vi-VN').format(new Date(row.getValue('endDate')))}</div>,
+      enableHiding: true,
     },
     {
       accessorKey: 'employeeSignStatus',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Employee Sign Status' />
+        <DataTableColumnHeader column={column} title='Trạng thái ký NV' />
       ),
       cell: ({ row }) => (
-        <div>{getSignStatus(row.getValue('employeeSignStatus'))}</div>
+        <div className='w-[150px]'>{getSignStatus(row.getValue('employeeSignStatus'))}</div>
       ),
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'companySignStatus',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Company Sign Status' />
+        <DataTableColumnHeader column={column} title='Trạng thái ký CT' />
       ),
       cell: ({ row }) => (
-        <div>{getSignStatus(row.getValue('companySignStatus'))}</div>
+        <div className='w-[150px]'>{getSignStatus(row.getValue('companySignStatus'))}</div>
       ),
-      enableSorting: true,
-      enableHiding: false,
-      enableColumnFilter: true
+      enableSorting: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'contractStatus',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Contract Status' />
+        <DataTableColumnHeader column={column} title='Trạng Thái' />
       ),
       cell: ({ row }) => (
-        <div>{getContractStatus(row.getValue('contractStatus'))}</div>
+        <div className="w-[100px]">{getContractStatus(row.getValue('contractStatus'))}</div>
       ),
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'typeContract',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Contract Type 2' />
+        <DataTableColumnHeader column={column} title='Loại Nhân Viên' />
       ),
       cell: ({ row }) => (
-        <div>{getTypeContract(row.getValue('typeContract'))}</div>
+        <div className="w-[100px]">{getTypeContract(row.getValue('typeContract'))}</div>
       ),
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'positionName', // Position Name
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Position' />
+        <DataTableColumnHeader column={column} title='Chức Vụ' />
       ),
-      cell: ({ row }) => <div>{row.getValue('positionName')}</div>,
+      cell: ({ row }) => <div className="w-[100px]">{row.getValue('positionName')}</div>,
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'departmentName', // Department Name
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Department' />
+        <DataTableColumnHeader column={column} title='Phòng Ban' />
       ),
       cell: ({ row }) => <div>{row.getValue('departmentName')}</div>,
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'baseSalary', // Base Salary
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Base Salary' />
+        <DataTableColumnHeader column={column} title='Lương Cơ Bản' />
       ),
       cell: ({ row }) => <div>{row.getValue('baseSalary')}</div>,
+      enableHiding: true,
     },
-    {
-      accessorKey: 'wageDaily', // Daily Wage
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Daily Wage' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('wageDaily')}</div>,
-    },
+    // {
+    //   accessorKey: 'wageDaily', // Daily Wage
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Daily Wage' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('wageDaily')}</div>,
+    //   enableHiding: true,
+    // },
     {
       accessorKey: 'wageHourly', // Hourly Wage
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Hourly Wage' />
+        <DataTableColumnHeader column={column} title='Số công/giờ' />
       ),
       cell: ({ row }) => <div>{row.getValue('wageHourly')}</div>,
+      enableHiding: true,
     },
-    {
-      accessorKey: 'requiredDays', // Required Days
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Required Days' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('requiredDays')}</div>,
-    },
+    // {
+    //   accessorKey: 'requiredDays', // Required Days
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Required Days' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('requiredDays')}</div>,
+    //   enableHiding: true,
+    // },
     {
       accessorKey: 'requiredHours', // Required Hours
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Required Hours' />
+        <DataTableColumnHeader column={column} title='Số giờ quy định' />
       ),
       cell: ({ row }) => <div>{row.getValue('requiredHours')}</div>,
+      enableHiding: true,
     },
     {
       accessorKey: 'allowanceResults', // Array of allowances
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Allowances' />
+        <DataTableColumnHeader column={column} title='Trợ Cấp' />
       ),
       cell: ({ row }) => {
         const allowanceResults = row.getValue('allowanceResults') as {
@@ -230,15 +237,12 @@ export default function ContractList() {
           amount?: number;
           terms?: string;
         }[] || []; // Fallback to an empty array if not defined
-        
+
         return allowanceResults.length > 0 ? (
-          <div className="w-[400px]">
+          <div className="w-[150px]">
             {allowanceResults.map((allowance, index) => (
-              <div key={index} className="mb-4">
-                <div className="font-semibold">Allowance {index + 1}</div>
-                <div>Name: {allowance.name}</div>
-                <div>Amount: {allowance.amount}</div>
-                <div>Terms: {allowance.terms}</div>
+              <div key={index} className="mb-2">
+                <div>{allowance.name}</div>
               </div>
             ))}
           </div>
@@ -247,12 +251,12 @@ export default function ContractList() {
         );
       },
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       accessorKey: 'insuranceResults', // Array of insurances
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Insurances' />
+        <DataTableColumnHeader column={column} title='Bảo Hiểm' />
       ),
       cell: ({ row }) => {
         const insuranceResults = row.getValue('insuranceResults') as {
@@ -261,15 +265,12 @@ export default function ContractList() {
           percentCompany?: number;
           percentEmployee?: number;
         }[] || []; // Fallback to an empty array if not defined
-    
+
         return insuranceResults.length > 0 ? (
-          <div className="w-[200px]">
+          <div className="w-[100px]">
             {insuranceResults.map((insurance, index) => (
-              <div key={index} className="mb-4">
-                <div className="font-semibold">Insurance {index + 1}</div>
-                <div>Name: {insurance.name}</div>
-                <div>Company Percentage: {insurance.percentCompany}%</div>
-                <div>Employee Percentage: {insurance.percentEmployee}%</div>
+              <div key={index} className="mb-2">
+                <div>{insurance.name}</div>
               </div>
             ))}
           </div>
@@ -278,88 +279,89 @@ export default function ContractList() {
         );
       },
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
-    {
-      accessorKey: 'level', // Employee Level
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Level' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('level')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'major', // Employee Major
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Major' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('major')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'nationalID', // National ID
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='National ID' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('nationalID')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'nationalStartDate', // National ID Start Date
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='National ID Start Date' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('nationalStartDate')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'address', // Employee Address
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Address' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('address')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'countrySide', // Employee Country Side
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Country Side' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('countrySide')}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'gender', // Employee Gender
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Gender' />
-      ),
-      cell: ({ row }) => <div>{getGender(row.getValue('gender'))}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: 'dateOfBirth', // Employee Date of Birth
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Date of Birth' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('dateOfBirth')}</div>,
-    },
+    // {
+    //   accessorKey: 'level', // Employee Level
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Level' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('level')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'major', // Employee Major
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Major' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('major')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'nationalID', // National ID
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='National ID' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('nationalID')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'nationalStartDate', // National ID Start Date
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='National ID Start Date' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('nationalStartDate')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'address', // Employee Address
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Address' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('address')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'countrySide', // Employee Country Side
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Country Side' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('countrySide')}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'gender', // Employee Gender
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Gender' />
+    //   ),
+    //   cell: ({ row }) => <div>{getGender(row.getValue('gender'))}</div>,
+    //   enableSorting: false,
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: 'dateOfBirth', // Employee Date of Birth
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title='Date of Birth' />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue('dateOfBirth')}</div>,
+    //   enableHiding: true,
+    // },
 
     {
       id: 'actions',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Action' />
+        <DataTableColumnHeader column={column} title='Hành Động' />
       ),
-      cell: ({ row }) => <DataTableRowActions row={row}
+      cell: ({ row }) => <div className="w-[100px]"><DataTableRowActions row={row}
         handleView={() => handleView(row)}
         handleEdit={() => handleEdit(row)}
-        handleDelete={() => handleDelete(row)} />,
+        handleDelete={() => handleDelete(row)} /></div>,
     },
   ];
 
@@ -375,9 +377,9 @@ export default function ContractList() {
     setMode(CRUD_MODE.VIEW);
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
     selectedData.allowanceIds = selectedData.allowanceResults?.map(x => x.id)
-                                .filter((id): id is number => id !== undefined) ?? [];
+      .filter((id): id is number => id !== undefined) ?? [];
     selectedData.insuranceIds = selectedData.insuranceResults?.map(x => x.id)
-                            .filter((id): id is number => id !== undefined) ?? [];
+      .filter((id): id is number => id !== undefined) ?? [];
     setDetail(selectedData);
     setOpenCRUD(true);
   };
@@ -387,9 +389,9 @@ export default function ContractList() {
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
     selectedData.allowanceIds = selectedData.allowanceResults?.map(x => x.id)
-                              .filter((id): id is number => id !== undefined) ?? [];
+      .filter((id): id is number => id !== undefined) ?? [];
     selectedData.insuranceIds = selectedData.insuranceResults?.map(x => x.id)
-                            .filter((id): id is number => id !== undefined) ?? [];
+      .filter((id): id is number => id !== undefined) ?? [];
     setDetail(selectedData);
     setOpenCRUD(true);
   };
@@ -413,10 +415,10 @@ export default function ContractList() {
 
       <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <DataTable data={listDataQuery.data?.metadata} columns={columnsDef} filters={dataFilter} searchField="name">
-          <Button onClick={handleAddNew} variant='outline' size='sm'  className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
+          <Button onClick={handleAddNew} variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex me-2 bg-primary text-white'>
             <IconPlus className='mr-2 h-4 w-4' />Add new
           </Button>
-          
+
         </DataTable>
       </div>
       <FormCRUD openCRUD={openCRUD} setOpenCRUD={setOpenCRUD} mode={mode} detail={detail} />
