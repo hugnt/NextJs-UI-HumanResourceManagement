@@ -20,7 +20,7 @@ interface DataTableRowActionsProps<TData> {
   handleDelete?: () => void
 }
 
-export default function DataTableRowActions<TData>({ row, handleView, handleEdit, handleDelete }: DataTableRowActionsProps<TData>) {
+export default function DataTableRowActions<TData>({ handleView, handleEdit, handleDelete }: DataTableRowActionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

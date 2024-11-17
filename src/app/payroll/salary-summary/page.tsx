@@ -18,10 +18,9 @@ import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollResult } from "
 import { classFixBorderHeaderCol } from "@/lib/style";
 import { cn, formatCurrency, handleErrorApi } from "@/lib/utils";
 import { IconClearFormatting, IconPlus, IconRefresh, IconSearch } from "@tabler/icons-react";
-import { FilterMatchMode } from "primereact/api";
 import { Column, ColumnBodyOptions } from "primereact/column";
 import { ColumnGroup } from "primereact/columngroup";
-import { DataTable, DataTableFilterMeta, DataTableRowClickEvent, DataTableSelectEvent } from "primereact/datatable";
+import { DataTable, DataTableRowClickEvent } from "primereact/datatable";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { Row } from "primereact/row";
 import { classNames } from "primereact/utils";
@@ -51,12 +50,12 @@ const pathList: Array<PathItem> = [
 
 
 //react query key
-const QUERY_KEY = {
-  keyList: "payroll-list",
-  keyTableSchemaHeader: 'payroll-table-schema-header',
-  keyTableSchemaColumn: 'payroll-table-schema-column',
-  keyEmployeeSalaryList: 'payrolls-employee-salary-list',
-}
+// const QUERY_KEY = {
+//   keyList: "payroll-list",
+//   keyTableSchemaHeader: 'payroll-table-schema-header',
+//   keyTableSchemaColumn: 'payroll-table-schema-column',
+//   keyEmployeeSalaryList: 'payrolls-employee-salary-list',
+// }
 
 export default function SalarySummaryList() {
   const currentDate = new Date();
@@ -360,15 +359,13 @@ export default function SalarySummaryList() {
   }
 
   const onRowSelect = (e: DataTableRowClickEvent) => {
-    const selectedData: PayrollDataTable = e.data;
-    getPayrollById.mutate(selectedData.payrollId);
+    getPayrollById.mutate(e.data.parollId);
   };
 
   const exportExcelFile = () => {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("My Sheet");
     const startRow = 1;
-    const startTableRow = 5;
     const tableMaxCols = payrollColumn.length;
 
     sheet.properties.defaultRowHeight = 20;
@@ -378,7 +375,6 @@ export default function SalarySummaryList() {
     const cell_end = sheet.getCell(startRow, tableMaxCols).address;
     sheet.mergeCells(cell_0, cell_end);
 
-    var spaceStart = 0;
     var lstColPass: number[] = [];
     payrollHeader?.map((x, i) => {
       //const startCol = spaceStart <= 0 ? 0 : spaceStart - 1;
@@ -438,7 +434,7 @@ export default function SalarySummaryList() {
     })
 
 
-    payrollData?.map((payroll, i) => {
+    payrollData?.map((payroll, _i) => {
       const rowData: any = {
         employeeName: payroll.employeeName,
         departmentName: payroll.departmentName,
@@ -482,7 +478,7 @@ export default function SalarySummaryList() {
             </SelectTrigger>
             <SelectContent>
               {
-                Array.from({ length: currentMonth }, (v, i) => {
+                Array.from({ length: currentMonth }, (_v, i) => {
                   const month = (currentMonth - i).toString().padStart(2, '0');
                   return (
                     <SelectItem key={i} value={`${currenYear}/${month}`}>
@@ -680,7 +676,7 @@ export default function SalarySummaryList() {
               className: 'w-8 h-8 text-blue-500'
             }
           }}>
-          <Column header="#" frozen={!(payrollColumn.length == displayColumns.length)} headerStyle={{ width: '3px' }} body={(data, options) => options.rowIndex + 1} pt={{
+          <Column header="#" frozen={!(payrollColumn.length == displayColumns.length)} headerStyle={{ width: '3px' }} body={(_data, options) => options.rowIndex + 1} pt={{
             bodyCell: {
               className: classNames(`text-xs my-auto border after:absolute after:inset-0 after:start-[-1px] after:border-x after:border-solid after:border-slate-300 text-center`)
             }

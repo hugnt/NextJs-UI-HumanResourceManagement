@@ -6,7 +6,7 @@ import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
@@ -162,7 +162,7 @@ export default function FormAddFormula(props: FormProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {
-                                        Array.from({ length: currentMonth }, (v, i) => {
+                                        Array.from({ length: currentMonth }, (_v, i) => {
                                             const month = (currentMonth - i).toString().padStart(2, '0');
                                             return (
                                                 <SelectItem key={i} value={`${currenYear}/${month}`}>

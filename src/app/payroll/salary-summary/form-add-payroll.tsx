@@ -41,7 +41,6 @@ export default function FormAE(props: FormProps) {
     const [selectedKeys, setSelectedKeys] = useState<string | TreeMultipleSelectionKeys | TreeCheckboxSelectionKeys | null>(null);
     const currentMonth: number = new Date().getMonth() + 1;
     const currenYear: number = new Date().getFullYear();
-    const [loading, setLoading] = useState<boolean>(false);
     // #region +TANSTACK QUERY
 
     // Get QueryClient from the context
@@ -134,7 +133,7 @@ export default function FormAE(props: FormProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {
-                                        Array.from({ length: currentMonth }, (v, i) => {
+                                        Array.from({ length: currentMonth }, (_v, i) => {
                                             const month = (currentMonth - i).toString().padStart(2, '0');
                                             return (
                                                 <SelectItem key={i} value={`${currenYear}/${month}`}>
@@ -161,7 +160,7 @@ export default function FormAE(props: FormProps) {
                                         label: {
                                             className: 'text-sm font-sans'
                                         },
-                                        content: ({ context, props }: { context: TreeContext; props: TreeProps }) => ({
+                                        content: ({ context }: { context: TreeContext; props: TreeProps }) => ({
                                             className: classNames(
                                                 'm-0 p-0 flex items-center',
                                                 'rounded-lg transition-shadow duration-200',

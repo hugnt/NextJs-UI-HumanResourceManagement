@@ -12,8 +12,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import DatePicker from '@/components/custom/date-picker';
-import { useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button';
 const pathList: Array<PathItem> = [
     {
@@ -26,8 +24,6 @@ const pathList: Array<PathItem> = [
     },
 ];
 export default function page() {
-    const params = useParams<{ id: string }>();
-    const id = Number(params.id);
     //call api get apllicant by id => name, Email, ...
     return (
         <>

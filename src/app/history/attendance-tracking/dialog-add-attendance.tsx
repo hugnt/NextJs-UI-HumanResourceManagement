@@ -23,14 +23,10 @@ import {
 } from "@/components/ui/select"
 import { StatusHistory } from '@/data/schema/history.schema';
 import { Input } from '@/components/ui/input';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import workShiftApiRequest from '@/apis/work-shift.api';
 import { Button } from '@/components/custom/button';
 import { handleSuccessApi } from '@/lib/utils';
-const QUERY_KEY = {
-    keyList: "employee-work-shift",
-    mutationKey: "print-work-shift"
-}
 type Props = {
     date: string,
     update: number,

@@ -130,7 +130,7 @@ export default function FormDetails(props: FormProps) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {
-                                            Array.from({ length: currentMonth }, (v, i) => {
+                                            Array.from({ length: currentMonth }, (_v, i) => {
                                                 const month = (currentMonth - i).toString().padStart(2, '0');
                                                 return (
                                                     <SelectItem key={i} value={`${currenYear}/${month}`}>

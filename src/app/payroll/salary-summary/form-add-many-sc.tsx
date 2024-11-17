@@ -4,8 +4,8 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { SVGProps, useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
@@ -13,7 +13,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import payrollApiRequest from "@/apis/payroll.api";
 import { Label } from "@/components/ui/label";
 
-import { DataTable, DataTableExpandedRows } from 'primereact/datatable';
+import { DataTable } from 'primereact/datatable';
 import { Column, ColumnBodyOptions } from 'primereact/column';
 import { ColumnMeta, DynamicTableObject, PayrollResult, PayrollSC, PayrollUpsert } from "@/data/schema/payroll.schema";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,9 +29,9 @@ type FormProps = {
 }
 
 //react query key
-const QUERY_KEY = {
-    keyDynamicColumn: 'dynamic-column'
-}
+// const QUERY_KEY = {
+//     keyDynamicColumn: 'dynamic-column'
+// }
 
 // có 
 // var obj = [
@@ -119,7 +119,7 @@ export default function FormAddManySC(props: FormProps) {
     const [dynamicTableValue, setDynamicTableValue] = useState<DynamicTableObject[]>([]);
     const [listPayrollSC, setListPayrollSC] = useState<PayrollSC[]>([]);
     const [refesh, setRefesh] = useState<boolean>(false);
-    const [fields, setFields] = useState<string[]>([]);
+    const [_fields, setFields] = useState<string[]>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -237,7 +237,7 @@ export default function FormAddManySC(props: FormProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {
-                                        Array.from({ length: currentMonth }, (v, i) => {
+                                        Array.from({ length: currentMonth }, (_v, i) => {
                                             const month = (currentMonth - i).toString().padStart(2, '0');
                                             return (
                                                 <SelectItem key={i} value={`${currenYear}/${month}`}>

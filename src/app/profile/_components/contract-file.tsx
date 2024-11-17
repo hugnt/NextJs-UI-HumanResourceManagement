@@ -4,7 +4,7 @@ type Props = {
     fileUrlBase?: string, 
     fileUrlSigned?: string
 }
-export default function ContractFile({fileUrlBase, fileUrlSigned} : Props) {
+export default function ContractFile({fileUrlBase} : Props) {
     return (
         <div className='rounded-xl border bg-card text-card-foreground shadow col-span-4 ml-2'>
             <div className='flex flex-col space-y-1.5 p-6'>

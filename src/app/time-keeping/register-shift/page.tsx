@@ -3,6 +3,7 @@ import AppBreadcrumb, { PathItem } from '@/components/custom/_breadcrumb';
 import React, { useState } from 'react'
 import { Label } from '@/components/ui/label';
 import DatePickerCustom from '@/components/custom/_date-picker';
+import { addDays } from 'date-fns';
 import {
   Table,
   TableBody,
@@ -18,7 +19,7 @@ import workShiftApiRequest from '@/apis/work-shift.api';
 import { StatusCalendar, UserCalendarInsert, WorkPlanInsert } from '@/data/schema/work-shift.schema';
 import { ShiftTime } from '@/data/schema/calendar.schema';
 import { Button } from '@/components/custom/button';
-import { handleErrorApi, handleSuccessApi } from '@/lib/utils';
+import { extractDateInfo, getDayOfWeek, handleErrorApi, handleSuccessApi } from '@/lib/utils';
 const pathList: Array<PathItem> = [
   {
     name: "TimeKeeping",
@@ -29,27 +30,16 @@ const pathList: Array<PathItem> = [
     url: "/time-keeping/work-shift"
   },
 ];
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 export type WorkShift = {
   day: string,
   isCheckMorning: boolean,
   isCheckAfternoon: boolean,
   isCheckEvening: boolean
 }
-export const addDays = (date: Date, dayAdds: number): Date => {
-  const newDate = new Date(date) // Create a copy of the date to avoid mutating the original
-  newDate.setDate(newDate.getDate() + dayAdds) // Add day
-  return newDate
-}
-export const extractDateInfo = (date: Date) => {
-  const day = date.getDate(); // Day of the month (1-31)
-  const month = date.getMonth() + 1; // Month (0-11), so we add 1
-  const year = date.getFullYear(); // Full year (e.g., 2024)
-  return { day, month, year };
-}
-export const getDayOfWeek = (date: Date): string => {
-  return daysOfWeek[date!.getDay()];
-}
+
+
+
 export default function page() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(undefined)

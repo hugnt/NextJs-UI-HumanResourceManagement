@@ -4,8 +4,6 @@ import Sidebar from './sidebar';
 import useIsCollapsed from '@/hooks/use-is-collapsed';
 import { Search } from '@/components/search';
 import ThemeSwitch from '@/components/theme-switch';
-import { UserNav } from '@/components/user-nav';
-import { useCurrentUser } from '@/app/system/ui/auth-context';
 import { Button } from './ui/button';
 // import SkipToMain from '@/components/skip-to-main';
 

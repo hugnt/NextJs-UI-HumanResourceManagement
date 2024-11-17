@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,7 +22,6 @@ import applicantApiRequest from "@/apis/candidate.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 import testApiRequest from "@/apis/test.api";
-import positionApiRequest from "@/apis/position.api";
 type FormProps = {
   openAddTest: boolean,
   mode: CRUD_MODE,
@@ -75,11 +73,6 @@ export default function FormAddTest(props: FormProps) {
   const listDataTest = useQuery({
     queryKey: [QUERY_KEY.keysub],
     queryFn: () => testApiRequest.getList()
-  });
-
-  const listDataPosition = useQuery({
-    queryKey: [QUERY_KEY.keysub2],
-    queryFn: () => positionApiRequest.getList()
   });
 
   // #endregion

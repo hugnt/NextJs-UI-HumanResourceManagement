@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { CRUD_MODE } from "@/data/const"
 import { RecruitmentWeb, recruitmentWebDefault, recruitmentWebSchema } from "@/data/schema/recruitmentWeb.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,13 +13,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import webApiRequest from "@/apis/web.api";
 import { handleSuccessApi } from "@/lib/utils";
-import { PiTrashLight } from "react-icons/pi";
 import jobPostingApiRequest from "@/apis/jobPosting.api";
 import { SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";

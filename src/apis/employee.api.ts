@@ -8,7 +8,9 @@ const employeeApiRequest = {
     create: (body: Employee) => http.post<ApiResponse<boolean>>('/employees', body),
     update: (id: number, body: Employee) => http.put<ApiResponse<boolean>>(`/employees/${id}`, body),
     delete: (id: number) => http.delete<ApiResponse<Employee>>(`/employees/${id}`),
-    getCurrentUserProfile: () => http.get<ApiResponse<ProfileDetail>>('/employees/current-profile')
+    getCurrentUserProfile: () => http.get<ApiResponse<ProfileDetail>>('/employees/current-profile'),
+    getDetailByContractId: (contractId: number) => http.get<ApiResponse<Employee>>(`/employees/contract/${contractId}`),
+    getAllContractNotInUsed: () => http.get<ApiResponse<number[]>>(`/employees/contract/not-inused`),
 };
 
 export default employeeApiRequest;

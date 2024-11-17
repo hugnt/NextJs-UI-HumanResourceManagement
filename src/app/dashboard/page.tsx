@@ -15,14 +15,12 @@ import {
   } from "@/components/ui/table"
 import departmentApiRequest from "@/apis/department.api";
 import employeeApiRequest from "@/apis/employee.api";
-import positionApiRequest from "@/apis/position.api";
 import contractApiRequest from "@/apis/contract.api";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { useQuery } from "@tanstack/react-query";
 import { Employee } from "@/data/schema/employee.schema";
 import { ApiResponse } from "@/data/type/response.type";
 import { DepartmentUserCount } from "@/data/schema/department.schema";
-import { Position } from "@/data/schema/position.schema";
 import { LabelList, Pie, PieChart, Bar, BarChart, XAxis, YAxis, CartesianGrid } from "recharts"
 import {
   Card,
@@ -46,14 +44,6 @@ type DynamicChartConfig = {
   };
 };
 
-const ITEMS_PER_PAGE = 10;
-
-const chartConfig = {
-  desktop: {
-      label: "Count",
-      color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig
 
 //react query key
 const QUERY_KEY = {
@@ -108,12 +98,6 @@ export default function Dashboard() {
     select: (data: ApiResponse<DepartmentUserCount[]>) => data.metadata || [],
   });
   const totalDepartment = departmentData?.length;
-
-  const { data: positionData } = useQuery({
-    queryKey: [QUERY_KEY.position],
-    queryFn: () => positionApiRequest.getList(),
-    select: (data: ApiResponse<Position[]>) => data.metadata?.length ?? 0,
-  });
 
   const { data: contractData } = useQuery({
     queryKey: [QUERY_KEY.contract],
@@ -234,7 +218,7 @@ export default function Dashboard() {
 
     //Employee count by base salary
     //#region 
-    const { data: employeeCountData, isLoading: employeeCountLoading } = useQuery({
+    const { data: employeeCountData } = useQuery({
         queryKey: [QUERY_KEY.employeeCountKey],
         queryFn: () => dashboardApiRequest.getEmployeeCountByBaseSalary()
     })
@@ -251,7 +235,7 @@ export default function Dashboard() {
         fill: `hsl(var(--chart-1))`
     })) || [];
 
-    const { data: applicationByPositionData, isLoading: applicationByPositionLoading } = useQuery({
+    const { data: applicationByPositionData } = useQuery({
         queryKey: [QUERY_KEY.applicantCountByPositionKey],
         queryFn: () => dashboardApiRequest.getApplicantCountByPosition()
     })
@@ -264,12 +248,12 @@ export default function Dashboard() {
 
     //Count job posting, applicant, advances
     //#region 
-    const { data: jobCountData, isLoading: jobCountLoading } = useQuery({
+    const { data: jobCountData } = useQuery({
         queryKey: [QUERY_KEY.jobCountKey],
         queryFn: () => dashboardApiRequest.getJobPostingCount()
     })
 
-    const { data: applicantCountData, isLoading: applicantCountLoading } = useQuery({
+    const { data: applicantCountData } = useQuery({
         queryKey: [QUERY_KEY.applicantCountKey],
         queryFn: () => dashboardApiRequest.getApplicantCount()
     })

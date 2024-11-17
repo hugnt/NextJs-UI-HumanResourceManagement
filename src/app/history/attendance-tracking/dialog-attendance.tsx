@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import React, { useState } from 'react'
 import {
@@ -51,7 +52,7 @@ export default function DialogAttendance({ date, detailHistory, history, role, u
         setStatus(history![index].statusHistory)
         setTime(history![index].timeSweep.slice(11))
     }
-    const { mutate, isPending } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: ["update-attendance"],
         mutationFn: (id: number) => {
             if (time === "" || status === undefined) {

@@ -23,7 +23,7 @@ interface DataTableCandidateActionsProps<TData> {
   handleAddContract?: () => void,
 }
 
-export default function DataTableCandidateActions<TData>({ row, handleView, handleEdit, handleAddTest, handleTest, handleAddContract,handleDelete }: DataTableCandidateActionsProps<TData>) {
+export default function DataTableCandidateActions<TData>({ handleView, handleEdit, handleAddTest, handleTest, handleAddContract,handleDelete }: DataTableCandidateActionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

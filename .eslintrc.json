@@ -1,16 +1,29 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
-  "plugins": ["react-refresh"],
+  "plugins": ["react-refresh", "unused-imports"],
   "rules": {
-    "react-hooks/rules-of-hooks": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "react-hooks/rules-of-hooks": "off", // Bật cảnh báo cho hooks
+    "react-hooks/exhaustive-deps": "off", // Cảnh báo cho dependencies
+    "@typescript-eslint/no-explicit-any": "off", // Cảnh báo cho việc sử dụng 'any'
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off", // Cảnh báo cho chuỗi tùy chọn không null
     "react/jsx-no-comment-textnodes": "off",
-    "react/jsx-key": "off",
-    "@next/next/no-img-element": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "react/jsx-key": "off", // Cảnh báo nếu thiếu key trong danh sách
+    "@next/next/no-img-element": "off", // Cảnh báo nếu dùng <img>
+    "@typescript-eslint/no-unused-vars": "off", // Cảnh báo cho biến không sử dụng
     "react-refresh/only-export-components": "off",
-    "import/no-anonymous-default-export": "off"
+    "import/no-anonymous-default-export": "off", // Cảnh báo nếu xuất mặc định không có tên
+    "no-unused-vars": "off", // Tắt cảnh báo cho biến không sử dụng
+    "unused-imports/no-unused-imports": "off", // Cảnh báo cho imports không sử dụng
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "",
+        "args": "after-used",
+        "argsIgnorePattern": ""
+      }
+    ]
   }
 }

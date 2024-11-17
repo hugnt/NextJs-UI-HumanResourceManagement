@@ -11,7 +11,6 @@ import { useState } from "react";
 import { CRUD_MODE } from "@/data/const";
 import { leaveApplication } from "@/data/schema/leaveApplication.schema";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
-import { IconPlus } from "@tabler/icons-react";
 
 const pathList: Array<PathItem> = [
   {

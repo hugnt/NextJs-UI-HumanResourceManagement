@@ -3,7 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Formula, formulaDefault, formulaSchema, SalaryComponent, SalaryComponentCategory } from "@/data/schema/formula.schema";
+import { Formula, formulaDefault, formulaSchema, SalaryComponent } from "@/data/schema/formula.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -351,7 +351,7 @@ export default function FormCRUD(props: FormProps) {
                         <FormLabel>Chi Tiết Công Thức</FormLabel>
                         <FormControl>
                           <Textarea placeholder="[PARAM_BONUS_KPI10]+[PARAM_BONUS_PROJECTA]-[PARAM_DEDUCTION_LATE]"
-                            {...field} disabled={isDisabled} onClick={(e) => handleClickFormula(e)} onChange={(e) => { field.onChange(e); handleChangeFormula(e); }} />
+                            {...field} disabled={isDisabled} onClick={(e: any) => handleClickFormula(e)} onChange={(e) => { field.onChange(e); handleChangeFormula(e); }} />
                         </FormControl>
                         <FormControl>
                           <div className="bg-slate-300 px-3 py-2 border border-input rounded-md">

@@ -32,14 +32,12 @@ interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
   closeNav: () => void,
 }
 
-
 export default function Nav({
   links,
   isCollapsed,
   className,
   closeNav,
 }: NavProps) {
-
   const user = useCurrentUser().currentUser;
   const renderLink = ({ sub, roles, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`
@@ -54,8 +52,8 @@ export default function Nav({
       )
 
 
-    // if (roles && !roles.includes(user!.role))
-    //   return <></>
+    if (roles && !roles.includes(user!.role))
+      return <></>
 
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />

@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import testResultApiRequest from "@/apis/testResult.api";
 import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
@@ -68,10 +68,6 @@ export default function FormCRUD(props: FormProps) {
     }
   });
 
-  const listDataQuestion = useQuery({
-    queryKey: [QUERY_KEY.keysub],
-    queryFn: () => testResultApiRequest.getList()
-  });
   // #endregion
 
   // #region + FORM SETTINGS

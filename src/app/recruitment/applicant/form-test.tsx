@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/custom/button";
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { CRUD_MODE } from "@/data/const"
-import { Question, questionDefault, questionSchema } from "@/data/schema/question.schema";
+import { AlertDialogFooter } from "@/components/ui/alert-dialog";
 import { TestResult, testResultDefault, testResultSchema } from "@/data/schema/testResult.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {Controller, useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -16,11 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { handleSuccessApi } from "@/lib/utils";
-import { PiTrashLight } from "react-icons/pi";
 import { SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import questionApiRequest from "@/apis/question.api";
@@ -30,13 +26,9 @@ import testResultApiRequest from "@/apis/testResult.api";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import test from "node:test";
-import { number } from "prop-types";
-import { Candidate } from "@/data/schema/candidate.schema";
 type FormTest = {
   openTest: boolean,
   setOpenTest: (openTest: boolean) => void,
@@ -54,34 +46,13 @@ const QUERY_KEY = {
 }
 
 export default function FormTest(props: FormTest) {
-  const { openTest = false, setOpenTest = () => { }, size = 600, detail ={}} = props;
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const { openTest = false, setOpenTest = () => { }, detail ={}} = props;
+  const [isDisabled, _setIsDisabled] = useState<boolean>(false);
   const [points, setPoints] = useState<{ [key: number]: number }>({});
   // #region +HOOK FORM
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
-  const addDataMutation = useMutation({
-    mutationFn: async(body: TestResult[]) => await testResultApiRequest.createList(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Inserted Successfully!" });
-      setOpenTest(false);
-    }
-  });
-  const updateDataMutation = useMutation({
-    mutationFn: async({ id, point }: { id: number, point: number }) => {
-      return await applicantApiRequest.updatePoint(id, point);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Updated Successfully!" });
-    }
-  });
 
-  const listDataResult = useQuery({
-    queryKey: [QUERY_KEY.keyList],
-    queryFn: () => testResultApiRequest.getListById(detail.applicantTestId ?? 0)
-  });
   const listDataQuestion = useQuery({
     queryKey: [QUERY_KEY.keySub],
     queryFn: () => questionApiRequest.getListById(detail.applicantTestId ?? 0)
@@ -204,7 +175,7 @@ export default function FormTest(props: FormTest) {
                       <FormField
                         name="point"
                         control={form.control}
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem className="flex items-center justify-between space-x-3 w-full">
                               <FormLabel className="whitespace-nowrap">{item.questionText}</FormLabel>
                               <Input 

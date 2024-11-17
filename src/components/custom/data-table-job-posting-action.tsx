@@ -21,7 +21,7 @@ interface DataTableJobPostingActionsProps<TData> {
   handlePosting?: () => void
 }
 
-export default function DataTableJobPostingActions<TData>({ row, handleView, handleEdit, handlePosting, handleDelete }: DataTableJobPostingActionsProps<TData>) {
+export default function DataTableJobPostingActions<TData>({ handleView, handleEdit, handlePosting, handleDelete }: DataTableJobPostingActionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

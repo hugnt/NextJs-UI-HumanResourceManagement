@@ -4,7 +4,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Contract, contractDefault, ContractForm, contractSchema, contractSchemaForm } from "@/data/schema/contract.schema";
+import { Contract, contractDefault, ContractForm, contractSchemaForm } from "@/data/schema/contract.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -50,7 +50,7 @@ const QUERY_KEY = {
 }
 
 export default function FormCRUD(props: FormProps) {
-  const { openCRUD = false, setOpenCRUD = () => { }, size = 1000, mode = CRUD_MODE.VIEW, detail = {} } = props;
+  const { openCRUD = false, setOpenCRUD = () => { }, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
@@ -136,14 +136,14 @@ export default function FormCRUD(props: FormProps) {
   }, [detail, mode, openCRUD])
 
   //List Option
-  const allowanceListOptions = listDataAllowance.data?.metadata?.map((item, i) => {
+  const allowanceListOptions = listDataAllowance.data?.metadata?.map((item) => {
     return {
       label: `Name: ${item.name} - Amount: ${item.amount}`,
       value: item.id, // Assuming `item.id` is the identifier for each allowance
     };
   });
 
-  const insuranceListOptions = listDataInurance.data?.metadata?.map((item, i) => {
+  const insuranceListOptions = listDataInurance.data?.metadata?.map((item) => {
     return {
       label: `Name: ${item.name} - Company: ${item.percentCompany}% - Employee: ${item.percentEmployee}%`,
       value: item.id, // Assuming `item.id` is the identifier for each allowance
