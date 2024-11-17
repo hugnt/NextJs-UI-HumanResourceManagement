@@ -19,7 +19,7 @@ import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation';
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
 
@@ -37,7 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
 
   const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
-    mutationKey : [KEY.KEY_LOGIN],
+    mutationKey: [KEY.KEY_LOGIN],
     mutationFn: (body: Auth) => {
       return authApiRequest.adminLogin(body)
     },
@@ -50,7 +50,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   })
 
   const { mutate: mutateLoginEmployee, isPending: isPendingLoginEmployee } = useMutation({
-    mutationKey : [KEY.KEY_LOGIN],
+    mutationKey: [KEY.KEY_LOGIN],
     mutationFn: (body: Auth) => {
       return authApiRequest.employeeLogin(body)
     },
@@ -63,12 +63,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   })
 
   function onSubmit(data: Auth) {
-    if(layout == 1){
+    if (layout == 1) {
       mutateLogin(data)
-    }else{
+    } else {
       mutateLoginEmployee(data)
     }
-    
+
   }
 
   return (
@@ -108,8 +108,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' loading={isPendingLogin || isPendingLoginEmployee}>
+            <Button type='submit' className='mt-2' loading={isPendingLogin || isPendingLoginEmployee}>
               Login
+            </Button>
+            <Button type='button' className='bg-gray-400'>
+              {layout == 0 ?
+                <Link href="/login-admin">
+                  Đăng nhập quản trị viên
+                </Link> :
+                <Link href="/login-employee">
+                  Đăng nhập nhân viên
+                </Link>
+              }
+
             </Button>
           </div>
         </form>

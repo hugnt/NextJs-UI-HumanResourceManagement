@@ -55,6 +55,7 @@ import { useForm } from "react-hook-form";
 import { dataURLtoFile, handleSuccessApi } from "@/lib/utils";
 import contractApiRequest from "@/apis/contract.api";
 import LoadingSpinIcon from "@/components/loading-spin-icon";
+import envConfig from "@/config";
 
 type ContractSigProps = {
     contractId: number,
@@ -64,6 +65,7 @@ type ContractSigProps = {
     employeeSignStatus?:number
 }
 export default function SignContract(props: ContractSigProps) {
+    
     const {contractId, name="", fileUrlBase, fileUrlSigned, employeeSignStatus = 0} = props;
     const [contractList, setContractList] = useState<ContractSigProps[]>([]);
     const [openFormPDF, setOpenFormPDF] = useState<boolean>(false);
@@ -193,7 +195,7 @@ export default function SignContract(props: ContractSigProps) {
                     <AlertDialogDescription />
                     <Form {...form}>
                         {signMode == 1 ? <div className="flex w-full">
-                            <iframe src={`https://localhost:7025/Contract/${fileUrlBase}`} className="w-[65%] h-[600px]"></iframe>
+                            <iframe src={`${envConfig.NEXT_PUBLIC_API_HOST}/Contract/${fileUrlBase}`} className="w-[65%] h-[600px]"></iframe>
                             <div className="w-[35%]">
                                 <div className="flex space-x-2 p-3 pe-0 border-b-2">
                                     <span className=" font-semibold text-lg">Thông tin chữ kí số</span>
@@ -279,7 +281,7 @@ export default function SignContract(props: ContractSigProps) {
                             </div>
                         </div> :
                             <div className="flex w-full">
-                                <iframe src={`https://localhost:7025/Contract/${fileUrlSigned}`} className="w-[100%] h-[600px]"></iframe>
+                                <iframe src={`${envConfig.NEXT_PUBLIC_API_HOST}/Contract/${fileUrlSigned}`} className="w-[100%] h-[600px]"></iframe>
                             </div>}
                         <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                             <Button onClick={() => setOpenFormPDF(false)} type="button" className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>

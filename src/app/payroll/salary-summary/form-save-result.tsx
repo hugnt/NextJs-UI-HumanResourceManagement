@@ -23,19 +23,20 @@ type FormProps = {
     period: string,
     payrollHeader?:ColumnTableHeader[][],
     payrollColumn?:ColumnMeta[],
-    payrollData?:PayrollDataTable[]
+    payrollData?:PayrollDataTable[],
+    displayColumns?:ColumnMeta[],
 }
 
 const currentMonth: number = new Date().getMonth() + 1;
 const currenYear: number = new Date().getFullYear();
 export default function FormSaveResult(props: FormProps) {
-    const { openSaveRS, setOpenSaveRS = () => { }, period = "2024/10",payrollHeader,payrollColumn, payrollData} = props;
+    const { openSaveRS, setOpenSaveRS = () => { }, period = "2024/10",payrollHeader,payrollColumn, payrollData,displayColumns} = props;
     const [recordName, setRecordName] = useState<string>("");
     const [note, setNote] = useState<string>("");
 
     // #region +TANSTACK QUERY
     const saveHistoryMutation = useMutation({
-        mutationFn: ({ period, body }: { period: string, body: PayrollHistory }) => payrollApiRequest.saveHistory(period, body),
+        mutationFn: (body: PayrollHistory) => payrollApiRequest.saveHistory(body),
         onSuccess: () => {
             handleSuccessApi({ message: "Updated Successfully!" });
             setOpenSaveRS(false);
@@ -54,9 +55,10 @@ export default function FormSaveResult(props: FormProps) {
             createdAt: new Date(),
             payrollHeader: payrollHeader,
             payrollColumn: payrollColumn,
-            payrollData: payrollData
+            payrollData: payrollData,
+            displayColumns: displayColumns
         } 
-        saveHistoryMutation.mutate({ period, body: history });
+        saveHistoryMutation.mutate(history);
 
     };
 

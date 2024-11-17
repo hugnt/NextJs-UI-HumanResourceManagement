@@ -14,14 +14,13 @@ import { DatePickerRange } from "@/components/custom/date-picker-range";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollResult } from "@/data/schema/payroll.schema";
+import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollFilter, PayrollResult } from "@/data/schema/payroll.schema";
 import { classFixBorderHeaderCol } from "@/lib/style";
-import { cn, formatCurrency, handleErrorApi } from "@/lib/utils";
+import { cn, formatCurrency, formatDateToYYYYMMDD, handleErrorApi } from "@/lib/utils";
 import { IconClearFormatting, IconPlus, IconRefresh, IconSearch } from "@tabler/icons-react";
-import { FilterMatchMode } from "primereact/api";
 import { Column, ColumnBodyOptions } from "primereact/column";
 import { ColumnGroup } from "primereact/columngroup";
-import { DataTable, DataTableFilterMeta, DataTableRowClickEvent, DataTableSelectEvent } from "primereact/datatable";
+import { DataTable, DataTableRowClickEvent } from "primereact/datatable";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { Row } from "primereact/row";
 import { classNames } from "primereact/utils";
@@ -52,12 +51,12 @@ const pathList: Array<PathItem> = [
 
 
 //react query key
-const QUERY_KEY = {
-  keyList: "payroll-list",
-  keyTableSchemaHeader: 'payroll-table-schema-header',
-  keyTableSchemaColumn: 'payroll-table-schema-column',
-  keyEmployeeSalaryList: 'payrolls-employee-salary-list',
-}
+// const QUERY_KEY = {
+//   keyList: "payroll-list",
+//   keyTableSchemaHeader: 'payroll-table-schema-header',
+//   keyTableSchemaColumn: 'payroll-table-schema-column',
+//   keyEmployeeSalaryList: 'payrolls-employee-salary-list',
+// }
 const currentDate = new Date();
 const currentDay = currentDate.getDate();
 const currentMonth: number = new Date().getMonth() + 1;
@@ -112,8 +111,12 @@ export default function SalarySummaryList() {
 
       try {
         setLoading(true);
+        const filter: PayrollFilter = {
+          dfrom: formatDateToYYYYMMDD(dateRange?.from),
+          dto: formatDateToYYYYMMDD(dateRange?.to)
+        }
         const [dataListApi, schemaHeaderApi, schemaColumnApi, employeeListScApi] = await Promise.all([
-          payrollApiRequest.getList(period),
+          payrollApiRequest.getList(period,filter),
           payrollApiRequest.getPayrollTableHeader(period),
           payrollApiRequest.getPayrollTableColumn(period),
           payrollApiRequest.getEmployeeSalaryList(period),
@@ -283,6 +286,7 @@ export default function SalarySummaryList() {
     setRefesh(!refesh)
   }
 
+
   const handleChangePeriod = (period: string) => {
     const month = Number(period.split('/')[1]) - 1;
     const year = Number(period.split('/')[0]);
@@ -347,17 +351,24 @@ export default function SalarySummaryList() {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("My Sheet");
     const startRow = 1;
-    const startTableRow = 5;
     const tableMaxCols = payrollColumn.length;
 
     sheet.properties.defaultRowHeight = 20;
 
-    sheet.getRow(startRow).values = ['BẢNG LƯƠNG THÁNG ? NĂM 2024'];
+    sheet.getRow(startRow).values = [`BẢNG LƯƠNG THÁNG ${period.split("/")[1]} NĂM ${period.split("/")[0]}`];
     const cell_0 = sheet.getCell(startRow, 1).address;
     const cell_end = sheet.getCell(startRow, tableMaxCols).address;
     sheet.mergeCells(cell_0, cell_end);
+    sheet.getRow(startRow).alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
+    };
+    sheet.getRow(startRow).font = {
+      ...sheet.getRow(startRow).font,
+      bold: true,
+      size:16
+    };
 
-    var spaceStart = 0;
     var lstColPass: number[] = [];
     payrollHeader?.map((x, i) => {
       //const startCol = spaceStart <= 0 ? 0 : spaceStart - 1;
@@ -473,7 +484,7 @@ export default function SalarySummaryList() {
               }
             </SelectContent>
           </Select>
-          <Button variant='outline' size='sm' className='bg-primary ml-auto hidden h-8 lg:flex text-white'>
+          <Button variant='outline' size='sm' onClick={toggleRefesh} className='bg-primary ml-auto hidden h-8 lg:flex text-white'>
             <IconSearch className='h-4 w-4 me-1' />Lọc
           </Button>
         </div>
@@ -693,8 +704,8 @@ export default function SalarySummaryList() {
       <FormAddOtherSC employeeListSc={employeeListSc} openForm={openFormOtherSC} setOpenForm={setOpenFormOtherSC} period={period} toggleRefesh={toggleRefesh} />
       <FormAddFormula employeeListSc={employeeListSc} openForm={openFormFormula} setOpenForm={setOpenFormFormula} period={period} toggleRefesh={toggleRefesh} />
       <FormDetails payroll={selectedPayroll} openForm={openFormDetails} setOpenForm={setOpenFormDetails} period={period} toggleRefesh={toggleRefesh} />
-      <FormPayslip employeeListSc={employeeListSc} openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} />
-      <FormSaveResult openSaveRS={openFormSaveRS} setOpenSaveRS={setOpenFormSaveRS} period={period} payrollHeader={payrollHeader} payrollColumn={payrollColumn} payrollData={payrollData}/>
+      <FormPayslip employeeListSc={employeeListSc} openAE={openFormPayslip} setOpenAE={setOpenFormPayslip} period={period} dateRange={dateRange}/>
+      <FormSaveResult openSaveRS={openFormSaveRS} setOpenSaveRS={setOpenFormSaveRS} period={period} payrollHeader={payrollHeader} payrollColumn={payrollColumn} payrollData={payrollData} displayColumns={displayColumns}/>
     </>
   )
 };
