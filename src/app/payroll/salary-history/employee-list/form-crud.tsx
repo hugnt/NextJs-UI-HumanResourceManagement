@@ -34,7 +34,6 @@ import employeeApiRequest from "@/apis/employee.api";
 import { FaSave } from "react-icons/fa";
 import taxDeductionApiRequest from "@/apis/taxDeduction.api";
 import { Employee, employeeDefault, employeeSchema } from "@/data/schema/employee.schema";
-import { MdAttachEmail } from "react-icons/md";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -52,7 +51,6 @@ const QUERY_KEY = {
 export default function FormCRUD(props: FormProps) {
   const { openCRUD = false, setOpenCRUD = () => { }, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [lstContractIds, setLstContractIds] = useState<number[]>([]);
 
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
@@ -78,14 +76,6 @@ export default function FormCRUD(props: FormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Inserted Successfully!" });
-      setOpenCRUD(false);
-    }
-  });
-
-  const sendEmailDataMutation = useMutation({
-    mutationFn: (body: Employee) => employeeApiRequest.sendLoginInfo(body),
-    onSuccess: () => {
-      handleSuccessApi({ message: "Sent email Successfully!" });
       setOpenCRUD(false);
     }
   });
@@ -122,14 +112,8 @@ export default function FormCRUD(props: FormProps) {
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
   }
-
-  const handleSubmitAndSendEmail = () => {
-    handleSubmit();
-    const data = form.getValues();
-    if(updateDataMutation.isSuccess||addDataMutation.isSuccess){
-      sendEmailDataMutation.mutate(data);
-    }
-    
+  const onSubmit = (data: Employee) => {
+    console.log("form:", data);
   }
 
   const handleCloseForm = (e: any) => {
@@ -138,7 +122,7 @@ export default function FormCRUD(props: FormProps) {
   };
 
   const handleChangeContractId = (contractId: number) => {
-    if (contractId == 0) return;
+    if(contractId==0) return;
     const fetchData = async () => {
       try {
         const resAPI = await employeeApiRequest.getDetailByContractId(contractId);
@@ -163,19 +147,7 @@ export default function FormCRUD(props: FormProps) {
     }
     if (mode == CRUD_MODE.VIEW) setIsDisabled(true);
     else setIsDisabled(false);
-
-    if (mode == CRUD_MODE.ADD) {
-      setLstContractIds(listDataContact?.data?.metadata ?? [])
-    }
-    else {
-      setLstContractIds([
-        ...(listDataContact?.data?.metadata ?? []),
-        detail.id ?? 0
-      ]);
-    }
-
-
-  }, [detail, mode, openCRUD, listDataContact.data])
+  }, [detail, mode, openCRUD])
 
   return (
     <div>
@@ -190,7 +162,7 @@ export default function FormCRUD(props: FormProps) {
             </SheetHeader>
             <div>
               <Form {...form}>
-                <form className="space-y-0 grid grid-cols-3 gap-2 py-2 p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0 grid grid-cols-3 gap-2 py-2 p-4">
                   <FormField control={form.control} name="name"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
@@ -206,8 +178,8 @@ export default function FormCRUD(props: FormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Mã hợp đồng</FormLabel>
-                        <SelectOne onValueChange={(e) => { field.onChange(e); handleChangeContractId(Number(e)) }}
-                          value={field.value?.toString()} disabled={isDisabled} >
+                        <SelectOne onValueChange={(e)=>{field.onChange(e);handleChangeContractId(Number(e))}} 
+                                      value={field.value?.toString()} disabled={isDisabled} >
                           <FormControl >
                             <SelectTrigger >
                               <SelectValue placeholder="Chọn hợp đồng để thêm nhân viên" />
@@ -215,13 +187,11 @@ export default function FormCRUD(props: FormProps) {
                           </FormControl>
                           <SelectContent>
                             {
-
-                              lstContractIds?.map((x, i) => {
+                              listDataContact.data?.metadata?.map((x, i) => {
                                 const paddedNumber = String(x).padStart(4, '0');
                                 return <SelectItem key={i} value={x.toString() ?? "0"}>{"HD-" + paddedNumber}</SelectItem>
                               })
                             }
-
                           </SelectContent>
                         </SelectOne>
                         <FormMessage />
@@ -358,23 +328,14 @@ export default function FormCRUD(props: FormProps) {
                     )}
                   />
                   <div></div>
-                  <div className="col-span-3  flex justify-between items-center">
-                    <div className="flex space-x-2 justify-start sticky bottom-0 py-2 bg-white border-t">
-                      <Button type="button" onClick={handleCloseForm} size='sm' className='h-8 bg-red-500'><IoMdClose className='mr-1 h-4 w-4' />Đóng </Button>
-                      {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                        <Button type="button" onClick={handleSubmit} disabled={updateDataMutation.isPending} size='sm' className='h-8 bg-primary'>
-                          {updateDataMutation.isPending && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
-                          <FaSave className='mr-1 h-4 w-4' />Cập nhật
-                        </Button>}
-                    </div>
-                    <div>
-                      {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                        <Button type="button" onClick={handleSubmitAndSendEmail} size='sm' className='h-8 bg-yellow-500'>
-                          <MdAttachEmail className='mr-1 h-4 w-4' />Cập nhật + gửi thông tin đăng nhập mới
-                        </Button>}
-                    </div>
+                  <div className="col-span-3 flex space-x-2 justify-start sticky bottom-0 py-2 bg-white border-t">
+                    <Button onClick={handleCloseForm} size='sm' className='h-8 bg-red-500'><IoMdClose className='mr-1 h-4 w-4' />Đóng </Button>
+                    {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
+                      <Button onClick={handleSubmit} disabled={updateDataMutation.isPending} size='sm' className='h-8 bg-primary'>
+                        {updateDataMutation.isPending && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
+                        <FaSave className='mr-1 h-4 w-4' />Cập nhật
+                      </Button>}
                   </div>
-
                 </form>
               </Form>
             </div>

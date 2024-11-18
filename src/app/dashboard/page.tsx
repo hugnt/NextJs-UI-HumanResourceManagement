@@ -218,7 +218,7 @@ export default function Dashboard() {
 
     //Employee count by base salary
     //#region 
-    const { data: employeeCountData } = useQuery({
+    const { data: employeeCountData} = useQuery({
         queryKey: [QUERY_KEY.employeeCountKey],
         queryFn: () => dashboardApiRequest.getEmployeeCountByBaseSalary()
     })
@@ -235,7 +235,7 @@ export default function Dashboard() {
         fill: `hsl(var(--chart-1))`
     })) || [];
 
-    const { data: applicationByPositionData } = useQuery({
+    const { data: applicationByPositionData} = useQuery({
         queryKey: [QUERY_KEY.applicantCountByPositionKey],
         queryFn: () => dashboardApiRequest.getApplicantCountByPosition()
     })
@@ -248,12 +248,12 @@ export default function Dashboard() {
 
     //Count job posting, applicant, advances
     //#region 
-    const { data: jobCountData } = useQuery({
+    const { data: jobCountData} = useQuery({
         queryKey: [QUERY_KEY.jobCountKey],
         queryFn: () => dashboardApiRequest.getJobPostingCount()
     })
 
-    const { data: applicantCountData } = useQuery({
+    const { data: applicantCountData} = useQuery({
         queryKey: [QUERY_KEY.applicantCountKey],
         queryFn: () => dashboardApiRequest.getApplicantCount()
     })
@@ -295,7 +295,7 @@ export default function Dashboard() {
     <div className="space-y-5">
       <div className='flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Dash Board</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Trang chủ</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -526,7 +526,7 @@ export default function Dashboard() {
                 <p>Loading...</p>
               ) : (
                 <div>
-                  <p>Số đơn ứng trước: {advanceCountData!.metadata}</p>
+                  <p>Số đơn ứng trước: {advanceCountData&&advanceCountData!.metadata}</p>
                 </div>
               )}
               <button 
@@ -806,7 +806,7 @@ export default function Dashboard() {
                   <TableBody>
                       {
                           leaveApplicationLoading ? <></> :
-                          leaveApplicationData!.metadata?.map((item, index) => {
+                          leaveApplicationData&&leaveApplicationData!.metadata?.map((item, index) => {
                                   return <TableRow key={index}>
                                   <TableCell className="font-medium">{item.statusLeave}</TableCell>
                                   <TableCell className="font-medium">{item.employeeId}</TableCell>
@@ -853,7 +853,7 @@ export default function Dashboard() {
                   <TableBody>
                       {
                           expiringContractLoading ? <></> :
-                          expiringContractData!.metadata?.map((item, index) => {
+                          expiringContractData&&expiringContractData!.metadata?.map((item, index) => {
                               return <TableRow key={index}>
                               <TableCell >{item.id}</TableCell>
                               <TableCell>{item.name}</TableCell>

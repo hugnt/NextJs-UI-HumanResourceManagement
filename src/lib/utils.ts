@@ -87,19 +87,11 @@ export const dataURLtoFile = (dataurl: string, filename: string): File => {
   return new File([u8arr], filename, { type: mime });
 };
 
-export const addDays = (date: Date, dayAdds: number): Date => {
-  const newDate = new Date(date) // Create a copy of the date to avoid mutating the original
-  newDate.setDate(newDate.getDate() + dayAdds) // Add day
-  return newDate
-}
+export function formatDateToYYYYMMDD(date?: Date): string {
+  if(!date) date = new Date(); 
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+  const day = String(date.getDate()).padStart(2, '0');
 
-export const extractDateInfo = (date: Date) => {
-  const day = date.getDate(); // Day of the month (1-31)
-  const month = date.getMonth() + 1; // Month (0-11), so we add 1
-  const year = date.getFullYear(); // Full year (e.g., 2024)
-  return { day, month, year };
-}
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-export const getDayOfWeek = (date: Date): string => {
-  return daysOfWeek[date!.getDay()];
+  return `${year}/${month}/${day}`;
 }

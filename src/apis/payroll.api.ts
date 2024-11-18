@@ -1,4 +1,4 @@
-import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollListUpsert, PayrollResult, PayrollUpsert } from "@/data/schema/payroll.schema";
+import { ColumnMeta, ColumnTableHeader, PayrollDataTable, PayrollFilter, PayrollHistory, PayrollListUpsert, PayrollResult, PayrollUpsert } from "@/data/schema/payroll.schema";
 import { ApiResponse } from "@/data/type/response.type";
 import http from "@/lib/http";
 import { TreeNode } from "primereact/treenode";
@@ -16,8 +16,12 @@ const payrollApiRequest = {
     getDynamicColumn: (sc_type:number) => http.get<ApiResponse<ColumnMeta[]>>(`/payrolls/salary-components/${sc_type}`),
     getPayrollTableHeader: (period:string) => http.get<ApiResponse<ColumnTableHeader[][]>>(`/payrolls/table-schema/header/${period}`),
     getPayrollTableColumn: (period:string) => http.get<ApiResponse<ColumnMeta[]>>(`/payrolls/table-schema/column/${period}`),
-    getList: (period:string) => http.get<ApiResponse<PayrollDataTable[]>>(`/payrolls/${period}`),
-    sendPayslip: (period:string,body: number[]) => http.post<ApiResponse<boolean>>(`/payrolls/employee-salary/payslip/${period}`,body),
+    getList: (period:string, body:PayrollFilter) => http.post<ApiResponse<PayrollDataTable[]>>(`/payrolls/${period}`,body),
+    sendPayslip: (period:string,body: PayrollFilter) => http.post<ApiResponse<boolean>>(`/payrolls/employee-salary/payslip/${period}`,body),
+    saveHistory: (body: PayrollHistory) => http.post<ApiResponse<boolean>>(`/payrolls/table-schema/history`,body),
+    getAllPayrollHistory: () => http.get<ApiResponse<PayrollHistory[]>>(`/payrolls/table-schema/history`),
+    getPayrollHistoryDetails: (id:number) => http.get<ApiResponse<PayrollHistory>>(`/payrolls/table-schema/history/${id}`),
+    deletePayrollHistory: (id: number) => http.delete<ApiResponse<boolean>>(`/payrolls/table-schema/history/${id}`)
 };
 
 export default payrollApiRequest;
