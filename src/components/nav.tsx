@@ -54,8 +54,8 @@ export default function Nav({
       )
 
 
-    // if (roles && !roles.includes(user!.role))
-    //   return <></>
+    if (roles && !roles.includes(user!.role))
+      return <></>
 
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />
