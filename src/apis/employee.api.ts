@@ -17,6 +17,7 @@ const employeeApiRequest = {
     createNewChart: (value: Chart) => http.post<ApiResponse<boolean>>(`dashboards/charts`, value),
     getDetailByContractId: (contractId: number) => http.get<ApiResponse<Employee>>(`/employees/contract/${contractId}`),
     getAllContractNotInUsed: () => http.get<ApiResponse<number[]>>(`/employees/contract/not-inused`),
+    sendLoginInfo: (body: Employee) => http.post<ApiResponse<boolean>>('/employees/send-login-info', body),
 };
 
 export default employeeApiRequest;

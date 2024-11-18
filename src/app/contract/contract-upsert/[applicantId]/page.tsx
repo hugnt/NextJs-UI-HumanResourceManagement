@@ -11,9 +11,7 @@ import { useForm } from 'react-hook-form';
 import { Contract, contractDefault, ContractForm, contractSchemaForm } from '@/data/schema/contract.schema';
 import allowanceApiRequest from '@/apis/allowance.api';
 import contractSalaryApiRequest from '@/apis/contractSalary.api';
-import departmentApiRequest from '@/apis/department.api';
 import insuranceApiRequest from '@/apis/insurance.api';
-import positionApiRequest from '@/apis/position.api';
 import contractApiRequest from '@/apis/contract.api';
 import { Button } from '@/components/custom/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -42,7 +40,7 @@ const QUERY_KEY = {
     keySubApplicant: "applicants",
 }
 
-export default function page() {
+export default function CreateContractByApplicant() {
     const params = useParams<{ applicantId: string }>();
     const id = Number(params.applicantId);
     const [isDisabled] = useState<boolean>(false);
@@ -60,14 +58,14 @@ export default function page() {
         queryKey: [QUERY_KEY.keySubContractType],
         queryFn: () => contractTypeApiRequest.getList()
     });
-    const listDataDepartment = useQuery({
-        queryKey: [QUERY_KEY.keySubDepartment],
-        queryFn: () => departmentApiRequest.getList()
-    });
-    const listDataPosition = useQuery({
-        queryKey: [QUERY_KEY.keySubPosition],
-        queryFn: () => positionApiRequest.getList()
-    });
+    // const listDataDepartment = useQuery({
+    //     queryKey: [QUERY_KEY.keySubDepartment],
+    //     queryFn: () => departmentApiRequest.getList()
+    // });
+    // const listDataPosition = useQuery({
+    //     queryKey: [QUERY_KEY.keySubPosition],
+    //     queryFn: () => positionApiRequest.getList()
+    // });
     const listDataContractSalary = useQuery({
         queryKey: [QUERY_KEY.keySubContractSalary],
         queryFn: () => contractSalaryApiRequest.getList()
@@ -87,14 +85,14 @@ export default function page() {
 
 
     //List Option
-    const allowanceListOptions = listDataAllowance.data?.metadata?.map((item, i) => {
+    const allowanceListOptions = listDataAllowance.data?.metadata?.map((item) => {
         return {
             label: `Name: ${item.name} - Amount: ${item.amount}`,
             value: item.id,
         };
     });
 
-    const insuranceListOptions = listDataInurance.data?.metadata?.map((item, i) => {
+    const insuranceListOptions = listDataInurance.data?.metadata?.map((item) => {
         return {
             label: `Name: ${item.name} - Company: ${item.percentCompany}% - Employee: ${item.percentEmployee}%`,
             value: item.id, // Assuming `item.id` is the identifier for each allowance
@@ -115,7 +113,7 @@ export default function page() {
         const applicant = applicants?.find(
             (item) => item.id !== undefined && item.id === id
         );
-        var contract1: Contract = {
+        const contract1: Contract = {
             name: applicant?.name,
         };
         console.log("contract1", contract1)

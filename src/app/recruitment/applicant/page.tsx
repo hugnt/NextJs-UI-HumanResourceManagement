@@ -7,11 +7,10 @@ import FormAddTest from "@/app/recruitment/applicant/form-addtest";
 import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import DataTableCandidateActions from "@/components/custom/data-table-candidate-test";
 import { Button } from "@/components/custom/button";
-import { DataTable, DataTableColumnHeader, DataTableRowActions } from "@/components/data-table";
+import { DataTable, DataTableColumnHeader } from "@/components/data-table";
 import { DataFilter } from "@/components/data-table/data-table-toolbar";
 import { CRUD_MODE } from "@/data/const";
 import { Candidate, candidateDefault, CandidateStatus } from "@/data/schema/candidate.schema";
-import { Question } from "@/data/schema/question.schema";
 import { Test } from "@/data/schema/test.schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
@@ -67,7 +66,6 @@ const QUERY_KEY = {
 
 export default function SampleList() {
   const [rwdetail, rwsetDetail] = useState<Test>({});
-  const [contractdetail, contractDetail] = useState<Test>({});
   const [detail, setDetail] = useState<Candidate>({});
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [openAddTest, setOpenAddTest] = useState<boolean>(false);

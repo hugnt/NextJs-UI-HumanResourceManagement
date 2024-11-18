@@ -192,11 +192,11 @@ export const sidelinks: SideLink[] = [
         roles: [Role.Admin],
       },
       {
-        title: 'Salary advance',
+        title: 'Ứng lương',
         label: '',
         href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
-        roles: [Role.Partime, Role.Fulltime],
+        roles: [Role.Admin,Role.Partime, Role.Fulltime],
       }
     ],
   },

@@ -8,7 +8,7 @@ export const advanceSchema = z.object({
   month: z.coerce.number().optional(),
   year: z.coerce.number().optional(),
   payPeriod: z.string().optional(),
-  employeeId: z.coerce.number().positive("EmployeeId is not valid"),
+  employeeId: z.coerce.number().positive("EmployeeId is not valid").optional(),
   reason: z.string().optional(),
   note: z.string().optional(),
   status: z.number().int().min(0).max(2),

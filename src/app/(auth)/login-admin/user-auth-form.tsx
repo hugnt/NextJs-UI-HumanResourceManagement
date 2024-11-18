@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/custom/button'
 import { PasswordInput } from '@/components/custom/password-input'
-import { cn, handleErrorApi } from '@/lib/utils'
+import { cn, handleErrorApi, handleSuccessApi } from '@/lib/utils'
 import Link from 'next/link'
 import { useForm } from "react-hook-form";
 import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
@@ -43,9 +43,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
-        router.push('/');
+        handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
+        router.push('/dashboard');
       }
-      handleErrorApi({ error: data.message })
+      else{
+        handleErrorApi({ error: data.message })
+      }
     }
   })
 
@@ -56,9 +59,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
+        handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
         router.push('/profile');
       }
-      handleErrorApi({ error: data.message })
+      else{
+        handleErrorApi({ error: data.message })
+      }
+      
     }
   })
 

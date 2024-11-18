@@ -21,6 +21,8 @@ import { handleSuccessApi } from "@/lib/utils";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { GrCircleQuestion } from "react-icons/gr";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useCurrentUser } from "@/app/system/ui/auth-context";
+import { Role } from "@/data/schema/auth.schema";
 
 
 const pathList: Array<PathItem> = [
@@ -60,15 +62,13 @@ export default function AdvanceList() {
   const [detail, setDetail] = useState<Advance>(advanceDefault);
   const [openCRUD, setOpenCRUD] = useState<boolean>(false);
   const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
-
-  const role = 0;
-  const employeeId = 2;
+  const user = useCurrentUser().currentUser!
 
   const queryClient = useQueryClient();
   const listDataQuery = useQuery({
-    queryKey: role===0?[QUERY_KEY.keyList]:[QUERY_KEY.keyListByEmployee,employeeId],
+    queryKey: user?.role == Role.Admin ?[QUERY_KEY.keyList]:[QUERY_KEY.keyListByEmployee,user.id],
     queryFn: () => {
-      return role===0?advanceApiRequest.getList():advanceApiRequest.getListByEmployee(employeeId)
+      return user?.role == Role.Admin ?advanceApiRequest.getList():advanceApiRequest.getListByEmployee(user.id)
     },
   });
 
@@ -223,7 +223,7 @@ export default function AdvanceList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Advance list</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Nhân viên ứng lương</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>
@@ -245,7 +245,7 @@ export default function AdvanceList() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="pendding">
-            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 0) ?? []} columns={role === 0 ? columnsDefPendingAdmin : columnsDefPendingEmployee} filters={dataFilter} searchField="employeeName">
+            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 0) ?? []} columns={user?.role == Role.Admin ? columnsDefPendingAdmin : columnsDefPendingEmployee} filters={dataFilter} searchField="employeeName">
               <DropdownMenu>
                 <DropdownMenuTrigger >
                   <Button  variant='outline' size='sm' className='ml-auto hidden h-8 lg:flex me-2 bg-yellow-500'>
@@ -269,10 +269,10 @@ export default function AdvanceList() {
             </DataTable>
           </TabsContent>
           <TabsContent value="approved">
-            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 1) ?? []} columns={role === 0 ? columnsDefConfirm : columnsDef} filters={dataFilter} searchField="employeeName" />
+            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 1) ?? []} columns={user?.role == Role.Admin ?columnsDefConfirm : columnsDef} filters={dataFilter} searchField="employeeName" />
           </TabsContent>
           <TabsContent value="refused">
-            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 2) ?? []} columns={role === 0 ? columnsDefRefused : columnsDef} filters={dataFilter} searchField="employeeName" />
+            <DataTable data={listDataQuery.data?.metadata?.filter(x => x.status == 2) ?? []} columns={user?.role == Role.Admin ? columnsDefRefused : columnsDef} filters={dataFilter} searchField="employeeName" />
           </TabsContent>
         </Tabs>
       </div>

@@ -93,6 +93,9 @@ export const contractSchema = z.object({
   nationalAddress: z.string().optional(),
   level: z.string().optional(),
   major: z.string().optional(),
+
+  fireUrlBase: z.string().optional(),
+  fileUrlSigned: z.string().optional(),
 });
 
 export type Contract = z.infer<typeof contractSchema>;
@@ -133,7 +136,10 @@ export const contractDefault: Contract = {
   nationalStartDate: new Date(),
   nationalAddress: "",
   level: "",
-  major: ""
+  major: "",
+
+  fireUrlBase:"",
+  fileUrlSigned:""
 };
 
 
