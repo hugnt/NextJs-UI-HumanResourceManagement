@@ -18,6 +18,7 @@ import { Button } from '@/components/custom/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { handleSuccessApi } from '@/lib/utils';
 import faceRegisApiRequest from '@/apis/faceRecognition';
+import { useCurrentUser } from '@/app/system/ui/auth-context';
 const pathList: Array<PathItem> = [
   { name: "History", url: "/time-keeping" },
   { name: "Face Registration", url: "/history/face-recognition" },
@@ -54,6 +55,8 @@ export default function Page() {
   const [descriptions, setDescriptions] = useState<(Float32Array | null)[]>([])
   const [ids, setIds] = useState<number[]>([]);
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const user = useCurrentUser().currentUser;
+
 
   const handleCameraClick = () => {
     setIsCameraOpen((prev) => !prev);
@@ -160,7 +163,7 @@ export default function Page() {
 
   const { mutate, isPending } = useMutation({
     mutationKey: [QUERY_KEY.MUTATION_ADD_KEY],
-    mutationFn: (data: FormData) => faceRegisApiRequest.registrationFace(1, data),
+    mutationFn: (data: FormData) => faceRegisApiRequest.registrationFace(user!.id, data),
     onSuccess(data) {
       if (data.isSuccess) {
         handleSuccessApi({ message: "Face registration successfully" })
@@ -170,7 +173,7 @@ export default function Page() {
 
   const { mutate: mutateUpdate, isPending: _ } = useMutation({
     mutationKey: [QUERY_KEY.MUTATION_UDPTE_KEY],
-    mutationFn: (data: FormData) => faceRegisApiRequest.updateRegisFace(1, data),
+    mutationFn: (data: FormData) => faceRegisApiRequest.updateRegisFace(user!.id, data),
     onSuccess(data) {
       if (data.isSuccess) {
         handleSuccessApi({ message: "Face update registration successfully" })
