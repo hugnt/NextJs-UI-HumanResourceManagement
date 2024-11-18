@@ -12,14 +12,14 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/custom/button'
 import { PasswordInput } from '@/components/custom/password-input'
-import { cn, handleErrorApi } from '@/lib/utils'
+import { cn, handleErrorApi, handleSuccessApi } from '@/lib/utils'
 import Link from 'next/link'
 import { useForm } from "react-hook-form";
 import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation';
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
 
@@ -37,38 +37,45 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
 
   const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
-    mutationKey : [KEY.KEY_LOGIN],
+    mutationKey: [KEY.KEY_LOGIN],
     mutationFn: (body: Auth) => {
       return authApiRequest.adminLogin(body)
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
-        router.push('/');
+        handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
+        router.push('/dashboard');
       }
-      handleErrorApi({ error: data.message })
+      else{
+        handleErrorApi({ error: data.message })
+      }
     }
   })
 
   const { mutate: mutateLoginEmployee, isPending: isPendingLoginEmployee } = useMutation({
-    mutationKey : [KEY.KEY_LOGIN],
+    mutationKey: [KEY.KEY_LOGIN],
     mutationFn: (body: Auth) => {
       return authApiRequest.employeeLogin(body)
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
+        handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
         router.push('/profile');
       }
-      handleErrorApi({ error: data.message })
+      else{
+        handleErrorApi({ error: data.message })
+      }
+      
     }
   })
 
   function onSubmit(data: Auth) {
-    if(layout == 1){
+    if (layout == 1) {
       mutateLogin(data)
-    }else{
+    } else {
       mutateLoginEmployee(data)
     }
-    
+
   }
 
   return (
@@ -108,8 +115,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' loading={isPendingLogin || isPendingLoginEmployee}>
+            <Button type='submit' className='mt-2' loading={isPendingLogin || isPendingLoginEmployee}>
               Login
+            </Button>
+            <Button type='button' className='bg-gray-400'>
+              {layout == 0 ?
+                <Link href="/login-admin">
+                  Đăng nhập quản trị viên
+                </Link> :
+                <Link href="/login-employee">
+                  Đăng nhập nhân viên
+                </Link>
+              }
+
             </Button>
           </div>
         </form>

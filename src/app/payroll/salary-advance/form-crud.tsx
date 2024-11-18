@@ -24,6 +24,8 @@ import { PiTrashLight } from "react-icons/pi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import employeeApiRequest from "@/apis/employee.api";
+import { useCurrentUser } from "@/app/system/ui/auth-context";
+import { Role } from "@/data/schema/auth.schema";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -35,13 +37,16 @@ type FormProps = {
 //react query key
 const QUERY_KEY = {
   keyList: "advances",
-  keySub: "employees"
+  keySub: "employees",
+  keyListByEmployee:"advances-employee"
 }
 
 export default function FormCRUD(props: FormProps) {
   const { openCRUD, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = advanceDefault } = props;
   //const { openCRUD = false, setOpenCRUD = () => { }, size = 600, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+
+  const user = useCurrentUser().currentUser!
   // const [selectedPeriod, setSelectedPeriod] = useState<string>('10/2024');
   const currentMonth: number = new Date().getMonth() + 1;
   const currenYear: number = new Date().getFullYear();
@@ -51,7 +56,7 @@ export default function FormCRUD(props: FormProps) {
   const addDataMutation = useMutation({
     mutationFn: (body: Advance) => advanceApiRequest.create(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+      queryClient.invalidateQueries({ queryKey: user.role == Role.Admin ? [QUERY_KEY.keyList]:[QUERY_KEY.keyListByEmployee] })
       handleSuccessApi({ message: "Inserted Successfully!" });
       setOpenCRUD(false);
     }
@@ -60,7 +65,7 @@ export default function FormCRUD(props: FormProps) {
   const updateDataMutation = useMutation({
     mutationFn: ({ id, body }: { id: number, body: Advance }) => advanceApiRequest.update(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+      queryClient.invalidateQueries({ queryKey: user.role == Role.Admin ? [QUERY_KEY.keyList]:[QUERY_KEY.keyListByEmployee] })
       handleSuccessApi({ message: "Updated Successfully!" });
       setOpenCRUD(false);
     }
@@ -69,7 +74,7 @@ export default function FormCRUD(props: FormProps) {
   const deleteDataMutation = useMutation({
     mutationFn: (id: number) => advanceApiRequest.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+      queryClient.invalidateQueries({ queryKey: user.role == Role.Admin ? [QUERY_KEY.keyList]:[QUERY_KEY.keyListByEmployee] })
       handleSuccessApi({ message: "Deleted Successfully!" });
       setOpenCRUD(false);
     }
@@ -83,7 +88,7 @@ export default function FormCRUD(props: FormProps) {
 
   // #region + FORM SETTINGS
   const form = useForm<Advance>({
-    resolver: zodResolver(advanceSchema),
+    //resolver: zodResolver(advanceSchema),
     defaultValues: advanceDefault,
   });
 
@@ -92,6 +97,7 @@ export default function FormCRUD(props: FormProps) {
       data.month = Number(data.payPeriod.split('/')[0]);
       data.year = Number(data.payPeriod.split('/')[1]);
     }
+    if(user.id)data.employeeId = user.id;
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(data);
     else if (mode == CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
@@ -134,9 +140,9 @@ export default function FormCRUD(props: FormProps) {
                     <FormItem>
                       <FormLabel>Nhân viên</FormLabel>
                       <Select 
-                        value={field.value?.toString()}
+                        value={user?.role == Role.Admin ? (field.value?.toString()):user.id.toString()}
                         onValueChange={field.onChange}
-                        disabled={isDisabled} >
+                        disabled={isDisabled||user?.role != Role.Admin} >
                         <FormControl >
                           <SelectTrigger>
                             <SelectValue placeholder="Nhân viên cần ứng lương" />
@@ -216,7 +222,7 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Advance Amount</FormLabel>
+                        <FormLabel>Số tiền cần ứng</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter advance amount"
@@ -235,7 +241,7 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="reason"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Reason</FormLabel>
+                        <FormLabel>Lý do ứng lương</FormLabel>
                         <FormControl>
                           <Textarea placeholder="Enter why you need to advance the salary" {...field} value={field.value ?? ''} disabled={isDisabled} />
                         </FormControl>
@@ -248,7 +254,7 @@ export default function FormCRUD(props: FormProps) {
                   <FormField control={form.control} name="note"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Note</FormLabel>
+                        <FormLabel>Ghi chú</FormLabel>
                         <FormControl>
                           <Textarea placeholder="Enter note" {...field} value={field.value ?? ''} disabled={isDisabled} />
                         </FormControl>

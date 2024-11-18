@@ -178,25 +178,25 @@ export const sidelinks: SideLink[] = [
 
     sub: [
       {
-        title: 'Salary Summary',
+        title: 'Bảng lương',
         label: '',
         href: '/payroll/salary-summary',
         icon: <IconFileText size={18} />,
         roles: [Role.Admin],
       },
       {
-        title: 'Salary Calculation',
+        title: 'Lịch sử tổng hợp',
         label: '',
-        href: '/payroll/salary-calculation',
+        href: '/payroll/salary-history',
         icon: <IconFileText size={18} />,
         roles: [Role.Admin],
       },
       {
-        title: 'Salary advance',
+        title: 'Ứng lương',
         label: '',
         href: '/payroll/salary-advance',
         icon: <IconFileText size={18} />,
-        roles: [Role.Partime, Role.Fulltime],
+        roles: [Role.Admin,Role.Partime, Role.Fulltime],
       }
     ],
   },

@@ -30,6 +30,9 @@ import positionApiRequest from "@/apis/position.api";
 import allowanceApiRequest from "@/apis/allowance.api";
 import insuranceApiRequest from "@/apis/insurance.api";
 import Select from 'react-select';
+import { FaFilePdf } from "react-icons/fa";
+import envConfig from "@/config";
+import LoadingSpinIcon from "@/components/loading-spin-icon";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -52,6 +55,7 @@ const QUERY_KEY = {
 export default function FormCRUD(props: FormProps) {
   const { openCRUD = false, setOpenCRUD = () => { }, size = 1000, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [openPDF, setOpenPDF] = useState<boolean>(false);
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
@@ -68,6 +72,16 @@ export default function FormCRUD(props: FormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
+      setOpenCRUD(false);
+    }
+  });
+
+  const generateContractDataMutation = useMutation({
+    mutationFn: ({ id }: { id: number }) => contractApiRequest.generateContractPDF(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+      handleSuccessApi({ message: "Cập nhật bản mềm thành công!" });
+      setOpenPDF(false);
       setOpenCRUD(false);
     }
   });
@@ -480,10 +494,18 @@ export default function FormCRUD(props: FormProps) {
                   )}
                 />
               </div>
-              <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
-                <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-                {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                  <Button type="submit" size='sm'>Save</Button>}
+              <AlertDialogFooter className="flex !justify-between p-2 py-1 bg-secondary/80">
+                <div>
+                  {(mode === CRUD_MODE.VIEW || mode === CRUD_MODE.EDIT) &&
+                    <Button type="button" onClick={() => setOpenPDF(true)} className="bg-yellow-400  hover:bg-yellow-500" size='sm' >
+                      <FaFilePdf className="me-1" /> Xem bản mềm
+                    </Button>}
+                </div>
+                <div className="space-x-1">
+                  <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+                  {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
+                    <Button type="submit" size='sm'>Save</Button>}
+                </div>
               </AlertDialogFooter>
             </form>
           </Form>
@@ -508,6 +530,24 @@ export default function FormCRUD(props: FormProps) {
         }
       </AlertDialog>
 
+      <AlertDialog open={openPDF} onOpenChange={setOpenPDF} >
+        <AlertDialogContent
+          className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[800px] sm:max-w-[800px] !sm:w-[800px] sm:rounded-[0.3rem]`}>
+          <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
+            <AlertDialogTitle className="text-slate-50">Hợp đồng PDF</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogDescription />
+          <iframe src={`${envConfig.NEXT_PUBLIC_API_HOST}/Contract/${detail.fireUrlBase}`} className="w-full h-[70vh]" />
+          <AlertDialogFooter className="flex !justify-between p-2 py-1 bg-secondary/80">
+            {detail.id != 0 && <Button onClick={() => generateContractDataMutation.mutate({ id: detail.id ?? 0 })}
+              className="bg-green-400  hover:bg-green-500" size='sm'>
+                {(generateContractDataMutation.isPending || generateContractDataMutation.isPending) && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
+              Tạo mới
+            </Button>}
+            <Button onClick={() => setOpenPDF(false)} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

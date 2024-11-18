@@ -239,7 +239,7 @@ export default function Dashboard() {
 
     //Employee count by base salary
     //#region 
-    const { data: employeeCountData, isLoading: employeeCountLoading } = useQuery({
+    const { data: employeeCountData} = useQuery({
         queryKey: [QUERY_KEY.employeeCountKey],
         queryFn: () => dashboardApiRequest.getEmployeeCountByBaseSalary()
     })
@@ -256,7 +256,7 @@ export default function Dashboard() {
         fill: `hsl(var(--chart-1))`
     })) || [];
 
-    const { data: applicationByPositionData, isLoading: applicationByPositionLoading } = useQuery({
+    const { data: applicationByPositionData} = useQuery({
         queryKey: [QUERY_KEY.applicantCountByPositionKey],
         queryFn: () => dashboardApiRequest.getApplicantCountByPosition()
     })
@@ -270,12 +270,12 @@ export default function Dashboard() {
 
     //Count job posting, applicant, advances
     //#region 
-    const { data: jobCountData, isLoading: jobCountLoading } = useQuery({
+    const { data: jobCountData} = useQuery({
         queryKey: [QUERY_KEY.jobCountKey],
         queryFn: () => dashboardApiRequest.getJobPostingCount()
     })
 
-    const { data: applicantCountData, isLoading: applicantCountLoading } = useQuery({
+    const { data: applicantCountData} = useQuery({
         queryKey: [QUERY_KEY.applicantCountKey],
         queryFn: () => dashboardApiRequest.getApplicantCount()
     })
@@ -317,7 +317,7 @@ export default function Dashboard() {
     <div className="space-y-5">
       <div className='flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Dash Board</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Trang chủ</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
       </div>

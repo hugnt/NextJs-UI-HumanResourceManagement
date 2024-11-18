@@ -10,7 +10,8 @@ const contractApiRequest = {
     update: (id: number, body: Contract) => http.put<ApiResponse<boolean>>(`/contracts/update-contract/${id}`, body),
     updateStatus: (id: number, status: number) => http.put<ApiResponse<boolean>>(`/contracts/update-status/${id}/${status}`,null),
     delete: (id: number) => http.delete<ApiResponse<Contract>>(`/contracts/${id}`),
-    signContract: (contractId: number, body: FormData) => http.post<ApiResponse<boolean>>(`/contracts/add-employee-signature/${contractId}`,body)
+    signContract: (contractId: number, body: FormData) => http.post<ApiResponse<boolean>>(`/contracts/add-employee-signature/${contractId}`,body),
+    generateContractPDF: (contractId: number) => http.post<ApiResponse<boolean>>(`/contracts/create-contract-pdf/${contractId}`,null)
 }
 export default contractApiRequest;
 

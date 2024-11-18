@@ -12,17 +12,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import payrollApiRequest from "@/apis/payroll.api";
 import { Label } from "@/components/ui/label";
-import { handleSuccessApi } from "@/lib/utils";
+import { formatDateToYYYYMMDD, handleSuccessApi } from "@/lib/utils";
 import LoadingSpinIcon from "@/components/loading-spin-icon";
-import { PayrollResult } from "@/data/schema/payroll.schema";
+import { PayrollFilter, PayrollResult } from "@/data/schema/payroll.schema";
 import { DataTable } from 'primereact/datatable';
 import { Column, ColumnPassThroughOptions } from 'primereact/column';
 import { CheckboxPassThroughOptions } from "primereact/checkbox";
+import { DateRange } from "react-day-picker";
 
 type FormProps = {
     openAE: boolean,
     setOpenAE: (openAE: boolean) => void,
     period: string,
+    dateRange?: DateRange,
     employeeListSc: PayrollResult[]
 }
 
@@ -49,14 +51,14 @@ const pt:ColumnPassThroughOptions = {
     headerCheckbox: rowCheckbox
 }
 export default function FormPayslip(props: FormProps) {
-    const { openAE, setOpenAE = () => { }, employeeListSc = [], period = "2024/10" } = props;
+    const { openAE, setOpenAE = () => { }, employeeListSc = [], period = "2024/10", dateRange } = props;
     const currentMonth: number = new Date().getMonth() + 1;
     const currenYear: number = new Date().getFullYear();
     const [selectedEmployees, setSelectedEmployees] = useState<PayrollResult[]>([]);
     // #region +TANSTACK QUERY
 
     const sendPayslipData = useMutation({
-        mutationFn: ({ period, body }: { period: string, body: number[] }) => payrollApiRequest.sendPayslip(period, body),
+        mutationFn: ({ period, body }: { period: string, body: PayrollFilter }) => payrollApiRequest.sendPayslip(period, body),
         onSuccess: () => {
             handleSuccessApi({ message: "Updated Successfully!" });
             setOpenAE(false);
@@ -67,10 +69,14 @@ export default function FormPayslip(props: FormProps) {
     // #region + FORM SETTINGS
     const handleUpdateForm = () => {
         const employeeIds: number[] = selectedEmployees.map(x=>x.employeeId)??[];
-
+        const filter: PayrollFilter = {
+            dfrom: formatDateToYYYYMMDD(dateRange?.from),
+            dto: formatDateToYYYYMMDD(dateRange?.to),
+            employeeIds: employeeIds
+          }
         console.log("period:", period)
         console.log("employeeIds:", employeeIds);
-        sendPayslipData.mutate({ period, body: employeeIds });
+        sendPayslipData.mutate({ period, body: filter });
 
     };
     const handleCloseForm = (e: any) => {

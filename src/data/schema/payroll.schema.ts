@@ -120,14 +120,20 @@ export interface PayrollUpsert {
 }
 
 export interface PayrollHistory{
+  id?:number;
   name?: string;
   month?:number;
   year?:number;
-  createdAt?: Date;
+  createdAt?: Date | string;
   note?:string;
   payrollHeader?:ColumnTableHeader[][],
   payrollColumn?:ColumnMeta[],
   payrollData?:PayrollDataTable[]
-
+  displayColumns?:ColumnMeta[],
 }
 
+export interface PayrollFilter{
+  dfrom?: string;
+  dto?: string;
+  employeeIds?: number[];
+}
