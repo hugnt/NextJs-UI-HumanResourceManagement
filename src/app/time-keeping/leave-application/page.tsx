@@ -59,44 +59,45 @@ export default function LeaveApplicationList() {
     {
       accessorKey: 'employeeId',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Employee ID' />
+        <DataTableColumnHeader column={column} title='Id nhân viên' />
       ),
       cell: ({ row }) => <div>{row.getValue('employeeId')}</div>,
+      enableHiding: false,
     },
     {
       accessorKey: 'timeLeave',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Time Leave' />
+        <DataTableColumnHeader column={column} title='Ca nghỉ' />
       ),
       cell: ({ row }) => <div>{row.getValue('timeLeave')}</div>,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: 'description',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Description' />
+        <DataTableColumnHeader column={column} title='Lí do xin nghỉ' />
       ),
       cell: ({ row }) => <div>{row.getValue('description')}</div>,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: 'statusLeave',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Status Leave' />
+        <DataTableColumnHeader column={column} title='Trạng thái' />
       ),
       cell: ({ row }) => <div>{row.getValue('statusLeave')}</div>,
+      enableHiding: false,
     },
     {
       accessorKey: 'replyMessage',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Reply Message' />
+        <DataTableColumnHeader column={column} title='Phản hồi' />
       ),
       cell: ({ row }) => <div>{row.getValue('replyMessage')}</div>,
-    },
-    {
-      accessorKey: 'refuseReason',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Refuse Reason' />
-      ),
-      cell: ({ row }) => <div>{row.getValue('refuseReason')}</div>,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       id: 'actions',
@@ -149,7 +150,7 @@ export default function LeaveApplicationList() {
     <>
       <div className='mb-2 flex items-center justify-between space-y-2'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Leave Application List</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Danh Sách Đơn Xin Nghỉ</h2>
           <AppBreadcrumb pathList={pathList} className="mt-2" />
         </div>
         <Button onClick={handleAddNew} variant='outline' size='sm' className='bg-primary text-white'>

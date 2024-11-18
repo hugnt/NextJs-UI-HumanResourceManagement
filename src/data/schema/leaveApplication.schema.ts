@@ -30,5 +30,5 @@ export const leaveApplicationDefault: leaveApplication = {
 
 export type EmployeeData = {
     id:number,
-    Name: string
+    name: string
 }

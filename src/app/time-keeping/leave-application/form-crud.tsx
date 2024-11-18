@@ -23,7 +23,7 @@ type FormProps = {
 
 const QUERY_KEY = {
     keyList: "leave-application",
-    keySub: "time-keeping"
+    keySub: "employee"
 }
 
 export default function FormCRUD(props: FormProps) {
@@ -67,11 +67,13 @@ export default function FormCRUD(props: FormProps) {
         }
     });
 
-    const listDataEmployeeQuery = useQuery({
+    const {data: listDataEmployeeQuery} = useQuery({
         queryKey: [QUERY_KEY.keySub],
         queryFn: () => leaveApplicationApiRequest.getAllEmployee(),
         staleTime: 5000
     });
+
+    
 
     const form = useForm<leaveApplication>({
         resolver: zodResolver(leaveApplicationSchema),
@@ -131,11 +133,9 @@ export default function FormCRUD(props: FormProps) {
                                                         <SelectValue placeholder="Chọn nhân viên" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {listDataEmployeeQuery.data?.metadata?.map((item) => (
+                                                        {listDataEmployeeQuery!.metadata?.map((item) => (
                                                             <SelectItem key={item.id} value={item.id.toString()}>
-                                                                <div>
-                                                                    <p>{item.Name}</p>
-                                                                </div>
+                                                                {item.name}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -182,7 +182,7 @@ export default function FormCRUD(props: FormProps) {
                                                 <FormControl>
                                                     <Select
                                                         {...field}
-                                                        value={field.value?.toString()}
+                                                        value={field.value?.toString() ?? "1"}
                                                         onValueChange={(value) => {
                                                             const enumValue = parseInt(value);
                                                             field.onChange(enumValue);
@@ -205,9 +205,9 @@ export default function FormCRUD(props: FormProps) {
                                     />
                                 </div>
                                 <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
-                                    <Button onClick={handleCloseForm} className="bg-gray-400 hover:bg-red-500" size='sm'>Close</Button>
+                                    <Button onClick={handleCloseForm} className="bg-gray-400 hover:bg-red-500" size='sm'>Đóng</Button>
                                     {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                                        <Button type="submit" size='sm'>Save</Button>}
+                                        <Button type="submit" size='sm'>Lưu</Button>}
                                 </AlertDialogFooter>
                             </form>
                         </Form>
@@ -221,8 +221,8 @@ export default function FormCRUD(props: FormProps) {
                             Bạn có chắc chắn muốn xóa yêu cầu này không?
                         </AlertDialogDescription>
                         <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-                            <Button onClick={handleCloseForm} className="bg-gray-400 hover:bg-red-500" size='sm'>Close</Button>
-                            <Button className="" size='sm' onClick={() => onSubmit(detail)}>Confirm</Button>
+                            <Button onClick={handleCloseForm} className="bg-gray-400 hover:bg-red-500" size='sm'>Đóng</Button>
+                            <Button className="" size='sm' onClick={() => onSubmit(detail)}>Xác nhận</Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 )}
