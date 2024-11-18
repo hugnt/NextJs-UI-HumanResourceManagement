@@ -68,10 +68,6 @@ export default function ContractList() {
     return status === SignStatus.Signed ? "Signed" : "Not Signed";
   };
 
-  // Function to get gender
-  const getGender = (status: boolean) => {
-    return status === true ? "Male" : "Female"; // Map to human-readable values
-  };
 
   // Function to get contract status
   const getContractStatus = (status: ContractStatus) => {

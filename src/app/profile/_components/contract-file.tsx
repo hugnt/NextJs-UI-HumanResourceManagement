@@ -66,7 +66,7 @@ type ContractSigProps = {
 }
 export default function SignContract(props: ContractSigProps) {
     
-    const {contractId, name="", fileUrlBase, fileUrlSigned, employeeSignStatus = 0} = props;
+    const {contractId, fileUrlBase, fileUrlSigned, employeeSignStatus = 0} = props;
     const [contractList, setContractList] = useState<ContractSigProps[]>([]);
     const [openFormPDF, setOpenFormPDF] = useState<boolean>(false);
     const [tabTypeSign, setTabTypeSign] = useState<string>("image");

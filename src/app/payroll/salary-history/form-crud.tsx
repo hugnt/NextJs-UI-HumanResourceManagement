@@ -240,7 +240,7 @@ export default function FormCRUD(props: FormProps) {
     })
 
 
-    payrollData?.map((payroll, i) => {
+    payrollData?.map((payroll, _i) => {
       const rowData: any = {
         employeeName: payroll.employeeName,
         departmentName: payroll.departmentName,
@@ -332,7 +332,7 @@ export default function FormCRUD(props: FormProps) {
                   className: 'w-8 h-8 text-blue-500'
                 }
               }}>
-              <Column header="#" frozen headerStyle={{ width: '3px' }} body={(data, options) => options.rowIndex + 1} pt={{
+              <Column header="#" frozen headerStyle={{ width: '3px' }} body={(_data, options) => options.rowIndex + 1} pt={{
                 bodyCell: {
                   className: classNames(`bg-white text-xs my-auto border after:absolute after:inset-0 after:start-[-1px] after:border-x after:border-solid after:border-slate-300 text-center`)
                 }

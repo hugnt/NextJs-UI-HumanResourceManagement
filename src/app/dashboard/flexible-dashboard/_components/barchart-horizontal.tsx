@@ -1,6 +1,4 @@
 "use client"
-
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 
 import {
@@ -18,14 +16,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { labelResult } from "./form-crud"
-const chartData: labelResult[] = [
-  { label: "January", value: 186 },
-  { label: "February", value: 305 },
-  { label: "March", value: 237 },
-  { label: "April", value: 73 },
-  { label: "May", value: 209 },
-  { label: "June", value: 214 },
-]
 
 const chartConfig = {
   value: {

@@ -10,7 +10,6 @@ import { useQuery } from '@tanstack/react-query';
 import Information from './_components/information';
 import WorkingDepartment from './_components/working-department';
 import InforSalary from './_components/infor-salary';
-import ContractFile from './_components/contract-file';
 import SignContract from './_components/contract-file';
 const pathList: Array<PathItem> = [
     { name: "Profile", url: "/profile" },

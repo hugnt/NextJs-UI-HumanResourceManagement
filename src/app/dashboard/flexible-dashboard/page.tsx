@@ -21,19 +21,11 @@ const QUERY_KEY = {
     KEY: 'flexible-dashboard',
     MUTATE: 'create-flexible-dashboard',
 }
-type Props = {
-    data?: Value[],
-    title?: string,
-    first_des?: string,
-    second_des?: string
-}
-type Value = {
-    label: string,
-    value: number
-}
+
+
 export default function page() {
     const router = useRouter();
-    const { data, isLoading } = useQuery({
+    const { data,  } = useQuery({
         queryKey: [QUERY_KEY.KEY],
         queryFn: () => employeeApiRequest.getAllFlexibleDashboard()
     })
@@ -42,7 +34,7 @@ export default function page() {
     const { mutate, isPending } = useMutation({
         mutationKey: [QUERY_KEY.MUTATE],
         mutationFn: () => employeeApiRequest.createNewPageFlexibleDashboard(),
-        onSuccess(data, variables, context) {
+        onSuccess(data, ) {
             if (data.isSuccess) {
                 router.push(`/dashboard/flexible-dashboard/${data.metadata}?title=${data.metadata!.title}`)
                 handleSuccessApi({ message: "Tạo mới thành công !" })

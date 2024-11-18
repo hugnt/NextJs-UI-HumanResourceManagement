@@ -39,7 +39,7 @@ const dataFilter: Array<DataFilter> = [
   {
     columnName: 'year',
     title: 'Kì Lương',
-    options: Array.from({ length: currentMonth }, (v, i) => {
+    options: Array.from({ length: currentMonth }, (_v, i) => {
       const month = (currentMonth - i).toString().padStart(2, '0');
       return {
         label: `Tháng ${month}/${currenYear}`,

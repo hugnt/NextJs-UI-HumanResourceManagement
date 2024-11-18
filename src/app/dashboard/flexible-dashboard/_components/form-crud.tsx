@@ -74,7 +74,7 @@ export default function FormCRUD(props: FormProps) {
         defaultValues: chartDefault,
     });
     const handleOnSubmit = () => {
-        let value: Chart = form.getValues()
+        const value: Chart = form.getValues()
         mutate({
             pageFlexibleDashboardId: pageFlexibleDashboardId,
             data: JSON.stringify(addToStatistics(value.propertyName!, data?.metadata!)),

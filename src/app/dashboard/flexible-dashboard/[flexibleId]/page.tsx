@@ -33,15 +33,15 @@ const pathList: Array<PathItem> = [
 export default function page({ params }: { params: { flexibleId: number } }) {
     const searchParams = useSearchParams();
     const name = searchParams.get('title')!.toString();
-    const [detail, setDetail] = useState<Chart>({});
+    const [, setDetail] = useState<Chart>({});
     const [openCRUD, setOpenCRUD] = useState<boolean>(false);
-    const [mode, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
+    const [, setMode] = useState<CRUD_MODE>(CRUD_MODE.VIEW);
 
     //State
     const [isChange, setIsChange] = useState<boolean>(false)
     const [title, setTitle] = useState<string>(name == null ? "" : name);
 
-    const { data, isLoading } = useQuery({
+    const { data,  } = useQuery({
         queryKey: [QUERY_KEY.KEY],
         queryFn: () => employeeApiRequest.getAllChartByPageFlexibleId(params.flexibleId)
     })

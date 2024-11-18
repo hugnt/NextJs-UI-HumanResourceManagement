@@ -3,8 +3,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CRUD_MODE } from "@/data/const"
-import { Advance, advanceDefault, advanceSchema } from "@/data/schema/advance.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Advance, advanceDefault } from "@/data/schema/advance.schema";
 import { useForm } from "react-hook-form";
 import {
   Form,

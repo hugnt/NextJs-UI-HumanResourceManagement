@@ -103,7 +103,7 @@ export default function page() {
               console.log('Match:', match.toString());
               if (!match.toString().includes("unknown")) {
                 handleCameraClick()
-                let id = Number(match.toString().split('_')[0])
+                const id = Number(match.toString().split('_')[0])
                 mutate(id);
                 setHistory(undefined)
               }

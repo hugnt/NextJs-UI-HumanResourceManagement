@@ -396,7 +396,7 @@ export default function FormCRUD(props: FormProps) {
             </AlertDialogDescription>
             <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
               <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
-              <Button className="" size='sm' onClick={() => onSubmit(detail)}>Confirm</Button>
+              <Button className="" size='sm' onClick={handleSubmit}>Confirm</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
