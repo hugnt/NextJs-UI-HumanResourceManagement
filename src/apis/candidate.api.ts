@@ -7,7 +7,7 @@ const applicantApiRequest = {
     getById: (id: number) => http.get<ApiResponse<Candidate[]>>(`/applicants/${id}`),
     //getDetail: (id: number) => http.get<ApiResponse<Applicant>>(`/applicants/${id}`),
     create: (body: FormData) => http.post<ApiResponse<boolean>>('/applicants', body),
-    update: (id: number, body: Candidate) => http.put<ApiResponse<boolean>>(`/applicants/update/${id}`, body),
+    update: (id: number, body: FormData) => http.put<ApiResponse<boolean>>(`/applicants/update/${id}`, body),
     updatePoint: (id: number, point: number) => {
         console.log(http.put<ApiResponse<boolean>>(`/applicants/update-point/${id}`, point));
         return http.put<ApiResponse<boolean>>(`/applicants/update-point/${id}`, {point});

@@ -53,7 +53,7 @@ export default function FormAddTest(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Candidate }) => applicantApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: FormData }) => applicantApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -95,7 +95,7 @@ export default function FormAddTest(props: FormProps) {
 
     if (mode == CRUD_MODE.ADD) addDataMutation.mutate(formData)
     else if (mode == CRUD_MODE.EDIT) {
-      updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+      updateDataMutation.mutate({ id: detail.id ?? 0, body: formData });
       console.log(data);
     }
     else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);

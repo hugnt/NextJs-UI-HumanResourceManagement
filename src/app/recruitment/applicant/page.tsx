@@ -93,7 +93,7 @@ export default function SampleList() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Email' />
       ),
-      cell: ({ row }) => <div className='w-[100px]'>{row.getValue('email')}</div>,
+      cell: ({ row }) => <div className='min-w-[150px]'>{row.getValue('email')}</div>,
       enableSorting: false,
       enableHiding: false,
     },
