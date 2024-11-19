@@ -12,6 +12,7 @@ const applicantApiRequest = {
         console.log(http.put<ApiResponse<boolean>>(`/applicants/update-point/${id}`, point));
         return http.put<ApiResponse<boolean>>(`/applicants/update-point/${id}`, {point});
     },
+    updateTest: (id: number, body: Candidate) => http.put<ApiResponse<boolean>>(`/applicants/update-test/${id}`, body),
     //updateTest: (id: number, body: Candidate) => http.put<ApiResponse<boolean>>(`/applicants/${id}`, body),
     delete: (id: number) => http.delete<ApiResponse<Candidate>>(`/applicants/${id}`)
 }
