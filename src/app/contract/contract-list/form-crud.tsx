@@ -33,6 +33,7 @@ import Select from 'react-select';
 import { FaFilePdf } from "react-icons/fa";
 import envConfig from "@/config";
 import LoadingSpinIcon from "@/components/loading-spin-icon";
+import { Position } from "@/data/schema/position.schema";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -56,6 +57,7 @@ export default function FormCRUD(props: FormProps) {
   const { openCRUD = false, setOpenCRUD = () => { }, mode = CRUD_MODE.VIEW, detail = {} } = props;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [openPDF, setOpenPDF] = useState<boolean>(false);
+  const [positionList, setPositionList] = useState<Position[]>([]);
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
   const addDataMutation = useMutation({
@@ -141,7 +143,14 @@ export default function FormCRUD(props: FormProps) {
   };
   // #endregion
 
+  const handleChangeDepartmentId = (departmentId: number) => {
+    const lstSelectedPosition = listDataPosition.data?.metadata?.filter(x => x.departmentId == departmentId) ?? [];
+    setPositionList(lstSelectedPosition);
+  }
+
   useEffect(() => {
+    const allPossition =  listDataPosition.data?.metadata??[];
+    setPositionList(allPossition);
     if (Object.keys(detail).length > 0) {
       form.reset(detail);
     }
@@ -152,14 +161,14 @@ export default function FormCRUD(props: FormProps) {
   //List Option
   const allowanceListOptions = listDataAllowance.data?.metadata?.map((item) => {
     return {
-      label: `Name: ${item.name} - Amount: ${item.amount}`,
+      label: `Tên loại: ${item.name} - Định mức: ${item.amount}`,
       value: item.id, // Assuming `item.id` is the identifier for each allowance
     };
   });
 
   const insuranceListOptions = listDataInurance.data?.metadata?.map((item) => {
     return {
-      label: `Name: ${item.name} - Company: ${item.percentCompany}% - Employee: ${item.percentEmployee}%`,
+      label: `Tên loại: ${item.name} - Cty: ${item.percentCompany}% - NLĐ: ${item.percentEmployee}%`,
       value: item.id, // Assuming `item.id` is the identifier for each allowance
     };
   });
@@ -170,7 +179,7 @@ export default function FormCRUD(props: FormProps) {
         {mode != CRUD_MODE.DELETE ? <AlertDialogContent
           className={`gap-0 top-[50%] border-none overflow-hidden p-0 sm:min-w-[800px] sm:max-w-[800px] !sm:w-[800px] sm:rounded-[0.3rem]`}>
           <AlertDialogHeader className='flex justify-between align-middle p-2 py-1 bg-primary'>
-            <AlertDialogTitle className="text-slate-50">Contract Details</AlertDialogTitle>
+            <AlertDialogTitle className="text-slate-50">Chi tiết hợp đồng</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription />
           <Form {...form}>
@@ -178,7 +187,7 @@ export default function FormCRUD(props: FormProps) {
               <div className="p-2 text-sm space-y-3 grid grid-cols-2 gap-1" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem className="col-span-2">
-                    <FormLabel>Employee Name</FormLabel>
+                    <FormLabel>Tên nhân viên</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -188,7 +197,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel>Ngày sinh</FormLabel>
                     <FormControl>
                       <Input type="date"
                         onChange={field.onChange}
@@ -201,9 +210,9 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="gender" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel>Giới tính</FormLabel>
                     <FormControl>
-                      <Select2 onValueChange={(value) => field.onChange(Boolean(value))} defaultValue={field.value?.toString()} disabled={isDisabled}>
+                      <Select2 onValueChange={(value) => field.onChange(Boolean(value))} value={field.value?.toString()} disabled={isDisabled}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select Gender" />
                         </SelectTrigger>
@@ -219,7 +228,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="address" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Địa chỉ</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -229,7 +238,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="countrySide" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Countryside</FormLabel>
+                    <FormLabel>Quê quán</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -239,7 +248,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="nationalID" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>National ID</FormLabel>
+                    <FormLabel>CCCD</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -249,7 +258,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="nationalAddress" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>National ID Address</FormLabel>
+                    <FormLabel>Nơi cấp</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -259,7 +268,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="nationalStartDate" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of making ID</FormLabel>
+                    <FormLabel>Ngày cấp</FormLabel>
                     <FormControl>
                       <Input type="date"
                         onChange={field.onChange}
@@ -272,7 +281,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="level" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Education Level</FormLabel>
+                    <FormLabel>Trình độ học vấn</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -282,7 +291,7 @@ export default function FormCRUD(props: FormProps) {
 
                 <FormField control={form.control} name="major" render={({ field }) => (
                   <FormItem className="col-span-2">
-                    <FormLabel>Major</FormLabel>
+                    <FormLabel>Chuyên ngành</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isDisabled} />
                     </FormControl>
@@ -293,11 +302,11 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="contractTypeId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose contract type</FormLabel>
-                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <FormLabel>Loại hợp đồng</FormLabel>
+                      <Select2 onValueChange={field.onChange} value={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue placeholder="Chose contract type for this contract" />
+                            <SelectValue placeholder="Chọn loại hợp đồng" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -316,12 +325,12 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="typeContract"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose contract type 2</FormLabel>
+                      <FormLabel>Loại nhân viên</FormLabel>
                       <FormControl>
-                        <Select2 onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                        <Select2 onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()} disabled={isDisabled} >
                           <FormControl >
                             <SelectTrigger >
-                              <SelectValue placeholder="Choose loại hợp đồng-2 này" />
+                              <SelectValue placeholder="Chọn loại nhân viên" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -342,7 +351,7 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="startDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel>Ngày bắt đầu</FormLabel>
                       <FormControl>
                         <Input type="date"
                           onChange={field.onChange}
@@ -357,7 +366,7 @@ export default function FormCRUD(props: FormProps) {
                 <FormField control={form.control} name="endDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>End Date</FormLabel>
+                      <FormLabel>Ngày kết thúc</FormLabel>
                       <FormControl>
                         <Input type="date"
                           onChange={field.onChange}
@@ -374,11 +383,11 @@ export default function FormCRUD(props: FormProps) {
                   name="departmentId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose phòng ban</FormLabel>
-                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <FormLabel>Phòng ban</FormLabel>
+                      <Select2 onValueChange={(e) => { field.onChange(e); handleChangeDepartmentId(Number(e)) }} value={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue placeholder="Choose phòng ban cho vị trí này" />
+                            <SelectValue placeholder="Chọn phòng ban" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -399,16 +408,16 @@ export default function FormCRUD(props: FormProps) {
                   name="positionId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose chức vụ</FormLabel>
-                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <FormLabel>Chức vụ</FormLabel>
+                      <Select2 onValueChange={field.onChange} value={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue placeholder="Choose chức vụ cho vị trí này" />
+                            <SelectValue placeholder="Chọn chức vị" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {
-                            listDataPosition.data?.metadata?.map((item, index) => {
+                            positionList?.map((item, index) => {
                               return <SelectItem key={index} value={item.id?.toString() ?? "0"}>{item.name}</SelectItem>
                             })
                           }
@@ -424,24 +433,22 @@ export default function FormCRUD(props: FormProps) {
                   name="contractSalaryId"
                   render={({ field }) => (
                     <FormItem className="col-span-2">
-                      <FormLabel>Choose lương</FormLabel>
-                      <Select2 onValueChange={field.onChange} defaultValue={field.value?.toString()} disabled={isDisabled} >
+                      <FormLabel>Quy định lương</FormLabel>
+                      <Select2 onValueChange={field.onChange} value={field.value?.toString()} disabled={isDisabled} >
                         <FormControl >
                           <SelectTrigger >
-                            <SelectValue placeholder="Choose lương cho vị trí này" />
+                            <SelectValue placeholder="Chọn quy định lương cho nhân viên" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {
                             listDataContractSalary.data?.metadata?.map((item, index) => {
                               return <SelectItem key={index} value={item.id?.toString() ?? "0"}>
-                                Base Salary: {item.baseSalary}<br />
-                                Base Insurance: {item.baseInsurance}<br />
-                                Factor: {item.factor}<br />
-                                Required Days: {item.requiredDays}<br />
-                                Required Hours: {item.requiredHours}<br />
-                                Wage Daily: {item.wageDaily}<br />
-                                Wage Hourly: {item.wageHourly}<br />
+                                Lương CB: {item.baseSalary}<br />
+                                Mức đóng BH: {item.baseInsurance}<br />
+                                Hệ số: {item.factor}<br />
+                                Số giờ quy định: {item.requiredHours}<br />
+                                Số công (theo giờ): {item.wageHourly}/h<br />
                               </SelectItem>
                             })
                           }
@@ -457,7 +464,7 @@ export default function FormCRUD(props: FormProps) {
                   name="allowanceIds"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose Allowance</FormLabel>
+                      <FormLabel>Các loại phụ cấp</FormLabel>
                       <Select
                         onChange={(selectedOptions) => {
                           field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
@@ -478,7 +485,7 @@ export default function FormCRUD(props: FormProps) {
                   name="insuranceIds"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose Insurance</FormLabel>
+                      <FormLabel>Các loại BH</FormLabel>
                       <Select
                         onChange={(selectedOptions) => {
                           field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : []);
@@ -541,7 +548,7 @@ export default function FormCRUD(props: FormProps) {
           <AlertDialogFooter className="flex !justify-between p-2 py-1 bg-secondary/80">
             {detail.id != 0 && <Button onClick={() => generateContractDataMutation.mutate({ id: detail.id ?? 0 })}
               className="bg-green-400  hover:bg-green-500" size='sm'>
-                {(generateContractDataMutation.isPending || generateContractDataMutation.isPending) && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
+              {(generateContractDataMutation.isPending || generateContractDataMutation.isPending) && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
               Tạo mới
             </Button>}
             <Button onClick={() => setOpenPDF(false)} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>

@@ -158,7 +158,7 @@ export default function Page() {
 
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY.KEY_LIST],
-    queryFn: () => faceRegisApiRequest.getAllFaceRegisByEmployeeId(1)
+    queryFn: () => faceRegisApiRequest.getAllFaceRegisByEmployeeId(user!.id)
   })
 
   const { mutate, isPending } = useMutation({

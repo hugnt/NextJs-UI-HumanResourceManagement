@@ -5,7 +5,7 @@
 import { Button } from "@/components/custom/button";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -21,16 +21,16 @@ type FormProps = {
     openSaveRS: boolean,
     setOpenSaveRS: (openSaveRS: boolean) => void,
     period: string,
-    payrollHeader?:ColumnTableHeader[][],
-    payrollColumn?:ColumnMeta[],
-    payrollData?:PayrollDataTable[],
-    displayColumns?:ColumnMeta[],
+    payrollHeader?: ColumnTableHeader[][],
+    payrollColumn?: ColumnMeta[],
+    payrollData?: PayrollDataTable[],
+    displayColumns?: ColumnMeta[],
 }
 
 const currentMonth: number = new Date().getMonth() + 1;
 const currenYear: number = new Date().getFullYear();
 export default function FormSaveResult(props: FormProps) {
-    const { openSaveRS, setOpenSaveRS = () => { }, period = "2024/10",payrollHeader,payrollColumn, payrollData,displayColumns} = props;
+    const { openSaveRS, setOpenSaveRS = () => { }, period = "2024/10", payrollHeader, payrollColumn, payrollData, displayColumns } = props;
     const [recordName, setRecordName] = useState<string>("");
     const [note, setNote] = useState<string>("");
 
@@ -47,7 +47,7 @@ export default function FormSaveResult(props: FormProps) {
     // #region + FORM SETTINGS
     const handleUpdateForm = () => {
         const payPeriod = period.split("/");
-        const history:PayrollHistory = {
+        const history: PayrollHistory = {
             name: recordName,
             note: note,
             month: Number(payPeriod[1]),
@@ -57,7 +57,7 @@ export default function FormSaveResult(props: FormProps) {
             payrollColumn: payrollColumn,
             payrollData: payrollData,
             displayColumns: displayColumns
-        } 
+        }
         saveHistoryMutation.mutate(history);
 
     };
@@ -66,6 +66,15 @@ export default function FormSaveResult(props: FormProps) {
         e.preventDefault();
         setOpenSaveRS(false);
     };
+
+    useEffect(() => {
+        const payPeriod = period.split("/");
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0'); // 24-hour format
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const defaultName =`${hours}:${minutes} - `+ "BẢNG LƯƠNG TỔNG HỢP " + payPeriod[1] + "/" + payPeriod[0];
+        setRecordName(defaultName);
+    },[openSaveRS==true])
     // #endregion
 
     return (
@@ -102,12 +111,12 @@ export default function FormSaveResult(props: FormProps) {
 
                         <div>
                             <Label>Tên bảng lương (*)</Label>
-                            <Input value={recordName} onChange={(e)=>setRecordName(e.target.value)} className="mt-2" placeholder="Nhập tên bảng lương cần lưu"/>
+                            <Input value={recordName} onChange={(e) => setRecordName(e.target.value)} className="mt-2" placeholder="Nhập tên bảng lương cần lưu" />
                         </div>
 
                         <div>
                             <Label>Ghi chú</Label>
-                            <Input value={note} onChange={(e)=>setNote(e.target.value)} className="mt-2" placeholder="Nhập tên bảng lương cần lưu"/>
+                            <Input value={note} onChange={(e) => setNote(e.target.value)} className="mt-2" placeholder="Nhập tên bảng lương cần lưu" />
                         </div>
                     </div>
                     <AlertDialogFooter className="p-2 py-1 bg-secondary/80">

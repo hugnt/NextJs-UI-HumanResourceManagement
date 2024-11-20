@@ -131,7 +131,7 @@ export default function SalaryHistory() {
   //ACTION HANDLER
   const handleView = async (row: Row<PayrollHistory>) => {
     const id = row.original.id;
-    console.log(id)
+    setSelectedId(id ?? 0);
     setOpenCRUD(true);
   };
 

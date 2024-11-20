@@ -43,13 +43,20 @@ export default function FormCRUD(props: FormProps) {
   // #region +TANSTACK QUERY
   const payrollHistoryDetails = useQuery({
     queryKey: [QUERY_KEY.keyDetails, payrollHistoryId],
-    queryFn: () => { if (payrollHistoryId != 0) return payrollApiRequest.getPayrollHistoryDetails(payrollHistoryId) },
+    queryFn: () => {
+      // Ensure we only call the API if payrollHistoryId is valid
+      if (payrollHistoryId !== 0) {
+        return payrollApiRequest.getPayrollHistoryDetails(payrollHistoryId);
+      }
+      // Return an empty promise to avoid errors in React Query if ID is invalid
+      return Promise.resolve(null);
+    },
   });
   // #endregion
 
   const generateTableHeader = () => {
     const tableSchemaHeader = payrollHistoryDetails.data?.metadata?.payrollHeader ?? [];
-    const displayColumns = payrollHistoryDetails.data?.metadata?.displayColumns??[];
+    const displayColumns = payrollHistoryDetails.data?.metadata?.displayColumns ?? [];
     let lstParrentColHidden: number[] = [];
     let lstFieldHidden: string[] = [];
     tableSchemaHeader.forEach(row => {
@@ -79,7 +86,7 @@ export default function FormCRUD(props: FormProps) {
             x.map((y, j) => {
               const isLastColumn = i == 0 && j == x.length - 1;
               const isFrozen = (i == 0 && (j == 0 || j == 1 || j == 2)) || isLastColumn;
-              const fixColumnBorder = isFrozen ? "bg-[#f9fafb] after:absolute  after:inset-0 after:start-[-1px] after:border-x after:border-solid after:border-slate-300 " : "";
+              const fixColumnBorder = isFrozen ? "after:absolute  after:inset-0 after:start-[-1px] after:border-x after:border-solid after:border-slate-300 " : "";
               const headerWidth = (y.field.includes("dp.")) ? "w-[80px]" : "whitespace-nowrap";
               let isHidden = lstFieldHidden.includes(y.field);
               let colSpan = y.colSpan;
@@ -97,7 +104,7 @@ export default function FormCRUD(props: FormProps) {
                     className: classNames(`text-xs mx-auto ${headerWidth} bg-[#f9fafb]`)
                   },
                   headerCell: {
-                    className: classNames(`text-xs my-auto border ${fixColumnBorder} text-center`)
+                    className: classNames(`text-xs my-auto border ${fixColumnBorder} text-center bg-[#f9fafb]`)
                   }
                 }} />
             })
@@ -114,7 +121,7 @@ export default function FormCRUD(props: FormProps) {
   const generateTableFooter = () => {
     const dataList = payrollHistoryDetails.data?.metadata?.payrollData ?? [];
     const tableSchemaColumn = payrollHistoryDetails.data?.metadata?.payrollColumn ?? [];
-    const displayColumns = payrollHistoryDetails.data?.metadata?.displayColumns??[];
+    const displayColumns = payrollHistoryDetails.data?.metadata?.displayColumns ?? [];
     const footerColumnAPI = tableSchemaColumn.map((col, i) => {
       if (i < 2) return;
       const isLastColumn = i == tableSchemaColumn.length - 1;

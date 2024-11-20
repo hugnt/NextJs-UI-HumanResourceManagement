@@ -343,7 +343,8 @@ export default function SalarySummaryList() {
   }
 
   const onRowSelect = (e: DataTableRowClickEvent) => {
-    getPayrollById.mutate(e.data.parollId);
+    console.log("e.data: ", e.data)
+    getPayrollById.mutate(e.data.payrollId);
   };
 
   const exportExcelFile = () => {

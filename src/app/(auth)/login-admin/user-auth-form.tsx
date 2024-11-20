@@ -17,7 +17,7 @@ import Link from 'next/link'
 import { useForm } from "react-hook-form";
 import { Auth, authDefault, authSchema } from '@/data/schema/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import authApiRequest from '@/apis/auth.api';
 import { usePathname, useRouter } from 'next/navigation';
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
@@ -31,6 +31,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const pathname = usePathname();
   const layout = authPaths.includes(pathname) ? 1 : 0;
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const form = useForm<Auth>({
     resolver: zodResolver(authSchema),
     defaultValues: authDefault,
@@ -43,6 +45,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
+        queryClient.invalidateQueries({queryKey:["current-user"]});
         handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
         router.push('/dashboard');
       }
@@ -59,6 +62,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
     onSuccess: (data) => {
       if (data.isSuccess) {
+        queryClient.invalidateQueries({queryKey:["current-user"]});
         handleSuccessApi({title:'Đăng nhập thành công', message:'Vui lòng chờ trong giây lát'})
         router.push('/profile');
       }

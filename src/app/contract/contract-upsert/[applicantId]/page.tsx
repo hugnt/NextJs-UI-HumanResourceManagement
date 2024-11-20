@@ -66,7 +66,7 @@ export default function CreateContractByApplicant() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (body: Contract) => contractApiRequest.addnew(id, body),
-    onSuccess: () => {},
+    onSuccess: () => { },
   });
 
   //List data
@@ -139,29 +139,25 @@ export default function CreateContractByApplicant() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0"
-        >
-          <div className="mb-2 flex items-center justify-between space-y-2">
-            <div>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="mb-2 w-full  space-y-2">
+            <div className="m-auto w-2/3">
               <h2 className="text-2xl font-bold tracking-tight">
-                Hợp đồng nhân viên
+                Tạo hợp đồng cho ứng viên
               </h2>
               <AppBreadcrumb pathList={pathList} className="mt-2" />
             </div>
           </div>
-
-          <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-            <div className="w-full mx-auto grid grid-cols-2 gap-2">
+          <div className="w-full">
+            <div className="w-2/3 m-auto grid grid-cols-2 gap-0">
               <div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>Họ Và Tên Nhân Viên</FormLabel>
+                        <FormLabel>Họ tên ứng viên</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -174,7 +170,7 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="contractTypeId"
@@ -211,7 +207,7 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="typeContract"
@@ -238,60 +234,7 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
-              </div>
-              <div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                  <Label htmlFor="email">Email</Label>
-                  <Input type="text" value={email} disabled={true} />
-                </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                  <FormField
-                    control={form.control}
-                    name="startDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ngày Bắt Đầu Hợp Đồng</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="date"
-                            onChange={field.onChange}
-                            value={
-                              field.value
-                                ? field.value.toString().split("T")[0]
-                                : new Date().toString()
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
-                  <FormField
-                    control={form.control}
-                    name="endDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ngày Kết Thúc Hợp Đồng</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="date"
-                            onChange={field.onChange}
-                            value={
-                              field.value
-                                ? field.value.toString().split("T")[0]
-                                : new Date().toString()
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="contractSalaryId"
@@ -316,20 +259,11 @@ export default function CreateContractByApplicant() {
                                     key={index}
                                     value={item.id?.toString() ?? "0"}
                                   >
-                                    Base Salary: {item.baseSalary}
-                                    <br />
-                                    Base Insurance: {item.baseInsurance}
-                                    <br />
-                                    Factor: {item.factor}
-                                    <br />
-                                    Required Days: {item.requiredDays}
-                                    <br />
-                                    Required Hours: {item.requiredHours}
-                                    <br />
-                                    Wage Daily: {item.wageDaily}
-                                    <br />
-                                    Wage Hourly: {item.wageHourly}
-                                    <br />
+                                    Lương CB: {item.baseSalary}<br />
+                                    Mức đóng BH: {item.baseInsurance}<br />
+                                    Hệ số: {item.factor}<br />
+                                    Số giờ quy định: {item.requiredHours}<br />
+                                    Số công (theo giờ): {item.wageHourly}/h
                                   </SelectItem>
                                 );
                               }
@@ -341,8 +275,64 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
-
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+              </div>
+              <div>
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="text" value={email} disabled={true} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
+                  <FormField
+                    control={form.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ngày Bắt Đầu Hợp Đồng</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            onChange={field.onChange}
+                            value={
+                              field.value
+                                ? field.value.toString().split("T")[0]
+                                : new Date().toString()
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
+                  <FormField
+                    control={form.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ngày Kết Thúc Hợp Đồng</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            onChange={field.onChange}
+                            value={
+                              field.value
+                                ? field.value.toString().split("T")[0]
+                                : new Date().toString()
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="allowanceIds"
@@ -370,8 +360,7 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
-
-                <div className="grid w-full max-w-sm items-center gap-1.5 mt-6">
+                <div className="grid w-full max-w-sm items-center gap-1.5 mt-2">
                   <FormField
                     control={form.control}
                     name="insuranceIds"
@@ -399,17 +388,17 @@ export default function CreateContractByApplicant() {
                     )}
                   />
                 </div>
+                <div className="grid max-w-sm  mt-2">
+                  <div className="text-end">
+                    <Button loading={isPending} size="sm" type="submit">
+                      Tạo và gửi form điền thông tin
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end pr-20">
-            <Button loading={isPending} size="sm" type="submit">
-              Gửi email
-            </Button>
-            {/* Hợp đòng mới được tạo -> có id là: k */}
-            {/* Kiểm tra gửi email thành công => click vào đường dẫn => employee-shared/emnployee-information/id->{k}của hợp đồng*/}
-          </div>
         </form>
       </Form>
     </>
