@@ -168,7 +168,7 @@ export default function ContractList() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Chức Vụ' />
       ),
-      cell: ({ row }) => <div className="w-[100px]">{row.getValue('positionName')}</div>,
+      cell: ({ row }) => <div className="min-w-[150px]">{row.getValue('positionName')}</div>,
       enableSorting: false,
       enableHiding: true,
     },
@@ -177,7 +177,7 @@ export default function ContractList() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Phòng Ban' />
       ),
-      cell: ({ row }) => <div>{row.getValue('departmentName')}</div>,
+      cell: ({ row }) => <div className="min-w-[150px]">{row.getValue('departmentName')}</div>,
       enableSorting: false,
       enableHiding: true,
     },
