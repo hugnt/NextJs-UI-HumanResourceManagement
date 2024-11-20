@@ -47,6 +47,7 @@ import { handleSuccessApi } from "@/lib/utils";
 import { PiTrashLight } from "react-icons/pi";
 import testApiRequest from "@/apis/test.api";
 import positionApiRequest from "@/apis/position.api";
+import employeeApiRequest from "@/apis/employee.api";
 type FormProps = {
   openCRUD: boolean;
   mode: CRUD_MODE;
@@ -60,6 +61,7 @@ const QUERY_KEY = {
   keyList: "applicants",
   keysub: "tests",
   keysub2: "positions",
+  keySub3: "employees"
 };
 
 export default function FormCRUD(props: FormProps) {
@@ -84,7 +86,7 @@ export default function FormCRUD(props: FormProps) {
   });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number; body: Candidate }) =>
+    mutationFn: ({ id, body }: { id: number; body: FormData }) =>
       applicantApiRequest.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] });
@@ -101,7 +103,7 @@ export default function FormCRUD(props: FormProps) {
       setOpenCRUD(false);
     },
   });
-
+  
   const listDataTest = useQuery({
     queryKey: [QUERY_KEY.keysub],
     queryFn: () => testApiRequest.getList(),
@@ -110,6 +112,11 @@ export default function FormCRUD(props: FormProps) {
   const listDataPosition = useQuery({
     queryKey: [QUERY_KEY.keysub2],
     queryFn: () => positionApiRequest.getList(),
+  });
+
+  const listDataEmployee = useQuery({
+    queryKey: [QUERY_KEY.keySub3],
+    queryFn: () => employeeApiRequest.getList(),
   });
 
   // #endregion
@@ -125,21 +132,34 @@ export default function FormCRUD(props: FormProps) {
     formData.append("name", data.name!);
     formData.append("email", data.email!);
     formData.append("phone", data.phone!);
-    formData.append("file", file!);
+    formData.append("file", file ?? "");
     formData.append("positionId", data.positionId?.toString() ?? "0");
     formData.append("rate", data.rate?.toString() ?? "0");
     formData.append("testId", data.testId?.toString() ?? "0");
-    formData.append("interviewerName", data.interviewerName!);
+    formData.append("interviewerId", data.interviewerId?.toString() ?? "0");
     formData.append("status", (data.status as number).toString()); 
-    
     formData.forEach((value, key) => console.log(key, value));
 
-    if (mode == CRUD_MODE.ADD) addDataMutation.mutate(formData);
-    else if (mode == CRUD_MODE.EDIT) {
-      updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
-      console.log(data);
-    } else if (mode == CRUD_MODE.DELETE)
-      deleteDataMutation.mutate(data.id ?? 0);
+    if (mode === CRUD_MODE.ADD) {
+      addDataMutation.mutate(formData, {
+        onSuccess: () => {
+          setFile(null); 
+          form.reset(candidateDefault); 
+        },
+      });
+    } else if (mode === CRUD_MODE.EDIT) {
+      updateDataMutation.mutate(
+        { id: detail.id ?? 0, body: formData },
+        {
+          onSuccess: () => {
+            setFile(null); // 
+            form.reset(detail); // 
+          },
+        }
+      );
+    } else if (mode == CRUD_MODE.DELETE) {
+      deleteDataMutation.mutate(data.id ?? 0)
+    };
   };
 
   const handleCloseForm = (e: any) => {
@@ -325,7 +345,7 @@ export default function FormCRUD(props: FormProps) {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="interviewerName"
                     render={({ field }) => (
@@ -338,6 +358,41 @@ export default function FormCRUD(props: FormProps) {
                             disabled={isDisabled}
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> */}
+                  <FormField
+                    control={form.control}
+                    name="interviewerId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Chọn người đăng bài</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value?.toString()}
+                          disabled={isDisabled}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn người phỏng vấn" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {listDataEmployee.data?.metadata?.map(
+                              (item, index) => {
+                                return (
+                                  <SelectItem
+                                    key={index}
+                                    value={item.id?.toString() ?? "0"}
+                                  >
+                                    {item.name}
+                                  </SelectItem>
+                                );
+                              }
+                            )}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

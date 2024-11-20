@@ -43,17 +43,17 @@ export default function FormAddTest(props: FormProps) {
 
   // #region +TANSTACK QUERY
   const queryClient = useQueryClient();
-  const addDataMutation = useMutation({
-    mutationFn: (body: FormData) => applicantApiRequest.create(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Inserted Successfully!" });
-      setOpenAddTest(false);
-    }
-  });
+  // const addDataMutation = useMutation({
+  //   mutationFn: (body: FormData) => applicantApiRequest.create(body),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+  //     handleSuccessApi({ message: "Inserted Successfully!" });
+  //     setOpenAddTest(false);
+  //   }
+  // });
 
   const updateDataMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number, body: Candidate }) => applicantApiRequest.update(id, body),
+    mutationFn: ({ id, body }: { id: number, body: Candidate }) => applicantApiRequest.updateTest(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
       handleSuccessApi({ message: "Updated Successfully!" });
@@ -61,14 +61,14 @@ export default function FormAddTest(props: FormProps) {
     }
   });
 
-  const deleteDataMutation = useMutation({
-    mutationFn: (id: number) => applicantApiRequest.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
-      handleSuccessApi({ message: "Deleted Successfully!" });
-      setOpenAddTest(false);
-    }
-  });
+  // const deleteDataMutation = useMutation({
+  //   mutationFn: (id: number) => applicantApiRequest.delete(id),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: [QUERY_KEY.keyList] })
+  //     handleSuccessApi({ message: "Deleted Successfully!" });
+  //     setOpenAddTest(false);
+  //   }
+  // });
 
   const listDataTest = useQuery({
     queryKey: [QUERY_KEY.keysub],
@@ -84,23 +84,26 @@ export default function FormAddTest(props: FormProps) {
   });
 
   const onSubmit = (data: Candidate) => {
-    const formData = new FormData();
-    formData.append('name', data.name!);
-    formData.append('email', data.email!);
-    formData.append('phone', data.phone!);
-    formData.append('fileDataStore', data.fileDataStore!);
-    formData.append('positionId', data.positionId?.toString() ?? "0");
-    formData.append('rate', data.rate?.toString() ?? "0");
-    formData.append('testId', data.testId?.toString() ?? "0");
-
-    if (mode == CRUD_MODE.ADD) addDataMutation.mutate(formData)
-    else if (mode == CRUD_MODE.EDIT) {
-      updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
-      console.log(data);
-    }
-    else if (mode == CRUD_MODE.DELETE) deleteDataMutation.mutate(data.id ?? 0);
-
-  }
+    // const formData = new FormData();
+    // formData.append("name", data.name!);
+    // formData.append("email", data.email!);
+    // formData.append("phone", data.phone!);
+    // formData.append("positionId", data.positionId?.toString() ?? "0");
+    // formData.append("rate", data.rate?.toString() ?? "0");
+    // formData.append("testId", data.testId?.toString() ?? "0");
+    // formData.append("interviewerId", data.interviewerId?.toString() ?? "0");
+    // formData.append("status", (data.status as number).toString()); 
+    // formData.forEach((value, key) => console.log(key, value));
+    
+    if (mode === CRUD_MODE.EDIT) updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+    // if (mode === CRUD_MODE.ADD) {
+    //   addDataMutation.mutate(formData);
+    // } else if (mode === CRUD_MODE.EDIT) {
+    //   updateDataMutation.mutate({ id: detail.id ?? 0, body: data });
+    // } else if (mode == CRUD_MODE.DELETE) {
+    //   deleteDataMutation.mutate(data.id ?? 0)
+    // };
+  };
 
   const handleCloseForm = (e: any) => {
     e.preventDefault();

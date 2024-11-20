@@ -19,6 +19,7 @@ export const candidateSchema = z.object({
     rate: z.coerce.number().optional(), 
     testId: z.coerce.number().optional(),
     testName: z.string().max(255).optional(),
+    interviewerId: z.coerce.number().optional(),
     interviewerName: z.string().max(255).optional(),
     status: z.nativeEnum(CandidateStatus).optional()
 });;
@@ -34,6 +35,7 @@ export const candidateDefault: Candidate = {
     rate:  0,
     testId:  0,
     testName:  "",
+    interviewerId: 0,
     interviewerName: "",
     status: CandidateStatus.Wait
 };
