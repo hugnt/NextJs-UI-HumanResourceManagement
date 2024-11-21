@@ -49,6 +49,7 @@ export default function NewEmployeeJoinInPage() {
     const onSubmit = async (data: newEmployee) => {
         try {
             await newEmployeeApiRequest.update(id, data);
+            setIsFinishedAction(true);
             handleSuccessApi({ title: "Thông tin nhân viên đã được lưu thành công!" });
             router.push(`/`)
         } catch (error) {

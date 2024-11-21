@@ -1,7 +1,5 @@
 "use client";
-import AppBreadcrumb, { PathItem } from "@/components/custom/_breadcrumb";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import React, { useEffect, useState } from "react";
 import {
   Select as Select2,
@@ -63,6 +61,7 @@ export default function CreateContractByApplicant() {
   const { mutate, isPending } = useMutation({
     mutationFn: (body: Contract) => contractApiRequest.addnew(id, body),
     onSuccess: () => {
+      setIsFinishedAction(true);
       handleSuccessApi({ title: "Tạo hợp đồng thành công!", message: 'form điền thông tin đã được gửi qua email ứng viên' })
     },
   });
