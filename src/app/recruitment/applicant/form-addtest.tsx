@@ -159,7 +159,7 @@ export default function FormAddTest(props: FormProps) {
               <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                 <Button onClick={handleCloseForm} className="bg-gray-400  hover:bg-red-500" size='sm' >Close</Button>
                 {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&
-                  <Button type="submit" size='sm'>Save</Button>}
+                  <Button type="submit" size='sm' onClick={() => onSubmit(form.getValues())}>Save</Button>}
               </AlertDialogFooter>
             </form>
           </Form>

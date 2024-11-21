@@ -205,6 +205,7 @@ const handleView = async (row: Row<Candidate>) => {
     const id = row.original.id;
     setMode(CRUD_MODE.EDIT)
     const selectedData = listDataQuery.data?.metadata?.find(x => x.id == id) ?? {};
+    console.log(selectedData);
     setDetail(selectedData);
     setOpenCRUD(true);
   };

@@ -13,7 +13,7 @@ export const candidateSchema = z.object({
     name: z.string().max(255).optional(),
     email: z.string().max(255).optional(),
     phone: z.string().max(255).optional(),      
-    fileDataStore: z.string().max(255).optional(), 
+    fileDataStore: z.string().optional(), 
     positionId: z.coerce.number().optional(),
     positionName: z.string().max(255).optional(),
     rate: z.coerce.number().optional(), 
