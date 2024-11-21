@@ -138,6 +138,7 @@ export default function FormCRUD(props: FormProps) {
     formData.append("testId", data.testId?.toString() ?? "0");
     formData.append("interviewerId", data.interviewerId?.toString() ?? "0");
     formData.append("status", (data.status as number).toString()); 
+    
     formData.forEach((value, key) => console.log(key, value));
 
     if (mode === CRUD_MODE.ADD) {
@@ -345,23 +346,6 @@ export default function FormCRUD(props: FormProps) {
                       </FormItem>
                     )}
                   />
-                  {/* <FormField
-                    control={form.control}
-                    name="interviewerName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Người phỏng vấn</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Người phỏng vấn"
-                            {...field}
-                            disabled={isDisabled}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
                   <FormField
                     control={form.control}
                     name="interviewerId"
@@ -426,6 +410,7 @@ export default function FormCRUD(props: FormProps) {
                 </div>
                 <AlertDialogFooter className="p-2 py-1 bg-secondary/80">
                   <Button
+                    type="button"
                     onClick={handleCloseForm}
                     className="bg-gray-400  hover:bg-red-500"
                     size="sm"
@@ -433,7 +418,7 @@ export default function FormCRUD(props: FormProps) {
                     Close
                   </Button>
                   {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) && (
-                    <Button type="submit" size="sm">
+                    <Button type="button" size="sm" onClick={() => onSubmit(form.getValues())}>
                       Save
                     </Button>
                   )}
@@ -444,7 +429,6 @@ export default function FormCRUD(props: FormProps) {
         </Sheet>
        ) : (
       <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD}>
-            //DELETE FORM
             <AlertDialogContent
               className={`gap-0 top-[50%] border-none overflow-hidden p-0 w-[400px] sm:rounded-[0.3rem]`}
             >
@@ -459,13 +443,14 @@ export default function FormCRUD(props: FormProps) {
               </AlertDialogDescription>
               <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
                 <Button
+                  type="button"
                   onClick={handleCloseForm}
                   className="bg-gray-400  hover:bg-red-500"
                   size="sm"
                 >
                   Close
                 </Button>
-                <Button className="" size="sm" onClick={() => onSubmit(detail)}>
+                <Button type="button" className="" size="sm" onClick={() => onSubmit(form.getValues())}>
                   Confirm
                 </Button>
               </AlertDialogFooter>
