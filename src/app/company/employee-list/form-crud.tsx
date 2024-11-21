@@ -35,6 +35,7 @@ import { FaSave } from "react-icons/fa";
 import taxDeductionApiRequest from "@/apis/taxDeduction.api";
 import { Employee, employeeDefault, employeeSchema } from "@/data/schema/employee.schema";
 import { MdAttachEmail } from "react-icons/md";
+import Link from "next/link";
 type FormProps = {
   openCRUD: boolean,
   mode: CRUD_MODE,
@@ -126,10 +127,10 @@ export default function FormCRUD(props: FormProps) {
   const handleSubmitAndSendEmail = () => {
     handleSubmit();
     const data = form.getValues();
-    if(updateDataMutation.isSuccess||addDataMutation.isSuccess){
+    if (updateDataMutation.isSuccess || addDataMutation.isSuccess) {
       sendEmailDataMutation.mutate(data);
     }
-    
+
   }
 
   const handleCloseForm = (e: any) => {
@@ -366,6 +367,18 @@ export default function FormCRUD(props: FormProps) {
                           {updateDataMutation.isPending && <LoadingSpinIcon className="w-[22px] h-[22px] !border-[4px] !border-t-white " />}
                           <FaSave className='mr-1 h-4 w-4' />Cập nhật
                         </Button>}
+                      {
+                        mode == CRUD_MODE.VIEW && <div className="space-x-2">
+                          <Button type="button" size='sm' className='h-8 bg-yellow-500'>
+                            {detail.typeContract == 1 ? <Link href={`/history/attendance-tracking/${detail.id}`}>
+                              Xem lịch sử chấm công partime
+                            </Link> :
+                              <Link href={`/history/fulltime-attendance/${detail.id}`}>
+                                Xem lịch sử chấm công fulltime
+                              </Link>}
+                          </Button>
+                        </div>
+                      }
                     </div>
                     <div>
                       {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) &&

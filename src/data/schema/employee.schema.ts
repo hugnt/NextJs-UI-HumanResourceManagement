@@ -28,6 +28,9 @@ export const employeeSchema = z.object({
   taxDeductionIds: z.array(z.coerce.number()).optional(),
   userName: z.string().optional(),
   password: z.string().optional(),
+
+  typeContract:z.coerce.number().optional(),
+
 });
 
 export type Employee = z.infer<typeof employeeSchema>;
@@ -56,7 +59,9 @@ export const employeeDefault: Employee = {
 
   taxDeductionIds:[],
   userName:"",
-  password:""
+  password:"",
+
+  typeContract:1,
 };
 
 export type FaceRegisResult = {
