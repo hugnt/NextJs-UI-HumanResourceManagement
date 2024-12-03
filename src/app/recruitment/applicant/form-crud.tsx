@@ -61,7 +61,7 @@ const QUERY_KEY = {
   keyList: "applicants",
   keysub: "tests",
   keysub2: "positions",
-  keySub3: "employees"
+  keySub3: "employees",
 };
 
 export default function FormCRUD(props: FormProps) {
@@ -103,7 +103,7 @@ export default function FormCRUD(props: FormProps) {
       setOpenCRUD(false);
     },
   });
-  
+
   const listDataTest = useQuery({
     queryKey: [QUERY_KEY.keysub],
     queryFn: () => testApiRequest.getList(),
@@ -137,15 +137,15 @@ export default function FormCRUD(props: FormProps) {
     formData.append("rate", data.rate?.toString() ?? "0");
     formData.append("testId", data.testId?.toString() ?? "0");
     formData.append("interviewerId", data.interviewerId?.toString() ?? "0");
-    formData.append("status", (data.status as number).toString()); 
-    
+    formData.append("status", (data.status as number).toString());
+
     formData.forEach((value, key) => console.log(key, value));
 
     if (mode === CRUD_MODE.ADD) {
       addDataMutation.mutate(formData, {
         onSuccess: () => {
-          setFile(null); 
-          form.reset(candidateDefault); 
+          setFile(null);
+          form.reset(candidateDefault);
         },
       });
     } else if (mode === CRUD_MODE.EDIT) {
@@ -153,14 +153,14 @@ export default function FormCRUD(props: FormProps) {
         { id: detail.id ?? 0, body: formData },
         {
           onSuccess: () => {
-            setFile(null); // 
-            form.reset(detail); // 
+            setFile(null); //
+            form.reset(detail); //
           },
         }
       );
     } else if (mode == CRUD_MODE.DELETE) {
-      deleteDataMutation.mutate(data.id ?? 0)
-    };
+      deleteDataMutation.mutate(data.id ?? 0);
+    }
   };
 
   const handleCloseForm = (e: any) => {
@@ -183,7 +183,7 @@ export default function FormCRUD(props: FormProps) {
         <Sheet open={openCRUD} onOpenChange={setOpenCRUD}>
           <SheetContent className="p-0 overflow-y-auto sm:max-w-[800px] !sm:w-[800px] min-w-[800px]">
             <SheetHeader className="px-4 pt-3">
-              <SheetTitle>Chi tiết công việc</SheetTitle>
+              <SheetTitle>Chi tiết ứng viên</SheetTitle>
             </SheetHeader>
             <Form {...form}>
               <form
@@ -388,7 +388,9 @@ export default function FormCRUD(props: FormProps) {
                       <FormItem>
                         <FormLabel>Tình trạng ứng viên</FormLabel>
                         <Select
-                          onValueChange={(value) => field.onChange(Number(value))} // Parse the value as a number
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          } // Parse the value as a number
                           defaultValue={field.value?.toString()}
                           disabled={isDisabled}
                         >
@@ -398,10 +400,18 @@ export default function FormCRUD(props: FormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                          <SelectItem value={CandidateStatus.Wait.toString()}>Wait</SelectItem>
-                          <SelectItem value={CandidateStatus.Decline.toString()}>Decline</SelectItem>
-                          <SelectItem value={CandidateStatus.Pass.toString()}>Pass</SelectItem>
-                        </SelectContent>
+                            <SelectItem value={CandidateStatus.Wait.toString()}>
+                              Đợi phỏng vấn
+                            </SelectItem>
+                            <SelectItem
+                              value={CandidateStatus.Decline.toString()}
+                            >
+                              Từ chối
+                            </SelectItem>
+                            <SelectItem value={CandidateStatus.Pass.toString()}>
+                              Đạt
+                            </SelectItem>
+                          </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
@@ -418,7 +428,11 @@ export default function FormCRUD(props: FormProps) {
                     Close
                   </Button>
                   {(mode === CRUD_MODE.ADD || mode === CRUD_MODE.EDIT) && (
-                    <Button type="button" size="sm" onClick={() => onSubmit(form.getValues())}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => onSubmit(form.getValues())}
+                    >
                       Save
                     </Button>
                   )}
@@ -427,35 +441,40 @@ export default function FormCRUD(props: FormProps) {
             </Form>
           </SheetContent>
         </Sheet>
-       ) : (
-      <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD}>
-            <AlertDialogContent
-              className={`gap-0 top-[50%] border-none overflow-hidden p-0 w-[400px] sm:rounded-[0.3rem]`}
-            >
-              <AlertDialogHeader>
-                <AlertDialogTitle></AlertDialogTitle>
-              </AlertDialogHeader>
-              <div className="text-center pt-8 pb-4 flex justify-center">
-                <PiTrashLight size={100} color="rgb(248 113 113)" />
-              </div>
-              <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
-                Are you absolutely sure to delete?
-              </AlertDialogDescription>
-              <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
-                <Button
-                  type="button"
-                  onClick={handleCloseForm}
-                  className="bg-gray-400  hover:bg-red-500"
-                  size="sm"
-                >
-                  Close
-                </Button>
-                <Button type="button" className="" size="sm" onClick={() => onSubmit(form.getValues())}>
-                  Confirm
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-      </AlertDialog>
+      ) : (
+        <AlertDialog open={openCRUD} onOpenChange={setOpenCRUD}>
+          <AlertDialogContent
+            className={`gap-0 top-[50%] border-none overflow-hidden p-0 w-[400px] sm:rounded-[0.3rem]`}
+          >
+            <AlertDialogHeader>
+              <AlertDialogTitle></AlertDialogTitle>
+            </AlertDialogHeader>
+            <div className="text-center pt-8 pb-4 flex justify-center">
+              <PiTrashLight size={100} color="rgb(248 113 113)" />
+            </div>
+            <AlertDialogDescription className="text-center pb-4 text-lg text-stone-700">
+              Are you absolutely sure to delete?
+            </AlertDialogDescription>
+            <AlertDialogFooter className="!justify-center p-2 py-3 text-center">
+              <Button
+                type="button"
+                onClick={handleCloseForm}
+                className="bg-gray-400  hover:bg-red-500"
+                size="sm"
+              >
+                Close
+              </Button>
+              <Button
+                type="button"
+                className=""
+                size="sm"
+                onClick={() => onSubmit(form.getValues())}
+              >
+                Confirm
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
