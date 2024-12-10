@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import ReactQuill from "react-quill";
+//import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/custom/button";
 import {
@@ -145,7 +145,7 @@ export default function FormCRUD(props: FormProps) {
         <Sheet open={openCRUD} onOpenChange={setOpenCRUD}>
           <SheetContent className="p-0 overflow-y-auto sm:max-w-[800px] !sm:w-[800px] min-w-[800px]">
             <SheetHeader className="px-4 pt-3">
-              <SheetTitle>Chi tiết công việc</SheetTitle>
+              <SheetTitle>Chi tiết bài đăng</SheetTitle>
             </SheetHeader>
             <Form {...form}>
               <form
@@ -188,7 +188,7 @@ export default function FormCRUD(props: FormProps) {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
@@ -205,6 +205,24 @@ export default function FormCRUD(props: FormProps) {
                               ],
                             }}
                             placeholder="Nhập mô tả"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> */}
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nhập mô tả</FormLabel>
+                        <FormControl>
+                          <textarea
+                            {...field} // Gán các thuộc tính cần thiết như value và onChange
+                            readOnly={isDisabled} // Vô hiệu hóa nếu cần
+                            placeholder="Nhập mô tả"
+                            className="border rounded p-2 w-full h-40" // Thêm lớp CSS để tùy chỉnh giao diện
                           />
                         </FormControl>
                         <FormMessage />

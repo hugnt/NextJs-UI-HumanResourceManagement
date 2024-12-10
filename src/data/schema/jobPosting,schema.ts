@@ -5,7 +5,7 @@ export const jobPostingSchema = z.object({
     id: z.coerce.number().optional(),
     positionName: z.string().max(255).optional(),
     positionId: z.coerce.number().optional(),
-    description: z.string().max(255).optional(),
+    description: z.string().optional(),
     location: z.string().max(255).optional(),
     salaryRangeMin: z.coerce.number().optional(),
     salaryRangeMax: z.coerce.number().optional(),
